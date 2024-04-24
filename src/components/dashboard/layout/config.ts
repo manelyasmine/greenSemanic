@@ -14,25 +14,25 @@ export const navItems: NavItemConfig[] = [
   {
     key: 'Tasks',
     title: 'Tasks',
-    href: paths.dashboard.customers,
+    href: paths.dashboard.tasks,
     icon: TasksIcon,
   },
   {
     key: 'Emission Tracking',
     title: 'Emission Tracking',
-    href: paths.dashboard.integrations,
+    href: paths.dashboard.emissions,
     icon: EmissionTrackingIcon,
   },
   {
     key: 'Data',
     title: 'Data',
-    href: paths.dashboard.settings,
+    href: paths.dashboard.data,
     icon: DataIcon,
   },
   {
     key: 'Targets',
     title: 'Targets',
-    href: paths.dashboard.account,
+    href: paths.dashboard.target,
     icon: TargetIcon,
   },
   {

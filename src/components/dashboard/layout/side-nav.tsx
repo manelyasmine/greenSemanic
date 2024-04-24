@@ -3,7 +3,7 @@
 import * as React from 'react';
 import RouterLink from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LeftChevronIcon } from '@/icons';
+import { LeftChevronIcon, SettingsIcon, SupportIcon } from '@/icons';
 import { Close as CloseIcon, Menu as MenuIcon } from '@mui/icons-material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -59,8 +59,9 @@ export function SideNav({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSide
         <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
           {renderNavItems({ pathname, items: navItems })}
         </Box>
-        <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
-        {/* Add bottom options here */}
+
+        <NavItem key="7" pathname={pathname} icon={SupportIcon} title="Support" />
+        <NavItem key="8" pathname={pathname} icon={SettingsIcon} title="Settings" />
       </Box>
     </Box>
   );
@@ -89,15 +90,10 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
 function NavItem({ disabled, external, href, icon, matcher, pathname, title }: NavItemProps): React.JSX.Element {
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
 
-  console.log('icon:', icon);
-  console.log('navIcons:', navIcons);
-
   const Icon = icon ? icon : null;
 
-  console.log('Icon:', Icon);
-
   return (
-    <li>
+    <li style={{ listStyleType: 'none' }}>
       <Box
         {...(href
           ? {
@@ -110,7 +106,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
         sx={{
           alignItems: 'center',
           borderRadius: 1,
-          color: 'var(--NavItem-color)',
+          color: active ? palette.primary[800] : 'var(--NavItem-color)',
           cursor: 'pointer',
           display: 'flex',
           flex: '0 0 auto',
@@ -119,18 +115,19 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
           position: 'relative',
           textDecoration: 'none',
           whiteSpace: 'nowrap',
+          bgcolor: active ? palette.primary[50] : 'transparent',
           ...(disabled && {
             bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
             cursor: 'not-allowed',
           }),
-          ...(active && { bgcolor: 'var(--NavItem-active-background)', color: 'var(--NavItem-active-color)' }),
         }}
       >
         <Box sx={{ alignItems: 'center', display: 'flex', justifyContent: 'center', flex: '0 0 auto' }}>
           {Icon ? (
             <Icon
-              fill={active ? 'var(--NavItem-icon-active-color)' : 'var(--NavItem-icon-color)'}
+              fill={active ? 'green' : 'var(--NavItem-icon-color)'}
+              stroke={active ? 'green' : '#88909F'}
               fontSize="var(--icon-fontSize-md)"
               weight={active ? 'fill' : undefined}
             />
@@ -139,7 +136,12 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
         <Box sx={{ flex: '1 1 auto' }}>
           <Typography
             component="span"
-            sx={{ color: 'inherit', fontSize: '0.875rem', fontWeight: 500, lineHeight: '28px' }}
+            sx={{
+              color: palette.gray[400],
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              lineHeight: '28px',
+            }}
           >
             {title}
           </Typography>

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import type { Viewport } from 'next';
-import { SessionProvider } from 'next-auth/react'; // Import SessionProvider
+import { SessionProvider } from 'next-auth/react';
 
 import '@/styles/global.css';
 
