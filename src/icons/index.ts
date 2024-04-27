@@ -1,3 +1,4 @@
+import BackForwardIcon from './BackForwardIcon';
 import { DashboardIcon } from './DashboardIcon';
 import { DataIcon } from './DataIcon';
 import { EmissionTrackingIcon } from './EmissionTrackingIcon';
@@ -13,6 +14,7 @@ import { TargetIcon } from './TargetIcon';
 import { TasksIcon } from './TasksIcon';
 
 export {
+  BackForwardIcon,
   DashboardIcon,
   DataIcon,
   EmissionTrackingIcon,
