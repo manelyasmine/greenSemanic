@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Box, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -14,34 +15,47 @@ import { ArrowRight as ArrowRightIcon } from '@phosphor-icons/react/dist/ssr/Arr
 import type { ApexOptions } from 'apexcharts';
 
 import { Chart } from '@/components/core/chart';
+import { palette } from '@/styles/theme/colors';
 
 export interface SalesProps {
   chartSeries: { name: string; data: number[] }[];
   sx?: SxProps;
 }
 
-export function Sales({ chartSeries, sx }: SalesProps): React.JSX.Element {
+export function CarbonEmissionsScope({ chartSeries, sx }: SalesProps): React.JSX.Element {
   const chartOptions = useChartOptions();
 
   return (
     <Card sx={sx}>
       <CardHeader
         action={
-          <Button color="inherit" size="small" startIcon={<ArrowClockwiseIcon fontSize="var(--icon-fontSize-md)" />}>
-            Sync
-          </Button>
+          <Box display="flex" alignItems="flex-end">
+            <Typography
+              fontWeight={700}
+              sx={{
+                color: palette.common.black,
+                fontSize: '16px',
+              }}
+            >
+              2,458,547
+            </Typography>
+            <Typography variant="caption">tCO2e</Typography>
+          </Box>
         }
-        title="Sales"
+        title={
+          <Typography variant="h6" component="div">
+            Carbon Emissions by Scope
+          </Typography>
+        }
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
       />
       <CardContent>
         <Chart height={350} options={chartOptions} series={chartSeries} type="bar" width="100%" />
       </CardContent>
       <Divider />
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Button color="inherit" endIcon={<ArrowRightIcon fontSize="var(--icon-fontSize-md)" />} size="small">
-          Overview
-        </Button>
-      </CardActions>
     </Card>
   );
 }
@@ -50,8 +64,8 @@ function useChartOptions(): ApexOptions {
   const theme = useTheme();
 
   return {
-    chart: { background: 'transparent', stacked: false, toolbar: { show: false } },
-    colors: [theme.palette.primary.main, alpha(theme.palette.primary.main, 0.25)],
+    chart: { background: 'transparent', stacked: true, toolbar: { show: false } },
+    colors: ['#73E2A3', '#FF8F6B', '#FFD66B'],
     dataLabels: { enabled: false },
     fill: { opacity: 1, type: 'solid' },
     grid: {
@@ -60,8 +74,21 @@ function useChartOptions(): ApexOptions {
       xaxis: { lines: { show: false } },
       yaxis: { lines: { show: true } },
     },
-    legend: { show: false },
-    plotOptions: { bar: { columnWidth: '40px' } },
+    legend: {
+      show: true,
+      labels: {
+        colors: theme.palette.text.primary,
+      },
+      position: 'bottom',
+      markers: {
+        width: 12,
+        height: 12,
+        radius: 4,
+      },
+      offsetY: 10,
+    },
+
+    plotOptions: { bar: { columnWidth: '20px', borderRadius: 6 } },
     stroke: { colors: ['transparent'], show: true, width: 2 },
     theme: { mode: theme.palette.mode },
     xaxis: {
@@ -71,9 +98,12 @@ function useChartOptions(): ApexOptions {
       labels: { offsetY: 5, style: { colors: theme.palette.text.secondary } },
     },
     yaxis: {
+      title: {
+        text: 'Equivalent CO2 (t)',
+        style: { color: theme.palette.text.secondary },
+      },
       labels: {
-        formatter: (value) => (value > 0 ? `${value}K` : `${value}`),
-        offsetX: -10,
+        formatter: (value) => (value > 0 ? `${value}t` : `${value}`),
         style: { colors: theme.palette.text.secondary },
       },
     },

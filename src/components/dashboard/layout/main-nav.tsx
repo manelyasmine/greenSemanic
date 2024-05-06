@@ -15,6 +15,7 @@ import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/di
 import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
 
 import { usePopover } from '@/hooks/use-popover';
+import ThemeToggle from '@/components/commun/ThemeToggle/ThemeToggle';
 import { palette } from '@/styles/theme/colors';
 
 import { MobileNav } from './mobile-nav';
@@ -69,6 +70,9 @@ export function MainNav(): React.JSX.Element {
             />
           </Stack>
           <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
+            <Tooltip title="Contacts">
+              <ThemeToggle />
+            </Tooltip>
             <Tooltip title="Contacts">
               <IconButton>
                 <UsersIcon />

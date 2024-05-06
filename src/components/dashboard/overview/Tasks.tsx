@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Box } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
@@ -14,41 +15,46 @@ import { DeviceTablet as DeviceTabletIcon } from '@phosphor-icons/react/dist/ssr
 import { Phone as PhoneIcon } from '@phosphor-icons/react/dist/ssr/Phone';
 import type { ApexOptions } from 'apexcharts';
 
+import { Button } from '@/components/commun/Button';
 import { Chart } from '@/components/core/chart';
+import { palette } from '@/styles/theme/colors';
+
+import TaskItem from './TaskItem';
 
 const iconMapping = { Desktop: DesktopIcon, Tablet: DeviceTabletIcon, Phone: PhoneIcon } as Record<string, Icon>;
 
 export interface TrafficProps {
-  chartSeries: number[];
-  labels: string[];
   sx?: SxProps;
 }
 
-export function Traffic({ chartSeries, labels, sx }: TrafficProps): React.JSX.Element {
-  const chartOptions = useChartOptions(labels);
-
+export function Tasks({ sx }: TrafficProps): React.JSX.Element {
   return (
     <Card sx={sx}>
-      <CardHeader title="Traffic source" />
+      <CardHeader
+        action={
+          <Box display="flex" alignItems="flex-end">
+            <Button btnType="link" sx={{ color: palette.primary[500], fontWeight: 700 }}>
+              Add Task
+            </Button>
+          </Box>
+        }
+        title={
+          <Typography variant="h6" component="div" fontWeight={700}>
+            Tasks
+          </Typography>
+        }
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      />
       <CardContent>
         <Stack spacing={2}>
-          <Chart height={300} options={chartOptions} series={chartSeries} type="donut" width="100%" />
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'center' }}>
-            {chartSeries.map((item, index) => {
-              const label = labels[index];
-              const Icon = iconMapping[label];
-
-              return (
-                <Stack key={label} spacing={1} sx={{ alignItems: 'center' }}>
-                  {Icon ? <Icon fontSize="var(--icon-fontSize-lg)" /> : null}
-                  <Typography variant="h6">{label}</Typography>
-                  <Typography color="text.secondary" variant="subtitle2">
-                    {item}%
-                  </Typography>
-                </Stack>
-              );
-            })}
-          </Stack>
+          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
+          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
+          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
+          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
+          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
         </Stack>
       </CardContent>
     </Card>

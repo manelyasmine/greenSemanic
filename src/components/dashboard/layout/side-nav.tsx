@@ -36,10 +36,9 @@ export function SideNav({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSide
           flexDirection: 'column',
           height: '100%',
           left: 0,
-          maxWidth: '100%',
+          maxWidth: '100vh',
           position: 'fixed',
           scrollbarWidth: 'none',
-          top: 0,
           width: 'var(--SideNav-width)',
           zIndex: 'var(--SideNav-zIndex)',
           '&::-webkit-scrollbar': { display: 'none' },
@@ -56,12 +55,31 @@ export function SideNav({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSide
           </Button>
         </Box>
         <Divider sx={{ borderColor: '#DBDBDB' }} />
-        <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
-          {renderNavItems({ pathname, items: navItems })}
+        <Box
+          sx={{
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '80vh',
+            }}
+          >
+            <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
+              {renderNavItems({ pathname, items: navItems })}
+            </Box>
+            <Stack sx={{ padding: '10px' }}>
+              <NavItem key="7" pathname={pathname} icon={SupportIcon} title="Support" />
+              <NavItem key="8" pathname={pathname} icon={SettingsIcon} title="Settings" />
+            </Stack>
+          </Box>
         </Box>
-
-        <NavItem key="7" pathname={pathname} icon={SupportIcon} title="Support" />
-        <NavItem key="8" pathname={pathname} icon={SettingsIcon} title="Settings" />
       </Box>
     </Box>
   );
