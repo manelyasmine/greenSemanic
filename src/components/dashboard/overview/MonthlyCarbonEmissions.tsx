@@ -1,8 +1,10 @@
 import React from 'react';
-import { CardContent } from '@mui/material';
+import { CardContent, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import Chart from 'react-apexcharts';
+
+import { palette } from '@/styles/theme/colors';
 
 export interface MonthlyCarbonEmissionsProps {
   sx?: any; // Define any custom styling props here
@@ -12,7 +14,17 @@ export function MonthlyCarbonEmissions({ sx }: MonthlyCarbonEmissionsProps): Rea
   const guestSeries = [
     {
       name: 'Carbon Emissions',
-      data: [50, 60, 70, 80, 19, 120, 15, 40, 55, 90, 100, 110, 26], // replace "," with a valid number (e.g., 55)
+      type: 'area',
+      data: [50, 60, 70, 80, 19, 100, 15, 40, 55, 90, 100, 70, 26],
+    },
+    {
+      name: 'Target Carbon Emissions',
+      type: 'line',
+      data: [60, 50, 60, 100, 40, 70, 120, 70, 90, 87, 34, 80, 60],
+      color: '#CCCCCC',
+      lineStyle: {
+        dashArray: 5,
+      },
     },
   ];
   const guestOption = {
@@ -23,11 +35,22 @@ export function MonthlyCarbonEmissions({ sx }: MonthlyCarbonEmissionsProps): Rea
         speed: 100,
       },
     },
+    dataLabels: {
+      enabled: false,
+    },
     xaxis: {
       categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     },
-    stroke: {
-      curve: 'smooth', // Choose "smooth", "straight", "stepline", or "monotoneCubic"
+    colors: [palette.primary[400], '#CCCCCC'],
+    legend: {
+      show: true,
+      labels: {
+        colors: '#333333',
+        useSeriesColors: false,
+      },
+      markers: {
+        fillColors: [palette.primary[400], '#CCCCCC'],
+      },
     },
   };
 
