@@ -28,10 +28,12 @@
     "@mui/icons-material": "^5.15.15",
     "@mui/joy": "^5.0.0-beta.36",
     "@mui/lab": "5.0.0-alpha.167",
-    "@mui/material": "5.15.12",
+    "@mui/material": "^5.15.12",
     "@mui/styles": "^5.15.15",
     "@mui/system": "5.15.12",
     "@mui/utils": "5.15.12",
+    "@mui/x-data-grid": "^7.4.0",
+    "@mui/x-data-grid-generator": "^7.4.0",
     "@mui/x-date-pickers": "6.19.6",
     "@phosphor-icons/react": "2.0.15",
     "apexcharts": "^3.46.0",
@@ -42,6 +44,8 @@
     "react-apexcharts": "^1.4.1",
     "react-dom": "18.2.0",
     "react-hook-form": "7.51.0",
+    "tubular-common": "^5.0.61",
+    "tubular-react": "^4.2.14",
     "zod": "3.22.4"
   },
   "devDependencies": {

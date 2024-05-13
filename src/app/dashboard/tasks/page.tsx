@@ -8,8 +8,7 @@ import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs';
 
 /* import BasicDatePicker from '@/components/commun/Date/Date'; */
-import CustomTabs from '@/components/commun/Tabs/taskTabs';
-import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
+import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
 import { MyTasksTable } from '@/components/dashboard/customer/myTasks-table';
 
@@ -152,7 +151,7 @@ export default function Page(): React.JSX.Element {
           </Button>
         </div>
       </Stack>
-      <CustomersFilters />
+    
       {/* <BasicDatePicker /> */}
       {selectedTab === 'All Tasks' && (
         <CustomersTable

@@ -16,5 +16,6 @@ export const MuiCard = {
         },
       };
     },
+    
   },
 } satisfies Components<Theme>['MuiCard'];

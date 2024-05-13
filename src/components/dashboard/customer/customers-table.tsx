@@ -21,6 +21,8 @@ import dayjs from 'dayjs';
 import { useSelection } from '@/hooks/use-selection';
 import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 
+import FilterColumns from '../../commun/Filters/FilterColumns';
+
 function noop(): void {
   // do nothing
 }
@@ -59,6 +61,8 @@ export function CustomersTable({
 
   return (
     <Card>
+      <FilterColumns />
+      <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
           <TableHead>
