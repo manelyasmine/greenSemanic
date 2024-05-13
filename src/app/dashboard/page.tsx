@@ -17,6 +17,9 @@ import { Reduction } from '@/components/dashboard/overview/Reduction';
 import { Tasks } from '@/components/dashboard/overview/Tasks';
 import { TotalProfit } from '@/components/dashboard/overview/total-profit';
 import { TotalEmissions } from '@/components/dashboard/overview/TotalEmissions';
+import { Footprints } from '@/components/dashboard/overview/Footprint';
+// import { Footprints } from '@phosphor-icons/react';
+
 
 // export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
@@ -122,6 +125,9 @@ export default function Page(): React.JSX.Element {
             ]}
             sx={{ height: '100%' }}
           />
+        </Grid>
+        <Grid lg={8} md={6} xs={12}>
+            <Footprints sx={{ height: '100%' }}/>
         </Grid>
       </Grid>
     </Box>
