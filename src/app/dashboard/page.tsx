@@ -11,6 +11,7 @@ import { config } from '@/config';
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import { CarbonEmissionsScope } from '@/components/dashboard/overview/CarbonEmissionsScope';
 import { CarbonPerMonth } from '@/components/dashboard/overview/CarbonPerMonth';
+import { Footprints } from '@/components/dashboard/overview/Footprint';
 import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
 import { MonthlyCarbonEmissions } from '@/components/dashboard/overview/MonthlyCarbonEmissions';
 import { Reduction } from '@/components/dashboard/overview/Reduction';
@@ -122,6 +123,9 @@ export default function Page(): React.JSX.Element {
             ]}
             sx={{ height: '100%' }}
           />
+        </Grid>
+        <Grid  lg={8} md={6} xs={12}>
+          <Footprints sx={{ height: '100%' }} />
         </Grid>
       </Grid>
     </Box>
