@@ -18,6 +18,7 @@ import { Reduction } from '@/components/dashboard/overview/Reduction';
 import { Tasks } from '@/components/dashboard/overview/Tasks';
 import { TotalProfit } from '@/components/dashboard/overview/total-profit';
 import { TotalEmissions } from '@/components/dashboard/overview/TotalEmissions';
+import { TotalCO2 } from '@/components/dashboard/overview/TotalCO2';
 
 // export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
@@ -126,6 +127,9 @@ export default function Page(): React.JSX.Element {
         </Grid>
         <Grid  lg={8} md={6} xs={12}>
           <Footprints sx={{ height: '100%' }} />
+        </Grid>
+        <Grid  lg={4} md={6} xs={12}>
+          <TotalCO2 sx={{  height: '100%' }} />
         </Grid>
       </Grid>
     </Box>

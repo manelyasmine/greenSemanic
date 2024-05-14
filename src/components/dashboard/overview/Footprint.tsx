@@ -20,15 +20,14 @@ export function Footprints({ sx }: FootprintsProps): React.JSX.Element {
   const maxValue = Math.max(...data.map((item) => item.value));
   const options = {
     chart: {
-      type: 'bar',
-      height: 350,
+      height: 200,
     },
     plotOptions: {
       bar: {
         distributed: true,
         horizontal: false,
         borderRadius: 6,
-        columnWidth: '36%',
+        columnWidth: 39,
       },
     },
     dataLabels: {
@@ -54,6 +53,7 @@ export function Footprints({ sx }: FootprintsProps): React.JSX.Element {
       show: false, // Hide legend
     },
     yaxis: {
+      tickAmount: 3,
       title: {
         text: '',
       },
@@ -79,13 +79,13 @@ export function Footprints({ sx }: FootprintsProps): React.JSX.Element {
   ];
 
   return (
-    <Card sx={sx}>
+    <Card sx={{ height: 200, ...sx }}>
       <CardHeader title="Footprints" />
-      <Typography variant="body2" sx={{marginX:3}} color="text.secondary">
-          Activities
-        </Typography>
+      <Typography variant="body2" sx={{ marginX: 3 }} color="text.secondary">
+        Activities
+      </Typography>
       <CardContent>
-        <Chart type="bar" series={series} options={options} height={350} />
+        <Chart type="bar" series={series} options={options} height={242} />
       </CardContent>
     </Card>
   );
