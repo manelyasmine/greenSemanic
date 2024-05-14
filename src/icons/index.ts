@@ -16,6 +16,9 @@ import { SettingsIcon } from './SettingsIcon';
 import { SupportIcon } from './SupportIcon';
 import { TargetIcon } from './TargetIcon';
 import { TasksIcon } from './TasksIcon';
+import ModifyIcon from './ModifyIcon';
+import DeleteIcon from './DeleteIcon';
+import AssignIcon from './AssignIcon';
 
 export {
   ChartIcon,
@@ -36,4 +39,7 @@ export {
   DotsHorizontal,
   CalanderIcon,
   FilterIcon,
+  ModifyIcon,
+  DeleteIcon,
+  AssignIcon,
 };

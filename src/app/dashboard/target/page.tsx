@@ -99,7 +99,9 @@ export default function Page(): React.JSX.Element {
         ))}
       </Grid>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Pagination count={3} size="small" />
+        <Stack spacing={2}>
+          <Pagination count={3} size="small" />
+        </Stack>
       </Box>
     </Stack>
   );

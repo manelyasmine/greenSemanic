@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CalanderIcon, FilterIcon } from '@/icons';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 
 import { palette } from '@/styles/theme/colors';
 import { MuiButton } from '@/styles/theme/components/button';
-import { boxFilterDropDown, Filter, outlinedInput } from '@/styles/theme/Filter';
+import { boxFilterDropDown, Filter, outlinedInput,filterCalander } from '@/styles/theme/Filter';
 
 import { Button } from '../Button';
 import { CustomersFilters } from './customers-filters';
@@ -48,10 +51,12 @@ const columns: Column[] = [
 
 const FilterColumns = () => {
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState(columns[0].field);
   const [operator, setOperator] = useState<Operator>('equals');
   const [filterValue, setFilterValue] = useState('');
   const [filteredData, setFilteredData] = useState(data);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
   const handleColumnChange = (event: React.ChangeEvent<HTMLSelectElement>) => setSelectedColumn(event.target.value);
   const handleOperatorChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
@@ -62,8 +67,27 @@ const FilterColumns = () => {
     setFilteredData(filterData(data.slice(), selectedColumn, operator, filterValue));
     setIsFilterDropdownOpen(false); // Close dropdown after applying filter
   };
+  const handleClickOutside = (event: MouseEvent<HTMLElement>) => {
+    if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+      setIsCalendarOpen(false);
+    }
+  };
+  useEffect(() => {
+    // Add event listener for outside clicks when calendar is open
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      // Remove event listener on cleanup
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isCalendarOpen]);
 
   const toggleFilterDropdown = () => setIsFilterDropdownOpen(!isFilterDropdownOpen);
+
+  const toggleCalendar = () => {
+    console.log('toggle calendar');
+    setIsCalendarOpen(!isCalendarOpen);
+  };
 
   return (
     <Card sx={Filter}>
@@ -77,14 +101,22 @@ const FilterColumns = () => {
         }
         sx={outlinedInput}
       />
-      <Box>
+      <Box ref={calendarRef}>
         <Button
           btnType="secondaryGray"
           sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}
           startIcon={<CalanderIcon />}
+          onClick={toggleCalendar}
         >
           Select Date
         </Button>
+        {isCalendarOpen && (
+          <Box sx={filterCalander}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateCalendar />
+            </LocalizationProvider>
+          </Box>
+        )}
         <Button
           btnType="secondaryGray"
           sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}

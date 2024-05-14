@@ -6,6 +6,7 @@ import { components } from './components/components';
 import { shadows } from './shadows';
 import type { Theme } from './types';
 import { typography } from './typography';
+ 
 
 declare module '@mui/material/styles/createPalette' {
   interface PaletteRange {
@@ -45,6 +46,7 @@ export function createTheme(): Theme {
     shadows,
     shape: { borderRadius: 8 },
     typography,
+    
   });
 
   return theme;
