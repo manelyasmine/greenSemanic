@@ -1,0 +1,29 @@
+import React from 'react';
+
+const DZIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="25"
+      viewBox="0 0 24 25"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink ="http://www.w3.org/1999/xlink"
+    >
+      <circle id="Ellipse 2" cx="12" cy="12.5" r="12" fill="url(#pattern0_231_75221)" />
+      <defs>
+        <pattern id="pattern0_231_75221" patternContentUnits="objectBoundingBox" width="1" height="1">
+          <use xlinkHref ="#image0_231_75221" transform="translate(-0.00746269) scale(0.0149254)" />
+        </pattern>
+        <image
+          id="image0_231_75221"
+          width="68"
+          height="67"
+          xlinkHref ="data:image/png;base64,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"
+        />
+      </defs>
+    </svg>
+  );
+};
+
+export default DZIcon;
