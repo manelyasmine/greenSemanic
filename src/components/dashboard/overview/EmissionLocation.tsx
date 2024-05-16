@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import DZIcon from '@/icons';
+ 
 import { Card, CardContent, CardHeader, Grid } from '@mui/material';
+import { DZIcon } from '@/icons';
 
 import Map from '@/components/commun/Map/Map';
 import ListItemProgress from '@/components/special/ListItem/ListItemProgress';

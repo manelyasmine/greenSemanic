@@ -6,13 +6,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs';
-<<<<<<< Updated upstream
-
-/* import BasicDatePicker from '@/components/commun/Date/Date'; */
-import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
-import CustomTabs from '@/components/commun/Tabs/taskTabs';
-import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
-=======
+ 
 import BottomDrawer from './BottomDrawer'; 
 import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
  
@@ -163,16 +157,12 @@ const handleClose=()=>{setIsNewTask(false)}
          
       </Stack>
     
-<<<<<<< Updated upstream
-      <CustomersFilters />
-      {/* <BasicDatePicker /> */}
-=======
+ 
            
       
               <BottomDrawer open={isNewTask} onClose={handleClose}/>
             
-
->>>>>>> Stashed changes
+ 
       {selectedTab === 'All Tasks' && (
         <CustomersTable
           count={paginatedCustomers.length}

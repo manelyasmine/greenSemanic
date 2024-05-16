@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import DZIcon from '@/icons';
+import { DZIcon} from '@/icons';
+
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 
