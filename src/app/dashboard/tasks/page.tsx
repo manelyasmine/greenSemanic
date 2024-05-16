@@ -15,7 +15,7 @@ import { CustomersFilters } from '@/components/dashboard/customer/customers-filt
 =======
 import BottomDrawer from './BottomDrawer'; 
 import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
->>>>>>> Stashed changes
+ 
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
 import { MyTasksTable } from '@/components/dashboard/customer/myTasks-table';
  
