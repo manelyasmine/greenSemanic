@@ -157,10 +157,7 @@ const handleClose=()=>{setIsNewTask(false)}
          
       </Stack>
     
- 
-           
-      
-              <BottomDrawer open={isNewTask} onClose={handleClose}/>
+  <BottomDrawer open={isNewTask} onClose={handleClose}/>
             
  
       {selectedTab === 'All Tasks' && (
