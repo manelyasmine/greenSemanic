@@ -19,6 +19,7 @@ import { TasksIcon } from './TasksIcon';
 import ModifyIcon from './ModifyIcon';
 import DeleteIcon from './DeleteIcon';
 import AssignIcon from './AssignIcon';
+import DZIcon from './DZIcon';
 
 export {
   ChartIcon,
@@ -42,4 +43,5 @@ export {
   ModifyIcon,
   DeleteIcon,
   AssignIcon,
+  DZIcon,
 };

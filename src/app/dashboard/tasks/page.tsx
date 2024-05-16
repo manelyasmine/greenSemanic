@@ -1,19 +1,24 @@
 'use client';
 
-import * as React from 'react';
+import React ,{useState} from 'react';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs';
+<<<<<<< Updated upstream
 
 /* import BasicDatePicker from '@/components/commun/Date/Date'; */
 import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
+import CustomTabs from '@/components/commun/Tabs/taskTabs';
+import { CustomersFilters } from '@/components/dashboard/customer/customers-filters';
+=======
+import BottomDrawer from './BottomDrawer'; 
+import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
+>>>>>>> Stashed changes
 import { CustomersTable } from '@/components/dashboard/customer/customers-table';
 import { MyTasksTable } from '@/components/dashboard/customer/myTasks-table';
-
-/* export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
- */
+ 
 const customers = [
   {
     id: 'USR-010',
@@ -116,9 +121,13 @@ export default function Page(): React.JSX.Element {
   };
   const page = 0;
   const rowsPerPage = 5;
-
+  const [isNewTask,setIsNewTask]=useState(false);
   const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
-
+const handleNewTask=()=>{ 
+  setIsNewTask(!isNewTask);
+  console.log("is new task ?",isNewTask)
+}
+const handleClose=()=>{setIsNewTask(false)}
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -146,13 +155,24 @@ export default function Page(): React.JSX.Element {
               borderRadius: '0.375rem',
               background: 'var(--Green-green-500, #16B364)',
             }}
+            onClick={handleNewTask}
           >
             New Task
           </Button>
         </div>
+         
       </Stack>
     
+<<<<<<< Updated upstream
+      <CustomersFilters />
       {/* <BasicDatePicker /> */}
+=======
+           
+      
+              <BottomDrawer open={isNewTask} onClose={handleClose}/>
+            
+
+>>>>>>> Stashed changes
       {selectedTab === 'All Tasks' && (
         <CustomersTable
           count={paginatedCustomers.length}

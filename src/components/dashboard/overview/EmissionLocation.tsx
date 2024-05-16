@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import DZIcon from '@/icons/DzIcon';
+import DZIcon from '@/icons';
 import { Card, CardContent, CardHeader, Grid } from '@mui/material';
 
 import Map from '@/components/commun/Map/Map';
