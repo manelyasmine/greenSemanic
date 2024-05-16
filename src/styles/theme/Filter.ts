@@ -25,3 +25,12 @@ export const boxFilterDropDown = {
   boxShadow: 1,
   borderRadius: '4px',
 };
+export const filterCalander = {
+  position: 'absolute',
+  bottom: '35%',
+  right: '16%',
+  minWidth: '150px',
+  backgroundColor: palette.common.white,
+  boxShadow: 1,
+  borderRadius: '4px',
+};

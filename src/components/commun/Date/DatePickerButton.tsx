@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { CalanderIcon, FilterIcon } from '@/icons'; // Assuming CalanderIcon is an icon component
 
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { useDemoData } from '@mui/x-data-grid-generator';
+
 import { MuiButton } from '@/styles/theme/components/button';
 
 import { Button } from '../Button';
@@ -22,25 +25,7 @@ const DatePickerButton: React.FC<DatePickerButtonProps> = () => {
     setIsDatePickerOpen(!isDatePickerOpen); // Toggle date picker visibility
   };
 
-  return (
-    <div>
-      <Button
-        btnType="secondaryGray"
-        sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}
-        startIcon={<CalanderIcon />}
-        onClick={handleButtonClick}
-      >
-        Select Date
-      </Button>
-      <Button
-        btnType="secondaryGray"
-        sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}
-        startIcon={<FilterIcon />}
-      >
-        Filters
-      </Button>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default DatePickerButton;

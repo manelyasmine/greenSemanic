@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import React,{useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,14 +10,15 @@ import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
+import TableHead from '@mui/material/TableHead'; 
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
-
+import FilterColumns from '../../commun/Filters/FilterColumns';
+ 
+import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 import { useSelection } from '@/hooks/use-selection';
-
+import { Pagination } from '@mui/material';
 function noop(): void {
   // do nothing
 }
@@ -42,7 +43,7 @@ interface CustomersTableProps {
 export function MyTasksTable({
   count = 0,
   rows = [],
-  page = 0,
+   
   rowsPerPage = 0,
 }: CustomersTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
@@ -53,9 +54,16 @@ export function MyTasksTable({
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
+  const [page, setPage] = useState(1); // Start on page 1
+  const [totalPages, setTotalPages] = useState(10); // Replace with actual total pages
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
   return (
     <Card>
+      <FilterColumns />
+      <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
           <TableHead>
@@ -110,6 +118,7 @@ export function MyTasksTable({
                   </TableCell>
                   <TableCell>{row.phone}</TableCell>
                   <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <DropdownTableCell />
                 </TableRow>
               );
             })}
@@ -117,14 +126,16 @@ export function MyTasksTable({
         </Table>
       </Box>
       <Divider />
-      <TablePagination
-        component="div"
-        count={count}
-        onPageChange={noop}
-        onRowsPerPageChange={noop}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
+      <Pagination
+        count={count} // Total number of pages
+        page={4} // Current page
+        onChange={handleChangePage}  
+        color="primary" // Set color
+        size="medium"   
+        showFirstButton  
+        showLastButton 
+        shape="rounded"
+         
       />
     </Card>
   );

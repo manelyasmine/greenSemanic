@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { DashboardIcon, DotsHorizontal } from '@/icons';
+import { DashboardIcon, DotsHorizontal,AssignIcon,DeleteIcon,ModifyIcon } from '@/icons';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import DropDownStyle from '@/styles/theme/DropDown';
+
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 
 interface DropdownProps {
   // Function to handle modification triggered from the dropdown
@@ -14,7 +20,7 @@ interface DropdownProps {
 
 const Dropdown: React.FC<DropdownProps> = ({ onModify, onDelete, onAssign }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
+    const [isDeleteOpen,setIsDeleteOpen]=useState(false);
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,7 +36,7 @@ const Dropdown: React.FC<DropdownProps> = ({ onModify, onDelete, onAssign }) => 
 
   const handleDelete = () => {
     handleClose();
-    onDelete();
+    setIsDeleteOpen(!isDeleteOpen);
   };
 
   const handleAssign = () => {
@@ -43,27 +49,38 @@ const Dropdown: React.FC<DropdownProps> = ({ onModify, onDelete, onAssign }) => 
       <IconButton onClick={handleOpen}>
         <DotsHorizontal fontSize="small" />
       </IconButton>
+      
       <Menu
+         
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
         MenuListProps={{ 'aria-labelledby': 'dropdown-button' }}
       >
+        <Card sx={DropDownStyle}>
         <MenuItem onClick={handleModify}>
-          <ListItemIcon>{/* <EditIcon size={16} /> */}</ListItemIcon>
+          <ListItemIcon> <ModifyIcon  /> </ListItemIcon>
           <ListItemText primary="Modify" />
         </MenuItem>
         <MenuItem onClick={handleDelete}>
-          <ListItemIcon>{/* <DeleteIcon size={16} /> */}</ListItemIcon>
+          <ListItemIcon> <DeleteIcon   /> </ListItemIcon>
           <ListItemText primary="Delete" />
+          
         </MenuItem>
-        {onAssign && ( // Render assign option only if onAssign function is provided
-          <MenuItem onClick={handleAssign}>
-            <ListItemIcon></ListItemIcon>
+         <MenuItem onClick={handleAssign}>
+            <ListItemIcon>  <AssignIcon   /> </ListItemIcon>
             <ListItemText primary="Assign" />
           </MenuItem>
-        )}
+      </Card>
       </Menu>
+      {isDeleteOpen && (
+          <DeleteConfirmation
+          open={isDeleteOpen}
+          setOpen={setIsDeleteOpen}
+          />
+      )}
+      
+     
     </div>
   );
 };

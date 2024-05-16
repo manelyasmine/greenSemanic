@@ -12,7 +12,7 @@ import { MuiTab } from './tab';
 import { MuiTableBody } from './table-body';
 import { MuiTableCell } from './table-cell';
 import { MuiTableHead } from './table-head';
-
+ 
 export const components = {
   MuiAvatar,
   MuiButton,
@@ -24,5 +24,5 @@ export const components = {
   MuiTab,
   MuiTableBody,
   MuiTableCell,
-  MuiTableHead,
+  MuiTableHead, 
 } satisfies Components<Theme>;
