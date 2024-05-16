@@ -6,12 +6,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs'; 
- 
-import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
- 
-import BottomDrawer from './BottomDrawer';  
- 
-import dayjs from 'dayjs';
+  
  
 import BottomDrawer from './BottomDrawer'; 
 import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
@@ -168,8 +163,7 @@ const handleClose=()=>{setIsNewTask(false)}
               <BottomDrawer open={isNewTask} onClose={handleClose}/>
             
  
-    
-  <BottomDrawer open={isNewTask} onClose={handleClose}/>
+     
             
  
       {selectedTab === 'All Tasks' && (
