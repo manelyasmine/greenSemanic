@@ -37,6 +37,7 @@
     "@mui/x-date-pickers": "6.19.6",
     "@phosphor-icons/react": "2.0.15",
     "apexcharts": "^3.46.0",
+    "axios": "^1.6.8",
     "chart.js": "^4.4.2",
     "chartjs-chart-geo": "^4.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
