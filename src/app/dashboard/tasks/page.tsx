@@ -140,7 +140,7 @@ const handleClose=()=>{setIsNewTask(false)}
             sustainability objectives
           </Typography>
 
-          <CustomTabs value={selectedTab} handleChange={handleTabChange} />
+          <CustomTabs value={selectedTab} screen="tasks" handleChange={handleTabChange} />
         </Stack>
         <div>
           <Button
