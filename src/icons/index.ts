@@ -20,7 +20,7 @@ import ModifyIcon from './ModifyIcon';
 import DeleteIcon from './DeleteIcon';
 import AssignIcon from './AssignIcon';
 import DZIcon from './DZIcon';
-
+import CloseIcon from './CloseIcon'
 export {
   ChartIcon,
   BackForwardIcon,
@@ -44,4 +44,5 @@ export {
   DeleteIcon,
   AssignIcon,
   DZIcon,
+  CloseIcon
 };
