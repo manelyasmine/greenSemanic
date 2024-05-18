@@ -15,12 +15,21 @@ interface CustomTabsProps {
   handleChange: (event: React.ChangeEvent<any>, value: string) => void;
 }
 
-const CustomTabs: FC<CustomTabsProps> = ({ value, handleChange }) => {
-  const tabOptions: TabOption[] = [
+const CustomTabs: FC<CustomTabsProps> = ({ value, handleChange,screen }) => {
+/*   const tabOptions: TabOption[] = [
     { label: 'All Tasks', value: 'All Tasks' },
     { label: 'my Tasks', value: 'my Tasks' },
-  ];
-
+  ]; */
+  const tabOptions = screen === 'target'
+  ? [
+    { label: 'Targets', value: 'Targets' },
+    { label: 'Actions', value: 'Actions' },
+    ]
+  : [
+    
+    { label: 'All Tasks', value: 'All Tasks' },
+    { label: 'My Targets', value: 'My Targets' }, // Different label for "target" screen
+    ];
   const theme = useTheme();
 
   const styles = {

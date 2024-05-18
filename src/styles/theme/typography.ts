@@ -16,23 +16,23 @@ export const typography = {
     fontStyle: 'normal',
     fontWeight: 600,
     lineHeight: 1.5,
-letterSpacing: '-0.2px',
+letterSpacing: '-0.0125rem',
   },
   overline: {
     fontSize: '0.75rem',
     fontWeight: 500,
-    letterSpacing: '0.5px',
+    letterSpacing: '0.03125rem',
     lineHeight: 2.5,
     textTransform: 'uppercase',
   },
   help:{
   color: 'var(--Green-green-500, #16B364)',
   fontFamily: 'Roboto',
-  fontSize: '14px',
+  fontSize: '0.875rem',
   fontStyle: 'normal',
   fontWeight: '500',
-  lineHeight: '20px', /* 142.857% */
-  letterSpacing: '0.1px',
+  lineHeight: '1.25rem', /* 142.857% */
+  letterSpacing: '0.00625rem',
   },
 
   h1: { fontSize: '3.5rem', fontWeight: 500, lineHeight: 1.2 },
