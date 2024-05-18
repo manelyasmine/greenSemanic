@@ -16,7 +16,8 @@ import { paths } from '@/paths';
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
 import { useUser } from '@/hooks/use-user';
-
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from '@/lib/store/reducer/userSlice';
 export interface UserPopoverProps {
   anchorEl: Element | null;
   onClose: () => void;
@@ -25,9 +26,10 @@ export interface UserPopoverProps {
 
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
   const { checkSession } = useUser();
-
+  const dispatch = useDispatch();
+  const { user, isLoading, error } = useSelector((state : any) => state.user);
+  // const { user, error, isLoading } = useUser();
   const router = useRouter();
-
   const handleSignOut = React.useCallback(async (): Promise<void> => {
     try {
       const { error } = await authClient.signOut();
@@ -39,7 +41,7 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
 
       // Refresh the auth state
       await checkSession?.();
-
+      dispatch(setUser(null))
       // UserProvider, for this case, will not refresh the router and we need to do it manually
       router.refresh();
       // After refresh, AuthGuard will handle the redirect
@@ -57,9 +59,9 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       slotProps={{ paper: { sx: { width: '240px' } } }}
     >
       <Box sx={{ p: '16px 20px ' }}>
-        <Typography variant="subtitle1">Afaf kelai</Typography>
+        <Typography variant="subtitle1">{user?.username}</Typography>
         <Typography color="text.secondary" variant="body2">
-          afafkelly@gmail.com
+          {user?.email}
         </Typography>
       </Box>
       <Divider />

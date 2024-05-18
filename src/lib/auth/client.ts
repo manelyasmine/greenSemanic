@@ -1,6 +1,10 @@
 'use client';
 
+import axios from 'axios';
+
 import type { User } from '@/types/user';
+
+import api from '../api';
 
 function generateToken(): string {
   const arr = new Uint8Array(12);
@@ -8,13 +12,13 @@ function generateToken(): string {
   return Array.from(arr, (v) => v.toString(16).padStart(2, '0')).join('');
 }
 
-const user = {
-  id: 'USR-000',
-  avatar: '/assets/avatar.png',
-  firstName: 'Afaf',
-  lastName: 'KELAI',
-  email: 'afafkelly@gmail.com',
-} satisfies User;
+// const user = {
+//   id: 'USR-000',
+//   avatar: '/assets/avatar.png',
+//   firstName: 'Afaf',
+//   lastName: 'KELAI',
+//   email: 'afafkelly@gmail.com',
+// } satisfies User;
 
 export interface SignUpParams {
   firstName: string;
@@ -37,11 +41,27 @@ export interface ResetPasswordParams {
 }
 
 class AuthClient {
-  async signUp(_: SignUpParams): Promise<{ error?: string }> {
+  private user : User ={};
+  private client = axios.create({
+    baseURL: `${api}/api/users`,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-auth-secret': process.env.NEXTAUTH_SECRET || '',
+    },
+  });
+  async signUp(data: SignUpParams): Promise<{ error?: string }> {
     // Make API request
+    try {
+      const response = await this.client.post('/', { username: data.firstName + data.lastName, ...data });
+      this.user = {id: response.data._id ,...response.data}
+      console.log('here sign up ' + response);
+    } catch (e) {
+      return { error: 'backend error' };
+    }
 
     // We do not handle the API, so we'll just generate a token and store it in localStorage.
     const token = generateToken();
+
     localStorage.setItem('custom-auth-token', token);
 
     return {};
@@ -52,14 +72,22 @@ class AuthClient {
   }
 
   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+    try {
+      const response = await this.client.post('/auth', params);
+
+      console.log('here sign In ' +JSON.stringify(response) );
+      this.user = {id: response.data._id ,...response.data}
+    } catch (e) {
+      return { error: 'backend error' };
+    }
     const { email, password } = params;
 
     // Make API request
 
     // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
-    if (email !== 'afafkelly@gmail.com' || password !== 'Secret1') {
-      return { error: 'Invalid credentials' };
-    }
+    // if (email !== 'afafkelly@gmail.com' || password !== 'Secret1') {
+    //   return { error: 'Invalid credentials' };
+    // }
 
     const token = generateToken();
     localStorage.setItem('custom-auth-token', token);
@@ -85,7 +113,7 @@ class AuthClient {
       return { data: null };
     }
 
-    return { data: user };
+    return { data: this.user };
   }
 
   async signOut(): Promise<{ error?: string }> {
