@@ -9,7 +9,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      console.log('redux ALERT '+JSON.stringify(action.payload))
       state.user = action.payload.data;
     },
     clearUser(state) {
