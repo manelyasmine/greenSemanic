@@ -4,7 +4,10 @@ export const typography = {
   fontFamily: ' Mulish',
   body1: { fontSize: '1rem', fontStyle: 'normal', fontWeight: 500, lineHeight: 1.5 },
   body2: { fontSize: '0.875rem', fontWeight: 400, lineHeight: 1.57 },
-  body3:{ fontSize: '0.875rem',fontStyle: 'normal',fontWeight: 500,lineHeight: 1.5},
+  body3: { fontSize: '0.875rem',fontStyle: 'normal',fontWeight: 500,lineHeight: 1.5},
+  bodyB2: { fontSize: '1rem',fontStyle: 'normal',fontWeight: 700,lineHeight: 1.5},
+  
+
   button: { fontWeight: 500 },
   caption: { fontSize: '0.75rem', fontWeight: 400, lineHeight: 1.66 },
   subtitle1: { fontSize: '1rem', fontWeight: 500, lineHeight: 1.57 },
@@ -41,4 +44,7 @@ letterSpacing: '-0.0125rem',
   h4: { fontSize: '1.71rem', fontWeight: 700, lineHeight: 1.2,fontStyle: 'normal' },
   h5: { fontSize: '1.25rem', fontWeight: 700, lineHeight: 1.2,fontStyle: 'normal' },
   h6: { fontSize: '1.125rem', fontWeight: 500, lineHeight: 1.2 },
+  h7: {fontSize:'0.875rem',fontStyle: 'normal',fontWeight: 600,lineHeight: 1.5,letterSpacing:'-0.0125rem'}
+
+   
 } satisfies TypographyOptions;

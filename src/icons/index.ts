@@ -21,6 +21,8 @@ import DeleteIcon from './DeleteIcon';
 import AssignIcon from './AssignIcon';
 import DZIcon from './DZIcon';
 import CloseIcon from './CloseIcon'
+import GreneIcon from './GreneIcon';
+import CameraIcon from "./CameraIcon";
 export {
   ChartIcon,
   BackForwardIcon,
@@ -44,5 +46,7 @@ export {
   DeleteIcon,
   AssignIcon,
   DZIcon,
-  CloseIcon
+  CloseIcon,
+  GreneIcon,
+  CameraIcon
 };
