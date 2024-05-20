@@ -1,15 +1,25 @@
 "use client";
-import * as React from 'react'; 
-import Typography from '@mui/material/Typography'; 
+import * as React from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import { MuiButton } from '@/styles/theme/components/button';
-import Stack from '@mui/material/Stack'; 
+import { TextField } from '@mui/material';
+import { palette } from '@/styles/theme/colors';
+import Stack from '@mui/material/Stack';
+import {GreneIcon,CameraIcon} from '@/icons';
 import Divider from '@mui/material/Divider'; 
-import {Grid,Button} from '@mui/material';
+import {
+  
+  Grid,Button
+  
+} from '@mui/material';
 import {Input} from '../../commun/Inputs/Input';
 import { InputSelect } from '../../commun/Inputs/InputSelect';
 import {CompanyLogo} from '../../commun/Inputs/CompanyLogo'; 
 
-interface CompanyProfileProps {
+interface EmissionFactorProps {
   children?: React.ReactNode;
   index: number;
   value: number;
@@ -19,20 +29,24 @@ interface CompanyProfileProps {
 
  
 
-export   function CompanyProfile() {
+export   function EmissionFactor() {
   const [value, setValue] = React.useState(0);
  
 
   return (
     <Stack spacing={3}   >
      <Grid container alignItems="center" >
-      <Grid item xs={6}>
-        <Typography variant="h5"   sx={{ color: 'var(--Gray-900, #101828)' }}>
-          Company profile
-        </Typography>
-      </Grid> 
-      <Grid item xs={6} container justifyContent="flex-end"
+  <Grid item xs={6}>
+  <Typography variant="h5"   sx={{ color: 'var(--Gray-900, #101828)' }}>
+      Company profile
+    </Typography>
+
+    
+  
+  </Grid>
+  <Grid item xs={6} container justifyContent="flex-end"
          sx={{display: 'flex',
+         
          alignItems: 'flex-start',
          gap: 'var(--12, 12px)',
          }}
