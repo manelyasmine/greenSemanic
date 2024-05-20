@@ -45,6 +45,7 @@ const StyledButton = styled(MuiButton, {
       color = palette.gray[600];
       borderRadius = '8px';
       boxShadow = '0px 1px 2px 0px rgba(16, 24, 40, 0.05)';
+      border= '1px solid var(--Grey-grey-200, #B3B8C2)';
 
       break;
     case 'dashBorder':
