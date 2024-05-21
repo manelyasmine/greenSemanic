@@ -14,6 +14,7 @@ import {
   
 } from '@mui/material';
 import { CompanyProfile } from './CompanyProfile';
+import { EmissionFactor } from './EmissionFactor/EmissionFactor';
  
 
 interface TabPanelProps {
@@ -141,7 +142,7 @@ export   function TabsWrappedLabel() {
       Notifications
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
-      Emissions Factors
+      <EmissionFactor/>
       </CustomTabPanel>
     </Box>
     </Stack>

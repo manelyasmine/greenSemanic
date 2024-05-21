@@ -18,17 +18,21 @@ export const outlinedInput = {
 
 export const boxFilterDropDown = {
   position: 'absolute',
-  bottom: '50%',
-  right: 16,
+  /* bottom: '50%',
+  right: 16, */
+  right:'1rem',
+  top:'-1rem',
   minWidth: '150px',
   backgroundColor: palette.common.white,
   boxShadow: 1,
   borderRadius: '4px',
+  borderColor:"gray"
 };
 export const filterCalander = {
-  position: 'absolute',
+/*   position: 'absolute',
   bottom: '35%',
-  right: '16%',
+  right: '16%', */
+  position:'fixed',
   minWidth: '150px',
   backgroundColor: palette.common.white,
   boxShadow: 1,
