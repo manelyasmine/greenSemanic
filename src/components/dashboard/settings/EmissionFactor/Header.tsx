@@ -1,22 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CalanderIcon, FilterIcon } from '@/icons';
+import {   FilterIcon } from '@/icons';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
-import Stack from '@mui/material/Stack';
-import { palette } from '@/styles/theme/colors';
-import { MuiButton } from '@/styles/theme/components/button';
-import { boxFilterDropDown, Filter, outlinedInput,filterCalander } from '@/styles/theme/Filter';
 
-import { Button } from '../Button';
-import { CustomersFilters } from './customers-filters';
-import FilterData from './FilterData';
-import Filters from './Filters';
+import { MuiButton } from '@/styles/theme/components/button';
+import { boxFilterDropDown, Filter, outlinedInput } from '@/styles/theme/Filter';
+
+import { Button } from '@/components/commun/Button'; 
+import Filters from '@/components/commun/Filters/Filters';
 
 interface DataItem {
   id: number;
@@ -42,40 +36,15 @@ const data: DataItem[] = [
 ];
 
 const columns: Column[] = [
-  { field: 'Tasks', headerName: 'Tasks', width: 150, filterable: true, type: 'string' },
-  { field: 'Due Date', headerName: 'Due Date', width: 110, filterable: true, type: 'Date' },
-  { field: 'Assigned Users', headerName: 'Assigned Users', width: 160, filterable: true, type: 'string' },
+  { field: 'Name', headerName: 'Name', width: 150, filterable: true, type: 'string' },
+  { field: 'Category', headerName: 'Category', width: 110, filterable: true, type: 'string' },
+  { field: 'Unit', headerName: 'Unit', width: 160, filterable: true, type: 'string' },
+  { field: 'Year', headerName: 'Year', width: 160, filterable: true, type: 'number' },
 
-  { field: 'Target Name', headerName: 'Target Name', width: 150, filterable: true, type: 'string' },
+  { field: 'Source', headerName: 'Source', width: 150, filterable: true, type: 'string' },
 ];
-const FilterBox = ({ children, onClose }) => {
-  const ref = useRef();
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
-  return (
-    <Box
-      ref={ref}
-      sx={{ border: '1px solid green', borderRadius: '8px', backgroundColor: 'white', padding: '8px' }}
-    >
-      {children}
-    </Box>
-  );
-};
-
-
-const FilterColumns = () => {
+const HeaderSearchFilter = () => {
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState(columns[0].field);
@@ -114,12 +83,9 @@ const FilterColumns = () => {
     console.log('toggle calendar');
     setIsCalendarOpen(!isCalendarOpen);
   };
-  const closeFilterDropdown = () => {
-    setIsFilterDropdownOpen(false);
-  };
+
   return (
-    <Box sx={{ backgroundColor: palette.common.white, position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px', borderRadius: '12px' }}>
-    <Box sx={{ display: "flex", alignItems: 'flex-start', justifyContent: 'space-between', flexDirection: "row" }}>
+    <Card sx={Filter}>
       <OutlinedInput
         defaultValue=""
         placeholder="Search for anything..."
@@ -130,27 +96,8 @@ const FilterColumns = () => {
         }
         sx={outlinedInput}
       />
-      <Box ref={calendarRef} sx={{  display: 'flex',
-  padding: 'var(--12, 12px) 16px',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  alignSelf: 'stretch',
-  gap: '8px',}}>
-        <Button
-          btnType="secondaryGray"
-          sx={{ ...MuiButton.styleOverrides.sizeSmall,  }}
-          startIcon={<CalanderIcon />}
-          onClick={toggleCalendar}
-        >
-          Select Date
-        </Button>
-        {isCalendarOpen && (
-          <Box sx={filterCalander}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar />
-            </LocalizationProvider>
-          </Box>
-        )}
+      <Box ref={calendarRef}>
+      
         <Button
           btnType="secondaryGray"
           sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}
@@ -160,12 +107,9 @@ const FilterColumns = () => {
           Filters
         </Button>
       </Box>
-    </Box>
-  
-    {isFilterDropdownOpen && (
-      <Box sx={{ position: 'absolute', top: '40px', right: '16px', zIndex: 1000 }}>
-        <Box sx={{ border: '1px solid green', borderRadius: '8px', backgroundColor: 'white', padding: '8px' }}>
-        <FilterBox onClose={closeFilterDropdown}>
+
+      {isFilterDropdownOpen && (
+        <Box sx={boxFilterDropDown}>
           <Filters
             columns={columns}
             selectedColumn={selectedColumn}
@@ -177,16 +121,10 @@ const FilterColumns = () => {
             applyFilter={applyFilter}
             isOpen={isFilterDropdownOpen} // Pass the isOpen state
           />
-          </FilterBox>
         </Box>
-      </Box>
-    )}
-  </Box>
-  
-  
-  
-  
+      )}
+    </Card>
   );
 };
 
-export default FilterColumns;
+export default HeaderSearchFilter;

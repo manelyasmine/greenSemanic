@@ -24,7 +24,7 @@ export   function CompanyProfile() {
  
 
   return (
-    <Stack spacing={3}   >
+    <Stack spacing={6}   >
      <Grid container alignItems="center" >
       <Grid item xs={6}>
         <Typography variant="h5"   sx={{ color: 'var(--Gray-900, #101828)' }}>

@@ -6,8 +6,8 @@ export const typography = {
   body2: { fontSize: '0.875rem', fontWeight: 400, lineHeight: 1.57 },
   body3: { fontSize: '0.875rem',fontStyle: 'normal',fontWeight: 500,lineHeight: 1.5},
   bodyB2: { fontSize: '1rem',fontStyle: 'normal',fontWeight: 700,lineHeight: 1.5},
-  
-
+  bodyB3:{ fontFamily: 'Mulish',fontSize: '0.875rem',fontStyle: 'normal',fontWeight: 700,  lineHeight: '1.3125rem',},
+  bodyP3:{fontSize: '0.875rem', fontStyle: 'normal',fontWeight: 500,lineHeight: '1.3125rem', },
   button: { fontWeight: 500 },
   caption: { fontSize: '0.75rem', fontWeight: 400, lineHeight: 1.66 },
   subtitle1: { fontSize: '1rem', fontWeight: 500, lineHeight: 1.57 },

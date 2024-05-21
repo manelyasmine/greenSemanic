@@ -1,12 +1,10 @@
 'use client';
 
-import React,{useState} from 'react';
-import Avatar from '@mui/material/Avatar';
+import React,{useState} from 'react'; 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider'; 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,8 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useSelection } from '@/hooks/use-selection'; 
-import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
-import FilterColumns from '../../commun/Filters/FilterColumns';
+import Header from './Header';
 import { Pagination } from '@mui/material';
 
 function noop(): void {
@@ -40,7 +37,7 @@ interface CustomersTableProps {
   rowsPerPage?: number;
 }
 
-export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: CustomersTableProps): React.JSX.Element {
+export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }: CustomersTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((customer) => customer.id);
   }, [rows]);
@@ -59,7 +56,7 @@ export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: Cust
   
   return (
     <Card>
-      <FilterColumns />
+       <Header/>
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
@@ -78,13 +75,12 @@ export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: Cust
                   }}
                 />
               </TableCell>
-              <TableCell>Tasks</TableCell>
-              <TableCell>Due Date</TableCell>
-              <TableCell>Assigned Users</TableCell>
-              <TableCell>Progress</TableCell>
-              <TableCell>Target Name</TableCell>
-              <TableCell>Base To Target Year </TableCell>
-              <TableCell></TableCell>
+              <TableCell>Name</TableCell> 
+              <TableCell>Category</TableCell>
+              <TableCell>Unit</TableCell>
+              <TableCell>Source</TableCell>
+              <TableCell>  Year </TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -105,27 +101,18 @@ export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: Cust
                       }}
                     />
                   </TableCell>
-                  <TableCell>
-                    <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                      <Avatar src={row.avatar} />
-                      <Typography variant="bodyB3">{row.name}</Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                  <Typography variant="bodyP3">{row.email}</Typography>
-                    </TableCell>
-                  <TableCell>
-                    {row.address.city}, {row.address.state}, {row.address.country}
-                  </TableCell>
-                  <TableCell>{row.phone}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
-                  <TableCell>{row.target}</TableCell>
-                  <Box  style={{ display: 'flex',
-                   justifyContent: 'center',alignItems:"center",marginTop:"2rem" }}>
-                  <DropdownTableCell />
+                  <TableCell>{row.name} </TableCell>
+                        
+                       
+                    
                   
-                  </Box>
-                 
+                  <TableCell>{row.category}</TableCell>
+                  <TableCell>{row.unit}</TableCell>
+                    
+                  
+                  <TableCell>{row.source}</TableCell>
+                  <TableCell>{dayjs(row.year).format('YYYY')}</TableCell>
+                  
                 </TableRow>
               );
             })}
