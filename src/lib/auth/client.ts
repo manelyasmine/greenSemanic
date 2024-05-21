@@ -40,8 +40,14 @@ export interface ResetPasswordParams {
   email: string;
 }
 
+export interface UpdateParams {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  email?: string;
+}
 class AuthClient {
-  private user : User ={};
+  private user: User = {};
   private client = axios.create({
     baseURL: `${api}/api/users`,
     headers: {
@@ -53,7 +59,7 @@ class AuthClient {
     // Make API request
     try {
       const response = await this.client.post('/', { username: data.firstName + data.lastName, ...data });
-      this.user = {id: response.data._id ,...response.data}
+      this.user = { id: response.data._id, ...response.data };
       console.log('here sign up ' + response);
     } catch (e) {
       return { error: 'backend error' };
@@ -73,10 +79,10 @@ class AuthClient {
 
   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
     try {
-      const response = await this.client.post('/auth', params);
+      const response = await this.client.post('/auth', params, { withCredentials: true });
 
-      console.log('here sign In ' +JSON.stringify(response) );
-      this.user = {id: response.data._id ,...response.data}
+      console.log('here sign In ' + JSON.stringify(response));
+      this.user = { id: response.data._id, ...response.data };
     } catch (e) {
       return { error: 'backend error' };
     }
@@ -92,6 +98,17 @@ class AuthClient {
     const token = generateToken();
     localStorage.setItem('custom-auth-token', token);
 
+    return {};
+  }
+  async updateUserInfo(params: UpdateParams) {
+    try {
+      const response = await this.client.put('/profile', params, { withCredentials: true });
+
+      console.log('here profile ' + JSON.stringify(response));
+      this.user = { id: response.data._id, ...response.data };
+    } catch (e) {
+      return { error: 'backend error' };
+    }
     return {};
   }
 
@@ -118,6 +135,14 @@ class AuthClient {
 
   async signOut(): Promise<{ error?: string }> {
     localStorage.removeItem('custom-auth-token');
+    try {
+      const response = await this.client.post('/logout', { withCredentials: true });
+
+      console.log('here logout out' + JSON.stringify(response));
+      this.user = {};
+    } catch (e) {
+      return { error: 'backend error' };
+    }
 
     return {};
   }

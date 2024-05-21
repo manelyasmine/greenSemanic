@@ -38,7 +38,6 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
         setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));
         return;
       }
-      console.log('call from user client '+ JSON.stringify(data))
       //dispatch(setUser(data))
       setState((prev) => ({ ...prev, user: data ?? null, error: null, isLoading: false }));
     } catch (err) {
