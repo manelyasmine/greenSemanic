@@ -1,18 +1,18 @@
 'use client';
 
-import React ,{useState} from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs';
- 
-import BottomDrawer from './BottomDrawer'; 
-import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
- 
-import { TargetsTable } from '@/components/dashboard/targets/targets-table';
+
+import CustomTabs from '@/components/commun/Tabs/taskTabs';
 import { ActionsTable } from '@/components/dashboard/targets/actions-table';
- 
+import { TargetsTable } from '@/components/dashboard/targets/targets-table';
+
+import BottomDrawer from './BottomDrawer';
+
 const customers = [
   {
     id: 'USR-010',
@@ -115,12 +115,14 @@ export default function Page(): React.JSX.Element {
   };
   const page = 0;
   const rowsPerPage = 5;
-  const [isNewTask,setIsNewTask]=useState(false);
+  const [isNewTask, setIsNewTask] = useState(false);
   const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
-const handleNewTask=()=>{ 
-  setIsNewTask(!isNewTask); 
-}
-const handleClose=()=>{setIsNewTask(false)}
+  const handleNewTask = () => {
+    setIsNewTask(!isNewTask);
+  };
+  const handleClose = () => {
+    setIsNewTask(false);
+  };
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -134,8 +136,8 @@ const handleClose=()=>{setIsNewTask(false)}
               fontFeatureSettings: '"cv04" on, "cv03" on, "cv02" on, "cv11" on, "clig" off, "liga" off',
             }}
           >
-           
-            Below is a list of tasks in your carbon emission. Please review and ensure alignment with your sustainability objectives
+            Below is a list of tasks in your carbon emission. Please review and ensure alignment with your
+            sustainability objectives
           </Typography>
 
           <CustomTabs value={selectedTab} screen="target" handleChange={handleTabChange} />
@@ -153,12 +155,10 @@ const handleClose=()=>{setIsNewTask(false)}
             Add Taregt
           </Button>
         </div>
-         
       </Stack>
-    
-  <BottomDrawer open={isNewTask} onClose={handleClose}/>
-            
- 
+
+      <BottomDrawer open={isNewTask} onClose={handleClose} />
+
       {selectedTab === 'Targets' && (
         <TargetsTable
           count={paginatedCustomers.length}
@@ -167,13 +167,13 @@ const handleClose=()=>{setIsNewTask(false)}
           rowsPerPage={rowsPerPage}
         />
       )}
-      {selectedTab  !== 'Targets' && (
+      {selectedTab !== 'Targets' && (
         <ActionsTable
-        count={paginatedCustomers.length}
-        page={page}
-        rows={paginatedCustomers}
-        rowsPerPage={rowsPerPage}
-      />
+          count={paginatedCustomers.length}
+          page={page}
+          rows={paginatedCustomers}
+          rowsPerPage={rowsPerPage}
+        />
       )}
 
       {/* <CustomersTable

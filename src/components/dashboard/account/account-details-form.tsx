@@ -34,6 +34,9 @@ const schema = zod.object({
   lastname: zod.string().min(1, { message: 'Last name is required' }),
   email: zod.string().email({ message: 'Invalid email format' }).min(1, { message: 'Email is required' }),
   phone: zod.string().min(1, { message: 'Phone is required' }),
+  city: zod.string().min(1, { message: 'City is required' }),
+  country: zod.string().min(1, { message: 'Country is required' }),
+  //timezone: zod.string().min(1, { message: 'Timezone is required' }),
 });
 
 type Values = zod.infer<typeof schema>;
@@ -42,7 +45,7 @@ export function AccountDetailsForm(): React.JSX.Element {
   const dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.user);
   const [type, setType] = React.useState<'error' | 'success'>('error');
-  const [message, setMessage] = React.useState('')
+  const [message, setMessage] = React.useState('');
   const {
     control,
     handleSubmit,
@@ -56,12 +59,12 @@ export function AccountDetailsForm(): React.JSX.Element {
 
       if (error) {
         setError('root', { type: 'server', message: error });
-        setMessage(error)
+        setMessage(error);
         setType('error');
         return;
       } else {
         setType('success');
-        setMessage('Infromation saved successfully!')
+        setMessage('Infromation saved successfully!');
         dispatch(setUser(await authClient.getUser()));
       }
     },
@@ -132,22 +135,38 @@ export function AccountDetailsForm(): React.JSX.Element {
               />
             </Grid>
             <Grid md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>State</InputLabel>
-                <Select defaultValue="new-york" label="State" name="state" variant="outlined">
-                  {states.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Controller
+                name="country"
+                control={control}
+                defaultValue={user.country}
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel>State</InputLabel>
+                    <Select {...field} defaultValue="new-york" label="State" name="country" variant="outlined">
+                      {states.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.country && <p>{errors.country.message}</p>}
+                  </FormControl>
+                )}
+              />
             </Grid>
             <Grid md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>City</InputLabel>
-                <OutlinedInput label="City" />
-              </FormControl>
+              <Controller
+                name="city"
+                control={control}
+                defaultValue={user.city}
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel>City</InputLabel>
+                    <OutlinedInput {...field} label="City" name="city" />
+                    {errors.city && <p>{errors.city.message}</p>}
+                  </FormControl>
+                )}
+              />
             </Grid>
           </Grid>
 
@@ -156,10 +175,10 @@ export function AccountDetailsForm(): React.JSX.Element {
               {errors.root.message}
             </Alert>
           )} */}
-          
-            <Alert setChildren={setMessage} sx={{ marginTop: 2 }} severity={type}>
-              {message}
-            </Alert>
+
+          <Alert setChildren={setMessage} sx={{ marginTop: 2 }} severity={type}>
+            {message}
+          </Alert>
         </CardContent>
 
         <Divider />

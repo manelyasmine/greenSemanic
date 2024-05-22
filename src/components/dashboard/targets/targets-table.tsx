@@ -127,6 +127,7 @@ export function TargetsTable({ count = 100, rows = [], rowsPerPage = 5 }: Target
       <Divider />
       <Box style={{ display: 'flex', justifyContent: 'center' }}>
       <Pagination
+        sx={{marginY:1}}
         count={count} // Total number of pages
         page={4} // Current page
         onChange={handleChangePage}  

@@ -34,8 +34,8 @@ import { useDispatch } from 'react-redux';
 
 const schema = zod
   .object({
-    firstName: zod.string().min(1, { message: 'First name is required' }),
-    lastName: zod.string().min(1, { message: 'Last name is required' }),
+    firstname: zod.string().min(1, { message: 'First name is required' }),
+    lastname: zod.string().min(1, { message: 'Last name is required' }),
     email: zod.string().email({ message: 'Invalid email format' }).min(1, { message: 'Email is required' }),
     password: zod.string().min(6, { message: 'Password must be at least 6 characters long' }),
     confirmPassword: zod.string().min(6, { message: 'Password confirmation must be at least 6 characters long' }),
@@ -49,8 +49,8 @@ const schema = zod
 type Values = zod.infer<typeof schema>;
 
 const defaultValues: Values = {
-  firstName: '',
-  lastName: '',
+  firstname: '',
+  lastname: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -107,21 +107,21 @@ export function SignUpForm(): React.JSX.Element {
         <Stack spacing={2}>
           <Controller
             control={control}
-            name="firstName"
+            name="firstname"
             render={({ field }) => (
-              <FormControl error={Boolean(errors.firstName)} fullWidth>
+              <FormControl error={Boolean(errors.firstname)} fullWidth>
                 <OutlinedInput {...field} placeholder="First Name" label="First Name" />
-                {errors.firstName && <FormHelperText error>{errors.firstName.message}</FormHelperText>}
+                {errors.firstname && <FormHelperText error>{errors.firstname.message}</FormHelperText>}
               </FormControl>
             )}
           />
           <Controller
             control={control}
-            name="lastName"
+            name="lastname"
             render={({ field }) => (
-              <FormControl error={Boolean(errors.lastName)} fullWidth>
+              <FormControl error={Boolean(errors.lastname)} fullWidth>
                 <OutlinedInput {...field} placeholder="Last Name" label="Last Name" />
-                {errors.lastName && <FormHelperText error>{errors.lastName.message}</FormHelperText>}
+                {errors.lastname && <FormHelperText error>{errors.lastname.message}</FormHelperText>}
               </FormControl>
             )}
           />

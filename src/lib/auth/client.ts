@@ -21,8 +21,8 @@ function generateToken(): string {
 // } satisfies User;
 
 export interface SignUpParams {
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
 }
@@ -41,10 +41,13 @@ export interface ResetPasswordParams {
 }
 
 export interface UpdateParams {
-  firstName?: string;
-  lastName?: string;
+  firsname?: string;
+  lastname?: string;
   phone?: string;
   email?: string;
+  city? :string;
+  country?: string;
+  timezone?:string
 }
 class AuthClient {
   private user: User = {};
@@ -58,7 +61,7 @@ class AuthClient {
   async signUp(data: SignUpParams): Promise<{ error?: string }> {
     // Make API request
     try {
-      const response = await this.client.post('/', { username: data.firstName + data.lastName, ...data });
+      const response = await this.client.post('/', { username: data.firstname + data.lastname, ...data });
       this.user = { id: response.data._id, ...response.data };
       console.log('here sign up ' + response);
     } catch (e) {
