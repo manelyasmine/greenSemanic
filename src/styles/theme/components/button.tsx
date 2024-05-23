@@ -5,7 +5,10 @@ import type { Theme } from '../types';
 export const MuiButton = {
   styleOverrides: {
     root: { borderRadius: '12px', textTransform: 'none' },
-    sizeSmall: { padding: '8px 15px', height: '36px', gap: '10px' },
+    sizeSmall: { padding: '8px 15px', height: '36px', gap: '10px',
+    border: '1px solid var(--Grey-grey-200, #B3B8C2)',
+
+     },
 
     sizeMedium: { padding: '10px 16px' },
     sizeLarge: { padding: '11px 24px' },

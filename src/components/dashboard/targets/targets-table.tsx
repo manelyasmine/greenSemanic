@@ -33,14 +33,14 @@ export interface Customer {
   createdAt: Date;
 }
 
-interface CustomersTableProps {
+interface TargetsTableProps {
   count?: number;
   page?: number;
   rows?: Customer[];
   rowsPerPage?: number;
 }
 
-export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: CustomersTableProps): React.JSX.Element {
+export function TargetsTable({ count = 100, rows = [], rowsPerPage = 5 }: TargetsTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((customer) => customer.id);
   }, [rows]);
@@ -78,12 +78,11 @@ export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: Cust
                   }}
                 />
               </TableCell>
-              <TableCell>Tasks</TableCell>
-              <TableCell>Due Date</TableCell>
-              <TableCell>Assigned Users</TableCell>
-              <TableCell>Progress</TableCell>
               <TableCell>Target Name</TableCell>
-              <TableCell>Base To Target Year </TableCell>
+              <TableCell>Target Type</TableCell>
+              <TableCell>Emission Reduction Target</TableCell>
+              <TableCell>Base To Target Year</TableCell>
+              
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
@@ -108,24 +107,17 @@ export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: Cust
                   <TableCell>
                     <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
                       <Avatar src={row.avatar} />
-                      <Typography variant="bodyB3">{row.name}</Typography>
+                      <Typography variant="subtitle2">{row.name}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>
-                  <Typography variant="bodyP3">{row.email}</Typography>
-                    </TableCell>
-                  <TableCell>
-                    {row.address.city}, {row.address.state}, {row.address.country}
-                  </TableCell>
+                  <TableCell>{row.email}</TableCell>
+                  
                   <TableCell>{row.phone}</TableCell>
                   <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
-                  <TableCell>{row.target}</TableCell>
                   <Box  style={{ display: 'flex',
                    justifyContent: 'center',alignItems:"center",marginTop:"2rem" }}>
                   <DropdownTableCell />
-                  
                   </Box>
-                 
                 </TableRow>
               );
             })}

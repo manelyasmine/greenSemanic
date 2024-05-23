@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'; // Import necessary MUI components
+import { Stack,Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'; // Import necessary MUI components
 
 type Operator = 'equals' | 'greaterThan' | 'lessThan'; // Add more operators as needed
 
@@ -11,7 +11,7 @@ interface Column {
   type?: 'string' | 'number'; // Optional type for data type handling
 }
 
-interface FilterDropdownProps {
+interface FiltersProps {
   columns: Column[];
   selectedColumn: string;
   operator: Operator;
@@ -23,7 +23,7 @@ interface FilterDropdownProps {
   isOpen?: boolean; // Optional prop to control the dropdown visibility
 }
 
-const FilterDropdown: React.FC<FilterDropdownProps> = ({
+const Filters: React.FC<FiltersProps> = ({
   columns,
   selectedColumn,
   operator,
@@ -35,7 +35,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   isOpen = false,
 }) => {
   return (
-    <Box sx={{ p: 4 }}>
+    <Stack direction="row" >
+    <Box   sx={{ p: 4 }}>
       <FormControl sx={{ minWidth: 120 }}>
         <InputLabel id="column-label">Column</InputLabel>
         <Select labelId="column-label" id="column" value={selectedColumn} onChange={handleColumnChange}>
@@ -67,7 +68,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
         Apply
       </Button>
     </Box>
+    </Stack>
   );
 };
 
-export default FilterDropdown;
+export default Filters;

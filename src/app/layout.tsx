@@ -6,6 +6,10 @@ import { SessionProvider } from 'next-auth/react';
 
 import '@/styles/global.css';
 
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import store, { persistor } from '@/lib/store/store';
 import { UserProvider } from '@/contexts/user-context';
 import { LocalizationProvider } from '@/components/core/localization-provider';
 import { ThemeProvider } from '@/components/core/theme-provider/theme-provider';
@@ -18,19 +22,23 @@ interface LayoutProps {
   session: any;
 }
 
-export default function Layout({ children, session }: LayoutProps): React.JSX.Element {
+export default function Layout({ children, session, ...rest }: LayoutProps): React.JSX.Element {
   return (
     <html lang="en">
       <body>
-        <SessionProvider session={session}>
-          {' '}
-          {/* Wrap children with SessionProvider */}
-          <LocalizationProvider>
-            <UserProvider>
-              <ThemeProvider>{children}</ThemeProvider>
-            </UserProvider>
-          </LocalizationProvider>
-        </SessionProvider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <SessionProvider session={session}>
+              {' '}
+              {/* Wrap children with SessionProvider */}
+              <LocalizationProvider>
+                <UserProvider>
+                  <ThemeProvider>{children}</ThemeProvider>
+                </UserProvider>
+              </LocalizationProvider>
+            </SessionProvider>
+          </PersistGate>
+        </Provider>
       </body>
     </html>
   );

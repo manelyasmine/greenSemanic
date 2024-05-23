@@ -29,6 +29,8 @@ import { useUser } from '@/hooks/use-user';
 import { palette } from '@/styles/theme/colors';
 
 import { Button } from '../commun/Button';
+import { setUser } from '@/lib/store/reducer/userSlice';
+import { useDispatch } from 'react-redux';
 
 const schema = zod
   .object({
@@ -57,6 +59,7 @@ const defaultValues: Values = {
 
 export function SignUpForm(): React.JSX.Element {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { checkSession } = useUser();
   const [isPending, setIsPending] = React.useState<boolean>(false);
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
@@ -82,6 +85,8 @@ export function SignUpForm(): React.JSX.Element {
 
       // Refresh the auth state
       await checkSession?.();
+      console.log('call from sign up')
+      dispatch(setUser(await authClient.getUser()))
 
       // UserProvider, for this case, will not refresh the router
       // After refresh, GuestGuard will handle the redirect
@@ -246,3 +251,4 @@ export function SignUpForm(): React.JSX.Element {
     </Stack>
   );
 }
+

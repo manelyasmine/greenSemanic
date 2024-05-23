@@ -1,22 +1,32 @@
-import * as React from 'react';
-import type { Metadata } from 'next';
+"use client";
+
+import React,{useState} from 'react'; 
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-
+import Typography from '@mui/material/Typography'; 
+import Box from '@mui/material/Box';
 import { config } from '@/config';
-import { Notifications } from '@/components/dashboard/settings/notifications';
-import { UpdatePasswordForm } from '@/components/dashboard/settings/update-password-form';
+import { TabsWrappedLabel } from '@/components/dashboard/settings/TabsWrappedLabel'; 
 
-export const metadata = { title: `Settings | Dashboard | ${config.site.name}` } satisfies Metadata;
+import Tabs from '@mui/material/Tabs';
 
+import Tab from '@mui/material/Tab';
+ 
 export default function Page(): React.JSX.Element {
+  const [value, setValue] = useState('one');
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
   return (
     <Stack spacing={3}>
       <div>
-        <Typography variant="h4">My profil</Typography>
+        <Typography variant="h3">Settings</Typography>
+        <Typography variant="body1">Welcome to the Carbon Footprint Settings page! Here, you can customize your carbon tracking experience to suit your needs and preferences.</Typography>
       </div>
-      <Notifications />
-      <UpdatePasswordForm />
+      <TabsWrappedLabel  />
+
+    {/*   <Notifications />
+      <UpdatePasswordForm /> */}
     </Stack>
   );
 }

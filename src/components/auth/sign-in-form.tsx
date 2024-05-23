@@ -26,6 +26,8 @@ import { useUser } from '@/hooks/use-user';
 import { palette } from '@/styles/theme/colors';
 
 import { Button } from '../commun/Button';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/lib/store/reducer/userSlice';
 
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required' }).email(),
@@ -35,7 +37,6 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = { email: 'afafkelly@gmail.com', password: 'Secret1' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -45,13 +46,14 @@ export function SignInForm(): React.JSX.Element {
   const [showPassword, setShowPassword] = React.useState<boolean>();
 
   const [isPending, setIsPending] = React.useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const {
     control,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
+  } = useForm<Values>({  resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
@@ -67,6 +69,8 @@ export function SignInForm(): React.JSX.Element {
 
       // Refresh the auth state
       await checkSession?.();
+      console.log('call redux from  sign - in')
+      dispatch(setUser(await authClient.getUser()))
 
       // UserProvider, for this case, will not refresh the router
       // After refresh, GuestGuard will handle the redirect
