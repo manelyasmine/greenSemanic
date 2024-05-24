@@ -23,6 +23,9 @@ import DZIcon from './DZIcon';
 import CloseIcon from './CloseIcon'
 import GreneIcon from './GreneIcon';
 import CameraIcon from "./CameraIcon";
+import PlusIcon from "./PlusIcon";
+import ExportIcon from "./ExportIcon";
+
 export {
   ChartIcon,
   BackForwardIcon,
@@ -48,5 +51,7 @@ export {
   DZIcon,
   CloseIcon,
   GreneIcon,
-  CameraIcon
+  CameraIcon,
+  PlusIcon,
+  ExportIcon
 };

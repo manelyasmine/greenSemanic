@@ -15,7 +15,10 @@ import {
 } from '@mui/material';
 import { CompanyProfile } from './CompanyProfile';
 import { EmissionFactor } from './EmissionFactor/EmissionFactor';
- 
+import CompanyLocation from "./CompanyLocation/index";
+import {Users } from "./Users/index";
+import {Notifications} from "./Notifications"
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -129,17 +132,17 @@ export   function TabsWrappedLabel() {
       <CompanyProfile />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-      Company Locations
+      <CompanyLocation />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-      Users
+      <Users />
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
       Roles
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-      Notifications
+      <Notifications />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
       <EmissionFactor/>
