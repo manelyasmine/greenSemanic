@@ -25,7 +25,7 @@ import GreneIcon from './GreneIcon';
 import CameraIcon from "./CameraIcon";
 import PlusIcon from "./PlusIcon";
 import ExportIcon from "./ExportIcon";
-
+import ImportIcon from "./ImportIcon";
 export {
   ChartIcon,
   BackForwardIcon,
@@ -53,5 +53,6 @@ export {
   GreneIcon,
   CameraIcon,
   PlusIcon,
-  ExportIcon
+  ExportIcon,
+  ImportIcon
 };

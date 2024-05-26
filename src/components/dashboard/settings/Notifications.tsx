@@ -43,7 +43,7 @@ export function Notifications(): React.JSX.Element {
     <Grid item xs={12}>
     <Stack spacing={1} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: "flex-end" }}>
     <Typography variant="BodyB2" color="var(--Grey-grey-800, #3D434C)" sx={{alignSelf:"flex-start"  }}>Alert Settings ::</Typography>
-    <FormGroup sx={{ height:"20px",display: 'flex',justifyContent: 'flex-end', alignItems: "flex-end" }}>
+    <FormGroup sx={{ display: 'flex',justifyContent: 'flex-end', alignItems: "flex-end" }}>
      
      
     <FormControlLabel    control={<Switch color="success" variant="solid"   />} label="Targets Progress" />

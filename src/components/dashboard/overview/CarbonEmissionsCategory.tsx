@@ -4,13 +4,19 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import Chart from 'react-apexcharts';
 
+import ScopesTabs from '@/components/commun/Tabs/scopesTabs';
 import { palette } from '@/styles/theme/colors';
 
 export interface CarbonEmissionsCategoryProps {
   sx?: any; // Define any custom styling props here
+  showScopesTabs?: boolean;
+  value?:string;
+
+  handleChange: (event: React.ChangeEvent<any>, value: string) => void;
+ 
 }
 
-export function CarbonEmissionsCategory({ sx }: CarbonEmissionsCategoryProps): React.JSX.Element {
+export function CarbonEmissionsCategory({ sx, showScopesTabs,value,handleChange}: CarbonEmissionsCategoryProps): React.JSX.Element {
   const data = [
     { label: 'Transportation', value: 30 },
     { label: 'Energy', value: 10 },
@@ -88,7 +94,10 @@ export function CarbonEmissionsCategory({ sx }: CarbonEmissionsCategoryProps): R
 
   return (
     <Card sx={{ height: 200, ...sx }}>
-      <CardHeader title="Carbon Emissions by Category" />
+      <CardHeader title="Carbon Emissions by Category"
+      action={showScopesTabs && <ScopesTabs value={value} handleChange={handleChange} />}
+    
+      />
       <Typography variant="body2" sx={{ marginX: 3 }} color="text.secondary">
         Activities
       </Typography>

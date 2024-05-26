@@ -1,11 +1,14 @@
 import React from 'react';
-import { Box, Button, Container,Stack,Grid,Typography,OutlinedInput,InputAdornment, TextField, List, ListItem, ListItemText } from '@mui/material';
+import { Paper,Box, Button, Container,Stack,Grid,Typography,OutlinedInput,InputAdornment, TextField, List, ListItem, ListItemText } from '@mui/material';
 import Map from './MapLocation';
 import LocationList from './LocationList';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 import {PlusIcon,ExportIcon} from '@/icons';
 import { MuiButton } from '@/styles/theme/components/button';
 import { boxFilterDropDown, Filter, outlinedInput } from '@/styles/theme/Filter';
+import { styled } from '@mui/material/styles';
+ 
+ 
 
 const initlocations=[
   {
@@ -41,70 +44,69 @@ const CompanyLocation: React.FC = () => {
   );
 
   return (
-   /*  <Container maxWidth="xl" style={{ height: '100vh', display: 'flex', flexDirection: 'row', padding: 0 }}>
-      <Box sx={{ width: '30%', padding: 2, boxShadow: 3 }}>
-         
-        <Button variant="contained" onClick={addLocation} fullWidth>
-          Add New Location
+    <Stack container spacing={2} direction="row">
+    <Grid item xs={6}>
+
+      <Box  >
+      <Box  >
+      <Box    container justifyContent="space-between"
+         sx={{display: 'flex',
+         alignItems: 'flex-start',
+         gap: '2rem',
+         backgroundColor:"yellow"
+         }}
+        >
+        <Typography variant="h5" sx={{ color: 'var(--Gray-900, #101828)' }}>
+          Locations
+        </Typography>
+        <Button 
+          btnType="Primary"
+          startIcon={<PlusIcon   />} 
+          sx={{
+            ...MuiButton.styleOverrides.sizeSmall,
+            borderRadius: "6px",
+            justifyContent: 'flex-end',
+            background: "var(--Green-green-500, #16B364)",
+          }}>
+          <Typography variant="h7" sx={{display:"flex",justifyContent:"flex-end", color: "var(--Colors-Base-00, #FFF)" }} onClick={addLocation}>
+            Add Location
+          </Typography>
         </Button>
+        </Box>
+        </Box>
         <OutlinedInput
-        defaultValue=""
-        placeholder="Search for anything..."
-        startAdornment={
-          <InputAdornment position="start">
-            <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
-          </InputAdornment>
-        }
-        sx={outlinedInput}
-      />
-        <LocationList locations={initlocations} />  
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search for anything..."
+          startAdornment={
+            <InputAdornment position="start">
+              <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
+            </InputAdornment>
+          }
+          sx={{
+
+            display: 'flex',
+width: '100%',
+padding: "var(--12, 0.75rem) 1rem",
+alignItems: "center",
+gap: "0.5rem"
+          }}
+         
+        />
+        <List>
+          {initlocations.map(location => (
+            <ListItem key={location.id}>
+              <ListItemText primary={location.name} secondary={location.location} />
+            </ListItem>
+          ))}
+        </List>
+       
       </Box>
-       <Box sx={{ width: '70%', padding: 2 }}>
-        <Map />
-      </Box> 
-    </Container> */
-
-
-    <Stack spacing={6} sx={{ height: '80vh', overflowY: 'auto' }}>
-    <Grid container alignItems="center" >
-     <Grid item xs={12} sm={6} md={4} lg={3} direction="column" justifyContent="space-between">
-       <Typography variant="h5"   sx={{ color: 'var(--Gray-900, #101828)' }}>
-       Locations
-       </Typography>
-       <Button
-     btnType="Primary"
-     sx={{
-       ...MuiButton.styleOverrides.sizeSmall,
-       borderRadius: "6px",
-       justifyContent: 'flex-end',
-       background: "var(--Green-green-500, #16B364)",
-     }}
-
-     onClick={()=>{}}
-     startIcon={<PlusIcon fontSize="var(--icon-fontSize-sm)" />}  
-   >
-     <Typography variant="h7" 
-     sx={{ color: "var(--Colors-Base-00, #FFF)" }}
-     >
-       Add Location
-     </Typography>
-   </Button>
-     </Grid> 
-     
-   
-
-    
-    
- 
- 
-  
-</Grid>
-
-  
-     
-   
-  
-   </Stack>
+    </Grid>
+    <Grid item xs={8}>
+      <Map  sx={{width:"100px",height:"100px"}} />
+    </Grid>
+  </Stack>
   );
 };
 
