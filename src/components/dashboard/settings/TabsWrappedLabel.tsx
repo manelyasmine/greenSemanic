@@ -18,7 +18,7 @@ import { EmissionFactor } from './EmissionFactor/EmissionFactor';
 import CompanyLocation from "./CompanyLocation/index";
 import {Users } from "./Users/index";
 import {Notifications} from "./Notifications"
-
+import {RolesList} from "./Roles/index";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -139,7 +139,7 @@ export   function TabsWrappedLabel() {
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={3}>
-      Roles
+        <RolesList />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
       <Notifications />
