@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
-
+import { palette } from '@/styles/theme/colors';
 interface DropdownProps {
   // Function to handle modification triggered from the dropdown
   onModify: (data: any) => void;
