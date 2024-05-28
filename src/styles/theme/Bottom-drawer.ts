@@ -15,6 +15,7 @@ export const body={
     justifyContent: 'center',
     alignItems: 'center',
     gap: '2rem',
+    margin:"122px",
     flexShrink: 0,
     width: '709px', // Default width for larger screens
     height:"586px", // Default height
