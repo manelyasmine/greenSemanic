@@ -25,6 +25,9 @@ import GreneIcon from './GreneIcon';
 import CameraIcon from "./CameraIcon";
 import PlusIcon from "./PlusIcon";
 import ExportIcon from "./ExportIcon";
+import ImportIcon from "./ImportIcon";
+import LocalizationIcon from './LocalizationIcon';
+import LocalizationHeadIcon from './LocalizationHeadIcon';
 
 export {
   ChartIcon,
@@ -53,5 +56,8 @@ export {
   GreneIcon,
   CameraIcon,
   PlusIcon,
-  ExportIcon
+  ExportIcon,
+  ImportIcon,
+  LocalizationIcon,
+  LocalizationHeadIcon,
 };
