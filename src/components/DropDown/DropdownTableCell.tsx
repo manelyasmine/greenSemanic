@@ -77,6 +77,11 @@ const Dropdown: React.FC<DropdownProps> = ({ onModify, onDelete, onAssign }) => 
           <DeleteConfirmation
           open={isDeleteOpen}
           setOpen={setIsDeleteOpen}
+          title='Do you want to delete this?'
+          subtitle='Are you sure you want to delete?'
+          primary='Delete'
+          secondary='Cancel'
+          primaryColor={{ backgroundColor: palette.danger[500] }}
           />
       )}
       

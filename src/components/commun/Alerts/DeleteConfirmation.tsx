@@ -8,7 +8,7 @@ import { palette } from '@/styles/theme/colors';
  
 interface DeleteConfirmationProps {}
 
-const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({open,setOpen}) => {
+const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({open,setOpen,title,subtitle,primary,secondary,primaryColor}) => {
    
  
   const handleClose = () => setOpen(false);
@@ -32,15 +32,18 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({open,setOpen}) =
          background:palette.common.white,
           }} >
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Typography variant="h4" sx={{padding:"1.5rem"}}>Do you want to delete this?</Typography>
+      <Typography variant="h4" sx={{padding:"1.5rem"}}
+      sx={{color:'var(--Colors-Primary-Slate-800, #2D3643)'}}
+      >{title}</Typography>
       <IconButton aria-label="close">
         <CloseIcon />
       </IconButton>
       
     </Box>
     <Box sx={{ display: 'flex', flexDirection: 'column',justifyContent:"flex-start" }}>
-      <Typography variant="body2" sx={{  textAlign: 'right' }}>
-        Are you sure you want to delete?
+      <Typography variant="bodyP2" sx={{  textAlign: 'right',color:'var(--Grey-grey-600, #606977)'
+ }}>
+        {subtitle}
       </Typography>
     
         <Box  sx={{paddingTop:'1.5rem',paddingBottom:'1.5rem',
@@ -52,11 +55,17 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({open,setOpen}) =
 
 
       }}> 
-      <Button  btnType="secondary" sx={{ color: 'color: var(--Grey-grey-600, #606977)',backgroundColor:'var(--Colors-Base-00, #FFF)', fontWeight: 700 }}>
-             cancel
+      <Button  btnType="secondaryGray" 
+      sx={{ color: 'color: var(--Grey-grey-600, #606977)',
+      backgroundColor:'var(--Colors-Base-00, #FFF)', 
+      fontWeight: 700 }}>
+             {secondary}
       </Button>
-      <Button  btnType="primary" sx={{borderRadius: '0.375rem',color:palette.common.white, backgroundColor: palette.danger[500], fontWeight: 700 }}>
-              Delete
+      <Button  btnType="primary" sx={{...primaryColor,
+        borderRadius: '0.375rem',color:palette.common.white, fontWeight: 700 
+
+      }}>
+              {primary}
       </Button> 
     </Box>
     </Box>

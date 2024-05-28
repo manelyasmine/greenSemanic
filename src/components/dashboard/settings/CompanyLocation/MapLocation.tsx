@@ -1,10 +1,6 @@
 import React from 'react';
-import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%'
-};
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const center = {
   lat: -3.745,
@@ -12,17 +8,18 @@ const center = {
 };
 
 const MapLocation: React.FC = () => {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "5-_SBti_T8mI6TNx42wt6URCo7WUlUK-IDF0wQXNLhg"
-  });
-
-  if (loadError) return <div>Error loading maps</div>;
-  if (!isLoaded) return <div>Loading Maps</div>;
-
   return (
-    <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={8}>
-      <Marker position={center} />
-    </GoogleMap>
+    <MapContainer center={center} zoom={13} style={{ width: '100%', height: '100%' }}>
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      />
+      <Marker position={center}>
+        <Popup>
+          A pretty CSS3 popup. <br /> Easily customizable.
+        </Popup>
+      </Marker>
+    </MapContainer>
   );
 };
 
