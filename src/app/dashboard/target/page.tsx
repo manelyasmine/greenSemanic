@@ -18,8 +18,6 @@ import { TargetsTable } from '@/components/dashboard/targets/targets-table';
 import BottomDrawer from './BottomDrawer';
 
 
-import BottomDrawer from './BottomDrawer';
-
 const customers = [
   {
     id: 'USR-010',
