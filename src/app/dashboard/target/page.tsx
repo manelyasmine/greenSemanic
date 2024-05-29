@@ -17,6 +17,9 @@ import { TargetsTable } from '@/components/dashboard/targets/targets-table';
 
 import BottomDrawer from './BottomDrawer';
 
+
+import BottomDrawer from './BottomDrawer';
+
 const customers = [
   {
     id: 'USR-010',
@@ -161,6 +164,8 @@ export default function Page(): React.JSX.Element {
               fontFeatureSettings: '"cv04" on, "cv03" on, "cv02" on, "cv11" on, "clig" off, "liga" off',
             }}
           >
+            Below is a list of tasks in your carbon emission. Please review and ensure alignment with your
+            sustainability objectives
             Below is a list of tasks in your carbon emission. Please review and ensure alignment with your
             sustainability objectives
           </Typography>
