@@ -130,7 +130,6 @@ export default function Page(): React.JSX.Element {
   const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
 const handleNewTask=()=>{ 
   setIsNewTask(!isNewTask);
-  console.log("is new task ?",isNewTask)
 }
 const handleClose=()=>{setIsNewTask(false)}
   return (

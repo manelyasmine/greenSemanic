@@ -1,26 +1,35 @@
 import React, { useState } from 'react';
-import { DashboardIcon, DotsHorizontal,AssignIcon,DeleteIcon,ModifyIcon } from '@/icons';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import DropDownStyle from '@/styles/theme/DropDown';
-
-import Typography from '@mui/material/Typography';
+import { AssignIcon, DashboardIcon, DeleteIcon, DotsHorizontal, ModifyIcon } from '@/icons';
+import { MoreVert as MoreVertIcon, Update } from '@mui/icons-material';
+import { Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Target } from '@/types/target';
+import { setTargets } from '@/lib/store/reducer/useTarget';
+import { targetApis } from '@/lib/target/targetApis';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
+import { DropDOwn, itemMenu } from '@/styles/theme/DropDown';
+import UpdateBottomDrawer from '@/app/dashboard/target/UpdateBottomDrawer';
 
 interface DropdownProps {
   // Function to handle modification triggered from the dropdown
-  onModify: (data: any) => void;
-  // Function to handle deletion triggered from the dropdown
-  onDelete: (data: any) => void;
-  // Function to handle assignment triggered from the dropdown (optional)
-  onAssign?: (data: any) => void;
+  // onModify?: (data: any) => void;
+  // // Function to handle deletion triggered from the dropdown
+  // onDelete?: (data: any) => void;
+  // // Function to handle assignment triggered from the dropdown (optional)
+  // onAssign?: (data: any) => void;
+  target: Target;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ onModify, onDelete, onAssign }) => {
+const Dropdown: React.FC<DropdownProps> = ({ target }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [isDeleteOpen,setIsDeleteOpen]=useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isUpdate , setIsUpdate] = useState(false)
+  const { targets } = useSelector((state: any) => state.target);
+  const dispatch = useDispatch();
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -29,58 +38,98 @@ const Dropdown: React.FC<DropdownProps> = ({ onModify, onDelete, onAssign }) => 
     setAnchorEl(null);
   };
 
-  const handleModify = () => {
-    handleClose();
-    onModify?.(); // Call the onModify function if provided
-  };
+  // const handleModify = () => {
+  //   handleClose();
+  //   // onModify?.(); // Call the onModify function if provided
+  // };
 
-  const handleDelete = () => {
+  const handleModify = React.useCallback(async (data:  Target): Promise<void> => {
+
+    const { error, res } = await targetApis.updateTarget(data);
+    if (error) {
+      return;
+    } else {
+      const indexToRemove = targets.indexOf(target);
+      //const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
+
+      const newTargets =  targets.map((tar : Target) => {
+        if (tar.id === data.id) {
+          return data;
+        }
+        return tar;
+      });
+      //setIsDeleteOpen(false);
+      dispatch(setTargets(newTargets));
+      setIsUpdate(false)
+    }
     handleClose();
-    setIsDeleteOpen(!isDeleteOpen);
-  };
+  }, []);
+
+  const handleDelete = React.useCallback(async (): Promise<void> => {
+
+    const { error, res } = await targetApis.deleteTarget(target.id);
+    if (error) {
+      return;
+    } else {
+      const indexToRemove = targets.indexOf(target);
+      const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
+      setIsDeleteOpen(false);
+      dispatch(setTargets(newTargets));
+    }
+
+    handleClose();
+  }, []);
 
   const handleAssign = () => {
     handleClose();
-    onAssign?.(); // Call the onAssign function if provided (optional)
+    //onAssign?.(); // Call the onAssign function if provided (optional)
   };
 
   return (
     <div>
       <IconButton onClick={handleOpen}>
-        <DotsHorizontal fontSize="small" />
+        <DotsHorizontal />
       </IconButton>
-      
+
       <Menu
-         
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
         MenuListProps={{ 'aria-labelledby': 'dropdown-button' }}
       >
-        <Card sx={DropDownStyle}>
-        <MenuItem onClick={handleModify}>
-          <ListItemIcon> <ModifyIcon  /> </ListItemIcon>
-          <ListItemText primary="Modify" />
-        </MenuItem>
-        <MenuItem onClick={handleDelete}>
-          <ListItemIcon> <DeleteIcon   /> </ListItemIcon>
-          <ListItemText primary="Delete" />
-          
-        </MenuItem>
-         <MenuItem onClick={handleAssign}>
-            <ListItemIcon>  <AssignIcon   /> </ListItemIcon>
+        <Box sx={DropDOwn}>
+          <MenuItem onClick={() => {handleClose() ,setIsUpdate(!isUpdate)}} sx={itemMenu}>
+            <ListItemIcon>
+              {' '}
+              <ModifyIcon />{' '}
+            </ListItemIcon>
+            <ListItemText primary="Modify" />
+          </MenuItem>
+          <Divider variant="middle" />
+          <MenuItem
+            onClick={() => {
+              setIsDeleteOpen(!isDeleteOpen);
+            }}
+            sx={itemMenu}
+          >
+            <ListItemIcon>
+              {' '}
+              <DeleteIcon />{' '}
+            </ListItemIcon>
+            <ListItemText primary="Delete" />
+          </MenuItem>
+          <Divider variant="middle" />
+          <MenuItem onClick={handleAssign} sx={itemMenu}>
+            <ListItemIcon>
+              {' '}
+              <AssignIcon />{' '}
+            </ListItemIcon>
             <ListItemText primary="Assign" />
           </MenuItem>
-      </Card>
+        </Box>
       </Menu>
-      {isDeleteOpen && (
-          <DeleteConfirmation
-          open={isDeleteOpen}
-          setOpen={setIsDeleteOpen}
-          />
-      )}
-      
-     
+      <DeleteConfirmation open={isDeleteOpen} setOpen={setIsDeleteOpen} handleDelete={handleDelete} />
+      <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
     </div>
   );
 };

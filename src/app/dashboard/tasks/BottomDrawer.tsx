@@ -30,7 +30,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({ open, onClose, onCreateTask
     setNewTask('');
     onClose();
   };
-  console.log("bottomdrawner",open)
   return ( 
     
     <Drawer anchor="bottom" open={open} onClose={onClose}>

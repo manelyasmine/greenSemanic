@@ -1,18 +1,8 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import userReducer from './reducer/userSlice';
-
-// const store = configureStore({
-//   reducer: {
-//     user: userReducer,
-//   },
-// });
-
-// export default store;
-
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './reducer/userSlice';
+import targetReducer from './reducer/useTarget'
 
 const persistConfig = {
   key: 'root',
@@ -21,11 +11,23 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, userReducer);
 
-const store = configureStore({
-  reducer: {
-    user: persistedReducer,
-  },
+
+
+const rootReducer = combineReducers({
+  user: persistedReducer,
+  target: targetReducer,
 });
+
+// Configure the store with the combined reducer
+const store = configureStore({
+  reducer: rootReducer,
+});
+// const store = configureStore({
+//   reducer: {
+//     user: persistedReducer,
+
+//   },
+// });
 
 export const persistor = persistStore(store);
 export default store;

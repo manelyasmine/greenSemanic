@@ -24,8 +24,9 @@ export default function ChipTrend({diff, trend}: ChipTrendProps) {
         </Box>
       }
       sx={{
-        backgroundColor: trend === 'up' ? palette.primary[100] : palette.danger[100],
+        backgroundColor: trend === 'up' ? "#bbebd2": palette.danger[100],
         color: trend === 'up' ? palette.primary[500] : palette.danger[500],
+        borderRadius:1
       }}
     />
   );

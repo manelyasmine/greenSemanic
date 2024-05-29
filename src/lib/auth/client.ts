@@ -63,7 +63,6 @@ class AuthClient {
     try {
       const response = await this.client.post('/', { username: data.firstname + data.lastname, ...data });
       this.user = { id: response.data._id, ...response.data };
-      console.log('here sign up ' + response);
     } catch (e) {
       return { error: 'backend error' };
     }
@@ -84,7 +83,6 @@ class AuthClient {
     try {
       const response = await this.client.post('/auth', params, { withCredentials: true });
 
-      console.log('here sign In ' + JSON.stringify(response));
       this.user = { id: response.data._id, ...response.data };
     } catch (e) {
       return { error: 'backend error' };
@@ -107,7 +105,6 @@ class AuthClient {
     try {
       const response = await this.client.put('/profile', params, { withCredentials: true });
 
-      console.log('here profile ' + JSON.stringify(response));
       this.user = { id: response.data._id, ...response.data };
     } catch (e) {
       return { error: 'backend error' };
@@ -141,7 +138,6 @@ class AuthClient {
     try {
       const response = await this.client.post('/logout', { withCredentials: true });
 
-      console.log('here logout out' + JSON.stringify(response));
       this.user = {};
     } catch (e) {
       return { error: 'backend error' };

@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { Box, SxProps } from '@mui/system';
 
 import { Button } from '@/components/commun/Button';
-import ChipTrend from '@/components/commun/chip/ChipTrend';
+import ChipTrend from '@/components/commun/Chip/ChipTrend';
 import { palette } from '@/styles/theme/colors';
 
 interface EmissionByTypeItemProps {
@@ -27,18 +27,6 @@ const EmissionByTypeItem: React.FC<EmissionByTypeItemProps> = ({
   trend,
 }: EmissionByTypeItemProps) => {
   return (
-    // <Card
-    //   sx={{
-    //     borderRadius: '6px',
-    //     padding: '8PX 12px',
-    //     //background: palette.primary[50],
-    //     '& .MuiCardContent-root': {
-    //       padding: 0,
-    //     },
-    //     ...sx,
-    //   }}
-    // >
-    //   <CardContent>
     <Box >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="column">

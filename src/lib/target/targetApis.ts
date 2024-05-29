@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 
+import { Target } from '@/types/target';
 import type { User } from '@/types/user';
 
 import api from '../api';
@@ -20,13 +21,12 @@ function generateToken(): string {
 //   email: 'afafkelly@gmail.com',
 // } satisfies User;
 
-export interface SignUpParams {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
+export interface NewTargetParams {
+  name?: string;
+  type?: string;
+  emissionReduction?: string;
+  baseYear?: string;
 }
-
 
 class TargetApis {
   private apiTarget = axios.create({
@@ -36,14 +36,15 @@ class TargetApis {
       'x-auth-secret': process.env.NEXTAUTH_SECRET || '',
     },
   });
-  async signUp(data: SignUpParams): Promise<{ error?: string }> {
+  async createTarget(data: NewTargetParams): Promise<{res? :Target,  error?: string }> {
     // Make API request
-    // try {
-    //   const response = await this.client.post('/', { username: data.firstname + data.lastname, ...data });
-    //   console.log('here sign up ' + response);
-    // } catch (e) {
-    //   return { error: 'backend error' };
-    // }
+    try {
+      const response = await this.apiTarget.post('/', data , { withCredentials: true });
+
+      return {res : {...response.data, id: response.data._id}}
+    } catch (e) {
+      return { error: 'backend error' };
+    }
 
     // // We do not handle the API, so we'll just generate a token and store it in localStorage.
     // const token = generateToken();
@@ -53,6 +54,54 @@ class TargetApis {
     return {};
   }
 
+  async getTargets(): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiTarget.get('/', { withCredentials: true });
+
+      return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
+    } catch (e) {
+      return { error: 'backend error' };
+    }
+
+    // // We do not handle the API, so we'll just generate a token and store it in localStorage.
+    // const token = generateToken();
+
+    // localStorage.setItem('custom-auth-token', token);
+
+    return {};
+  }
+
+  async updateTarget(target: NewTargetParams): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiTarget.put('/',target,{ withCredentials: true });
+
+      return {  };
+    } catch (e) {
+      return { error: 'backend error' };
+    }
+
+    return {};
+  }
+
+  async deleteTarget(id: string): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiTarget.delete('/' + id, { withCredentials: true });
+
+      return {};
+    } catch (e) {
+      return { error: 'backend error' + e };
+    }
+
+    // // We do not handle the API, so we'll just generate a token and store it in localStorage.
+    // const token = generateToken();
+
+    // localStorage.setItem('custom-auth-token', token);
+
+    return {};
+  }
 }
 
 export const targetApis = new TargetApis();
