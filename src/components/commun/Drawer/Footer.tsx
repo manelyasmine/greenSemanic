@@ -1,48 +1,35 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Drawer,
-  Grid,
-  IconButton,
-  
-  TextField,
-  Typography,
-} from '@mui/material';
-
-import Divider from '@mui/material/Divider';
 import { Label } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import {  Filter,  } from '@/styles/theme/Filter';
-
-import {FooterBody,FooterBox,HeaderBody} from '@/styles/theme/Bottom-drawer';
+import { Box, Drawer, Grid, IconButton, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
- 
- 
+import Divider from '@mui/material/Divider';
+import Slide from '@mui/material/Slide';
+
+import { FooterBody, FooterBox, HeaderBody } from '@/styles/theme/Bottom-drawer';
+import { palette } from '@/styles/theme/colors';
+import { Filter } from '@/styles/theme/Filter';
+
+import { Button } from '../Button';
+
 interface FooterProps {
-    open: boolean;
-    handleCancelTask: () => void;
-    handleCreateTask: (task: string) => void; // Function to handle task creation
-  }
+  handleCancelTarget: () => void;
+  handleCreateTarget: any; // Function to handle task creation
+}
 
-const Footer: React.FC<FooterProps> = ({  handleCancelTask, handleCreateTask }) => {
-    return (
- 
-        <Grid  sx={FooterBox}>
-            <Grid sx={FooterBody}>
-          <Button variant="contained" color="secondary" onClick={handleCancelTask}>
-            Cancel
-          </Button>
+const Footer: React.FC<FooterProps> = ({ handleCancelTarget, handleCreateTarget }) => {
+  return (
+    <Grid sx={FooterBox}>
+      <Grid sx={FooterBody}>
+        <Button btnType={'secondary'} onClick={handleCancelTarget}>
+          Cancel
+        </Button>
 
-         <Button variant="contained" color="primary" onClick={handleCreateTask}>
-            Confirm
-          </Button>
+        <Button variant="contained" color="primary" onClick={handleCreateTarget}>
+          Confirm
+        </Button>
       </Grid>
-      </Grid>
-      
-      
-   
+    </Grid>
   );
 };
 

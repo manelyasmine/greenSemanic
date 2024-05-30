@@ -20,7 +20,7 @@ export default function ListItemProgress({ sx, title, icon, progress }: ListItem
       </Grid>
       <Grid lg={11}>
         <Typography mb={1}>{title}</Typography>
-        <Stack direction="row" spacing={3}>
+        <Stack width="100%" direction="row" spacing={3}>
           <Box width="100%" sx={{ alignContent: 'center' }}>
             <LinearProgress
               sx={{
@@ -28,6 +28,8 @@ export default function ListItemProgress({ sx, title, icon, progress }: ListItem
                   backgroundColor: palette.success[500],
                 },
                 background: palette.primary[100],
+                height:8,
+                borderRadius:1
               }}
               variant="determinate"
               value={progress}

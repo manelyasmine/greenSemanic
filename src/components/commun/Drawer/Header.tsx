@@ -20,12 +20,10 @@ import Card from '@mui/material/Card';
  
  
 interface HeaderProps {
-    open: boolean;
-    onClose: () => void;
-    onCreateTask: (task: string) => void; // Function to handle task creation
+    onClose: () => void; // Function to handle task creation
   }
 
-const Header: React.FC<HeaderProps> = ({ open, onClose, onCreateTask }) => {
+const Header: React.FC<HeaderProps> = ({ onClose }) => {
     return (
  
         <Box sx={header}>

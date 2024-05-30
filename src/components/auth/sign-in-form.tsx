@@ -69,7 +69,6 @@ export function SignInForm(): React.JSX.Element {
 
       // Refresh the auth state
       await checkSession?.();
-      console.log('call redux from  sign - in')
       dispatch(setUser(await authClient.getUser()))
 
       // UserProvider, for this case, will not refresh the router
