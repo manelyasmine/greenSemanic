@@ -23,7 +23,7 @@ import { setTarget } from '@/lib/store/reducer/useTarget';
 import { useSelection } from '@/hooks/use-selection';
 import Chip from '@/components/commun/Chip/Chip';
 import ChipTrend from '@/components/commun/Chip/ChipTrend';
-import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
+import DropdownTableCell from '@/components/DropDown/DropdownTableCellTarget';
 import { palette } from '@/styles/theme/colors';
 
 import empty from '../../../../public/assets/empty.png';
