@@ -31,6 +31,7 @@ import LocalizationHeadIcon from './LocalizationHeadIcon';
 import CheckIcon from './CheckIcon';
 import DownloadIcon from './DownloadIcon';
 import ShareIcon from './ShareIcon';
+import VectorICon from './VectorICon';
 export {
   ChartIcon,
   BackForwardIcon,
@@ -65,4 +66,5 @@ export {
   CheckIcon,
   DownloadIcon,
   ShareIcon,
+  VectorICon,
 };
