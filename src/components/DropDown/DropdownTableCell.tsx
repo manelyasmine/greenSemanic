@@ -13,7 +13,7 @@ import { targetApis } from '@/lib/target/targetApis';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { DropDOwn, itemMenu } from '@/styles/theme/DropDown';
 import UpdateBottomDrawer from '@/app/dashboard/target/UpdateBottomDrawer';
-
+import { palette } from '@/styles/theme/colors';
 interface DropdownProps {
   // Function to handle modification triggered from the dropdown
   // onModify?: (data: any) => void;
@@ -128,8 +128,20 @@ const Dropdown: React.FC<DropdownProps> = ({ target }) => {
           </MenuItem>
         </Box>
       </Menu>
-      <DeleteConfirmation open={isDeleteOpen} setOpen={setIsDeleteOpen} handleDelete={handleDelete} />
-      <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
+     {/* <DeleteConfirmation open={isDeleteOpen} setOpen={setIsDeleteOpen} handleDelete={handleDelete} />
+      */}
+          {isDeleteOpen &&
+        <DeleteConfirmation
+          open={isDeleteOpen}
+          setOpen={setIsDeleteOpen}
+          title="Do you want to delete this?"
+          subtitle="Are you sure you want to delete this file."
+          primary="Delete"
+          secondary="Cancel"
+          handleDelete={handleDelete} 
+          primaryColor={{ backgroundColor: palette.danger[500] }}
+        />}
+       <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
     </div>
   );
 };

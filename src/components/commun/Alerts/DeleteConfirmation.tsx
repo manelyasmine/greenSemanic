@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { ButtonGroup, IconButton, Modal, Typography } from '@mui/material';
+import { ButtonGroup, IconButton, Modal, Typography,Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 
 import { Button } from '@/components/commun/Button';
@@ -10,48 +10,58 @@ interface DeleteConfirmationProps {
   open: boolean;
   setOpen: any;
   handleDelete: any;
+  title:any;
+  subtitle:any;
+  primary:any;
+  secondary:any;
+  primaryColor:any;
 }
 
-const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ open, setOpen, handleDelete }) => {
+const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ open, setOpen, handleDelete,title,subtitle,primary,secondary,primaryColor }) => {
   const handleClose = () => setOpen(false);
   
 
   return (
-    <Modal open={open} onClose={() => handleClose}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '40%',
-          display: 'flex',
-          padding: '1.5rem',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: '0.375rem',
-          background: palette.common.white,
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h4" sx={{ padding: '1.5rem' }}>
-            Do you want to delete this?
-          </Typography>
-          <IconButton aria-label="close">
+    <Modal open={open} onClose={handleClose} 
+    
+  
+    >
+       <Box sx={{position: 'absolute',top:"40%",left:"40%",
+         display: 'flex',
+         padding: '1.5rem',
+         flexDirection: 'column',
+         justifyContent: 'center',
+         alignItems: 'flex-start',
+         
+         borderRadius: '0.375rem',
+         background:palette.common.white,
+         gap: '1.5rem' 
+          }} >
+   
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center',gap:"24px"  }}>
+          <Typography variant="h4"  >
+            {title}
+          </Typography >
+          <IconButton aria-label="close" onClick={handleClose} sx={{justifyContent:"flex-end",marginBottom: '1.5rem',marginLeft:"16px"}}>
             <CloseIcon />
           </IconButton>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-          <Typography variant="body2" sx={{ textAlign: 'right' }}>
-            Are you sure you want to delete?
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  }}>
+          <Typography variant="bodyP2" sx={{justifyContent:"flex-start"}} >
+           {subtitle}
           </Typography>
 
-          <Box
+         
+        </Box>
+
+
+        <Box
             sx={{
-              paddingTop: '1.5rem',
-              paddingBottom: '1.5rem',
+              //paddingTop: '1.5rem',
+              //paddingBottom: '1.5rem',
               display: 'flex',
               justifyContent: 'flex-end',
-              alignItems: 'flex-start',
+              alignItems: 'flex-end',
               gap: 'var(--12, 0.75rem)',
               alignSelf: 'stretch',
             }}
@@ -65,23 +75,22 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ open, setOpen, 
               }}
               onClick={handleClose}
             >
-              cancel
+              {secondary}
             </Button>
             <Button
               btnType="primary"
-              sx={{
+              sx={{...primaryColor,
                 borderRadius: '0.375rem',
                 color: palette.common.white,
-                backgroundColor: palette.danger[500],
+                
                 fontWeight: 700,
               }}
               onClick={handleDelete}
             >
-              Delete
+              {primary}
             </Button>
           </Box>
         </Box>
-      </Box>
     </Modal>
   );
 };
