@@ -169,8 +169,8 @@ const Dropdown: React.FC<DropdownProps> = ({ task }) => {
           handleDelete={handleDelete} 
           primaryColor={{ backgroundColor: palette.danger[500] }}
         />}
-       <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
-    </div>
+     {/*   <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
+   */}  </div>
   );
 };
 
