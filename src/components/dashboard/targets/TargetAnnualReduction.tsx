@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
 
 import { palette } from '@/styles/theme/colors';
-import ChipTrend from '@/components/commun/Chip/ChipTrend';
+import ChipTrend from '@/components/commun/chip/ChipTrend';
 
 export interface TotalCustomersProps {
   diff?: number;

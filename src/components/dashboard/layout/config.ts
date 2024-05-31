@@ -38,7 +38,7 @@ export const navItems: NavItemConfig[] = [
   {
     key: 'Reports',
     title: 'Reports',
-    href: paths.errors.notFound,
+    href: paths.dashboard.report,
     icon: ReportIcon,
   },
 ];

@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { Box, SxProps } from '@mui/system';
 
 import { Button } from '@/components/commun/Button';
-import ChipTrend from '@/components/commun/Chip/ChipTrend';
+import ChipTrend from '@/components/commun/chip/ChipTrend';
 import { palette } from '@/styles/theme/colors';
 
 interface EmissionByTypeItemProps {

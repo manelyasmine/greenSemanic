@@ -8,7 +8,11 @@ import { Box, SxProps } from '@mui/system';
 import { useSelector } from 'react-redux';
 
 import { Button } from '@/components/commun/Button';
+<<<<<<< Updated upstream
 import Chip from '@/components/commun/chip/Chip';
+=======
+import ChipTrend from '@/components/commun/chip/ChipTrend';
+>>>>>>> Stashed changes
 import EmissionByTypeItem from '@/components/special/ListItem/EmissionByTypeItem';
 import { palette } from '@/styles/theme/colors';
 import dayjs from 'dayjs';
