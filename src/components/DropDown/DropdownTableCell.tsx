@@ -25,9 +25,11 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ task }) => {
+const Dropdown: React.FC<DropdownProps> = ({ task }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isUpdate , setIsUpdate] = useState(false)
+  //const { targets } = useSelector((state: any) => state.target);
   //const { targets } = useSelector((state: any) => state.target);
   const dispatch = useDispatch();
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -51,7 +53,24 @@ const Dropdown: React.FC<DropdownProps> = ({ task }) => {
     // } else {
     //   const indexToRemove = targets.indexOf(target);
     //   //const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
+    // const { error, res } = await targetApis.updateTarget(data);
+    // if (error) {
+    //   return;
+    // } else {
+    //   const indexToRemove = targets.indexOf(target);
+    //   //const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
 
+    //   const newTargets =  targets.map((tar : Target) => {
+    //     if (tar.id === data.id) {
+    //       return data;
+    //     }
+    //     return tar;
+    //   });
+    //   //setIsDeleteOpen(false);
+    //   dispatch(setTargets(newTargets));
+    //   setIsUpdate(false)
+    // }
+    // handleClose();
     //   const newTargets =  targets.map((tar : Target) => {
     //     if (tar.id === data.id) {
     //       return data;
@@ -76,7 +95,17 @@ const Dropdown: React.FC<DropdownProps> = ({ task }) => {
     //   setIsDeleteOpen(false);
     //   dispatch(setTargets(newTargets));
     // }
+    // const { error, res } = await targetApis.deleteTarget(target.id);
+    // if (error) {
+    //   return;
+    // } else {
+    //   const indexToRemove = targets.indexOf(target);
+    //   const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
+    //   setIsDeleteOpen(false);
+    //   dispatch(setTargets(newTargets));
+    // }
 
+    // handleClose();
     // handleClose();
   }, []);
 
