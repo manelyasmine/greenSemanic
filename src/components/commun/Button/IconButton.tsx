@@ -1,20 +1,20 @@
 import React from 'react';
-import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
+import { IconButton as MuiIconButton, IconButtonProps as MuiIconButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { palette } from '@/styles/theme/colors';
 
-export type ButtonProps = MuiButtonProps & {
+export type ButtonProps = MuiIconButtonProps & {
   children?: React.ReactNode;
   btnType?: 'primary' | 'secondary' | 'tertiary' | 'primaryLight' | 'secondaryGray' | 'dashBorder' | 'link';
   size?: 'small' | 'medium' | 'large';
 };
 
-const StyledButton = styled(MuiButton, {
+const StyledIconButton = styled(MuiIconButton, {
   shouldForwardProp: (prop) => prop !== 'btnType',
 })<ButtonProps>(({ btnType  }) => {
   let backgroundColor, color, borderColor, border, boxShadow;
-  let borderRadius = '6px';
+  //let borderRadius = '6px';
   let padding = '6px 12px';
   let justifyContent = 'center';
   let alignItems = 'center';
@@ -42,7 +42,7 @@ const StyledButton = styled(MuiButton, {
     case 'secondaryGray':
       backgroundColor = palette.common.white;
       color = palette.gray[600];
-      borderRadius = '8px';
+      //borderRadius = '8px';
       boxShadow = '0px 1px 2px 0px rgba(16, 24, 40, 0.05)';
       border= '1px solid var(--Grey-grey-200, #B3B8C2)';
 
@@ -66,7 +66,7 @@ const StyledButton = styled(MuiButton, {
     color,
     borderColor,
     border,
-    borderRadius,
+   // borderRadius,
     padding,
     justifyContent,
     alignItems,
@@ -84,10 +84,10 @@ const StyledButton = styled(MuiButton, {
   };
 });
 
-export const Button: React.FC<ButtonProps> = ({ children, btnType = 'primary', type = 'button', ...props }) => {
+export const IconButton: React.FC<ButtonProps> = ({ children, btnType = 'primary', type = 'button', ...props }) => {
   return (
-    <StyledButton btnType={btnType} type={type}  {...props}>
+    <StyledIconButton btnType={btnType} type={type}  {...props}>
       {children}
-    </StyledButton>
+    </StyledIconButton>
   );
 };
