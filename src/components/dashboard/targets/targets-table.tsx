@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux';
 import { Target } from '@/types/target';
 import { setTarget } from '@/lib/store/reducer/useTarget';
 import { useSelection } from '@/hooks/use-selection';
-import Chip from '@/components/commun/Chip/Chip';
+import Chip from '@/components/commun/chip/Chip';
 import ChipTrend from '@/components/commun/Chip/ChipTrend';
 import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 import { palette } from '@/styles/theme/colors';

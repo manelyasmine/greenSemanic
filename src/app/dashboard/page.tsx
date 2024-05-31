@@ -1,149 +1,89 @@
 'use client';
 
-import * as React from 'react';
-import { useState } from 'react';
-import type { Metadata } from 'next';
-import { Box, Typography } from '@mui/material';
+import  React , {useState} from 'react';
+import { Box, Typography,Button ,Divider} from '@mui/material';
+import { MuiButton } from '@/styles/theme/components/button';
 import Grid from '@mui/material/Unstable_Grid2';
-import dayjs from 'dayjs';
-
-import { config } from '@/config';
+import {ImportIcon,ExportIcon,CalanderIcon, FilterIcon } from '@/icons';
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import { CarbonEmissionsCategory } from '@/components/dashboard/overview/CarbonEmissionsCategory';
-import { CarbonEmissionsScope } from '@/components/dashboard/overview/CarbonEmissionsScope';
-import { CarbonPerMonth } from '@/components/dashboard/overview/CarbonPerMonth';
-import { EmissionByType } from '@/components/dashboard/overview/EmissionByType';
-import { EmissionLocation } from '@/components/dashboard/overview/EmissionLocation';
-import { Footprints } from '@/components/dashboard/overview/Footprint';
-import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
 import { MonthlyCarbonEmissions } from '@/components/dashboard/overview/MonthlyCarbonEmissions';
-import { Reduction } from '@/components/dashboard/overview/Reduction';
-import { Tasks } from '@/components/dashboard/overview/Tasks';
-import { TotalProfit } from '@/components/dashboard/overview/total-profit';
-import { TotalCO2 } from '@/components/dashboard/overview/TotalCO2';
-import { TotalEmissions } from '@/components/dashboard/overview/TotalEmissions';
+import Scopes from "@/components/dashboard/overview/Scopes"
 
-// export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
+import { useDispatch, useSelector } from 'react-redux';
+import { ReportsTable } from '@/components/dashboard/reports/reports-table';
+import dayjs from 'dayjs';
+const reports = [
+  {
+    id: 'USR-010',
+    name: 'Alcides Antonio',
+    period: '/assets/avatar-10.png',
+    status: 'progress',
+    createdBy: 'dddddd',
+     createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
+  {
+    id: 'USR-010',
+    name: 'Alcides Antonio',
+    period: '/assets/avatar-10.png',
+    status: 'progress',
+    createdBy: 'dddddd',
+     createdAt: dayjs().subtract(2, 'hours').toDate(),
+  },
 
+] satisfies reports[];
 export default function Page(): React.JSX.Element {
-  const [selectedTab, setSelectedTab] = React.useState<string>('7 Days');
+  const [selectedTab, setSelectedTab] = useState<string>('7 Days');
+  const page = 0;
+  const rowsPerPage = 3;
 
+  const { targets } = useSelector((state: any) => state.target);
+  const [target, setTarget] = React.useState<Target>({});
+  const [paginatedTarget, setPaginatedTarget] = useState<Target[]>([]);
   // Function to handle tab changes
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
   return (
-    <Box>
-      <Typography
-        sx={{
-          fontSize: '32px',
-          fontStyle: 'normal',
-          fontWeight: 600,
-          lineHeight: '125%',
-        }}
-        gutterBottom
-      >
-        Dashboard
-      </Typography>
-      <CustomTabs value={selectedTab} handleChange={handleTabChange} />
-      <div>
-        {/* Content for each tab based on the selectedTab value */}
-        {/* {selectedTab === '7 Days' && <div>Content for 7 Days</div>}
-        {selectedTab === '30 Days' && <div>Content for 30 Days</div>}
-        {selectedTab === 'Quarter' && <div>Content for Quarter</div>}
-        {selectedTab === '12 Months' && <div>Content for 12 Months</div>} */}
-      </div>
-      <Grid container spacing={3} mt={3}>
-        <Grid lg={4} sm={6} xs={12}>
-          <CarbonPerMonth diff={12} trend="up" sx={{ height: '100%' }} value="548752" />
-        </Grid>
-        <Grid lg={4} sm={6} xs={12}>
-          <TotalEmissions diff={0.9} trend="down" sx={{ height: '100%' }} value="548752" />
-        </Grid>
-        <Grid lg={4} sm={6} xs={12}>
-          <Reduction diff={1.4} trend="up" sx={{ height: '100%' }} value={200} />
-        </Grid>
-        <Grid lg={8} xs={12}>
-          <CarbonEmissionsScope
-            chartSeries={[
-              { name: 'Scope 1', data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 55, 50, 45] },
-              { name: 'Scope 2', data: [30, 35, 40, 45, 50, 55, 60, 55, 50, 45, 40, 35] },
-              { name: 'Scope 3', data: [40, 45, 50, 55, 60, 55, 50, 45, 40, 35, 30, 25] },
-            ]}
-            sx={{ height: '100%' }}
-          />
-        </Grid>
-        <Grid lg={4} md={6} xs={12}>
-          <Tasks sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={8} md={6} xs={12}>
-          <MonthlyCarbonEmissions sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={4} md={12} xs={12}>
-          <LatestOrders
-            orders={[
-              {
-                id: 'ORD-007',
-                customer: { name: 'Ekaterina Tankova' },
-                amount: 30.5,
-                status: 'pending',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-006',
-                customer: { name: 'Cao Yu' },
-                amount: 25.1,
-                status: 'delivered',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-004',
-                customer: { name: 'Alexa Richardson' },
-                amount: 10.99,
-                status: 'refunded',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-003',
-                customer: { name: 'Anje Keizer' },
-                amount: 96.43,
-                status: 'pending',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-002',
-                customer: { name: 'Clarke Gillebert' },
-                amount: 32.54,
-                status: 'delivered',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-001',
-                customer: { name: 'Adam Denisov' },
-                amount: 16.76,
-                status: 'delivered',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-            ]}
-            sx={{ height: '100%' }}
-          />
-        </Grid>
-        <Grid lg={8} md={12} xs={12}>
-          <EmissionLocation sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={4} md={12} xs={12}>
-          <EmissionByType sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={7.5} md={6} xs={12}>
-          <Footprints sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={4.5} md={6} xs={12}>
-          <TotalCO2 sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={12} md={12} xs={12}>
-          <CarbonEmissionsCategory sx={{ height: '100%' }} />
+    <Box  >
+    <Grid container justifyContent="space-between" spacing={2}>
+      <Grid item xs={8}>
+        <Typography variant="h3" color="var(--Grey-grey-900, #1A1D21)" gutterBottom>
+        Reports
+        </Typography>
+        <Typography variant="bodyP2" color="var(--Grey-grey-400, #88909F)" >
+       
+        Ci-dessous se trouve une liste de tâches liées à vos émissions de carbone. Veuillez les passer en revue et vous assurer qu'elles sont conformes à vos objectifs en matière de durabilité.
+        </Typography>
+        <Divider sx={{backgroundColor:"#EAECF0",height:"1px",width:"100%",marginTop:"24px"}}   />
+      </Grid>
+     
+      <Grid item xs={4} container justifyContent="flex-end">
+       
+        <Grid item>
+          <Button
+            btnType="Primary"
+            sx={{
+              ...MuiButton.styleOverrides.sizeSmall,
+              borderRadius: "6px",
+              background: "var(--Green-green-500, #16B364)",
+            }}
+            startIcon={<ExportIcon fontSize="var(--icon-fontSize-sm)"  color="white"/>}  
+          >
+            <Typography variant="h7" sx={{ color: "var(--Colors-Base-00, #FFF)" }}>
+              Export
+            </Typography>
+          </Button>
         </Grid>
       </Grid>
+    </Grid>
+    <ReportsTable count={paginatedTarget.length} page={page} rows={reports} rowsPerPage={rowsPerPage} />
+     
+ 
+       
     </Box>
   );
+}
+function applyPagination(rows: any[], page: number, rowsPerPage: number): Target[] {
+  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }
