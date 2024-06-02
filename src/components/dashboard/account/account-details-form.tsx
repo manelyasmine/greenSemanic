@@ -2,7 +2,9 @@
 
 import * as React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Button from '@mui/material/Button';
+import { Stack } from '@mui/material';
+// import Button from '@mui/material/Button';
+import { Button } from '@/components/commun/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -73,121 +75,125 @@ export function AccountDetailsForm(): React.JSX.Element {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Card>
+      {/* <Card>
         <CardHeader subheader="The information can be edited" title="Profile" />
         <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid md={6} xs={12}>
-              <Controller
-                name="firstname"
-                control={control}
-                defaultValue={user.firstname}
-                render={({ field }) => (
-                  <FormControl fullWidth required>
-                    <InputLabel>First name</InputLabel>
-                    <OutlinedInput {...field} label="First name" />
-                    {errors.firstname && <p>{errors.firstname.message}</p>}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid md={6} xs={12}>
-              <Controller
-                name="lastname"
-                control={control}
-                defaultValue={user.lastname}
-                render={({ field }) => (
-                  <FormControl fullWidth required>
-                    <InputLabel>Last name</InputLabel>
-                    <OutlinedInput {...field} label="Last name" />
-                    {errors.lastname && <p>{errors.lastname.message}</p>}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid md={6} xs={12}>
-              <Controller
-                name="email"
-                control={control}
-                defaultValue={user.email}
-                render={({ field }) => (
-                  <FormControl fullWidth required>
-                    <InputLabel>Email address</InputLabel>
-                    <OutlinedInput {...field} label="Email address" />
-                    {errors.email && <p>{errors.email.message}</p>}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid md={6} xs={12}>
-              <Controller
-                name="phone"
-                control={control}
-                defaultValue={user.phone}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel>Phone number</InputLabel>
-                    <OutlinedInput {...field} label="Phone number" type="tel" />
-                    {errors.phone && <p>{errors.phone.message}</p>}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid md={6} xs={12}>
-              <Controller
-                name="country"
-                control={control}
-                defaultValue={user.country}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel>State</InputLabel>
-                    <Select {...field} defaultValue="new-york" label="State" name="country" variant="outlined">
-                      {states.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.country && <p>{errors.country.message}</p>}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid md={6} xs={12}>
-              <Controller
-                name="city"
-                control={control}
-                defaultValue={user.city}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel>City</InputLabel>
-                    <OutlinedInput {...field} label="City" name="city" />
-                    {errors.city && <p>{errors.city.message}</p>}
-                  </FormControl>
-                )}
-              />
-            </Grid>
-          </Grid>
+        <CardContent> */}
 
-          {/* {errors.root && (
+      <Grid container spacing={3}>
+        <Grid md={12} xs={12}>
+          <Controller
+            name="firstname"
+            control={control}
+            defaultValue={user.firstname}
+            render={({ field }) => (
+              <FormControl fullWidth required>
+                <InputLabel>First name</InputLabel>
+                <OutlinedInput {...field} label="First name" />
+                {errors.firstname && <p>{errors.firstname.message}</p>}
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid md={12} xs={12}>
+          <Controller
+            name="lastname"
+            control={control}
+            defaultValue={user.lastname}
+            render={({ field }) => (
+              <FormControl fullWidth required>
+                <InputLabel>Last name</InputLabel>
+                <OutlinedInput {...field} label="Last name" />
+                {errors.lastname && <p>{errors.lastname.message}</p>}
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid md={12} xs={12}>
+          <Controller
+            name="email"
+            control={control}
+            defaultValue={user.email}
+            render={({ field }) => (
+              <FormControl fullWidth required>
+                <InputLabel>Email address</InputLabel>
+                <OutlinedInput {...field} label="Email address" />
+                {errors.email && <p>{errors.email.message}</p>}
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid md={12} xs={12}>
+          <Controller
+            name="phone"
+            control={control}
+            defaultValue={user.phone}
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>Phone number</InputLabel>
+                <OutlinedInput {...field} label="Phone number" type="tel" />
+                {errors.phone && <p>{errors.phone.message}</p>}
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid md={12} xs={12}>
+          <Controller
+            name="country"
+            control={control}
+            defaultValue={user.country}
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>State</InputLabel>
+                <Select {...field} defaultValue="new-york" label="State" name="country" variant="outlined">
+                  {states.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.country && <p>{errors.country.message}</p>}
+              </FormControl>
+            )}
+          />
+        </Grid>
+        <Grid md={12} xs={12}>
+          <Controller
+            name="city"
+            control={control}
+            defaultValue={user.city}
+            render={({ field }) => (
+              <FormControl fullWidth>
+                <InputLabel>City</InputLabel>
+                <OutlinedInput {...field} label="City" name="city" />
+                {errors.city && <p>{errors.city.message}</p>}
+              </FormControl>
+            )}
+          />
+        </Grid>{' '}
+        <Alert setChildren={setMessage} sx={{ marginTop: 2 }} severity={type}>
+          {message}
+        </Alert>{' '}
+        <Grid md={12} xs={12} justifyContent="flex-end" sx={{ display: 'flex', alignItems:'flex-end'}}>
+          <Button type="submit" variant="contained" btnType='primary'>
+            Save details
+          </Button>
+        </Grid>
+      </Grid>
+
+      {/* {errors.root && (
             <Alert  sx={{ marginTop: 2 }} severity={'error'}>
               {errors.root.message}
             </Alert>
           )} */}
 
-          <Alert setChildren={setMessage} sx={{ marginTop: 2 }} severity={type}>
-            {message}
-          </Alert>
-        </CardContent>
+      {/* </CardContent>
 
         <Divider />
-        <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button type="submit" variant="contained">
-            Save details
-          </Button>
-        </CardActions>
-      </Card>
+        <CardActions sx={{ justifyContent: 'flex-end' }}> */}
+
+      {/* </CardActions>
+      </Card> */}
     </form>
   );
 }
