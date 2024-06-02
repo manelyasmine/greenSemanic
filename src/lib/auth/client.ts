@@ -107,7 +107,8 @@ class AuthClient {
 
       this.user = { id: response.data._id, ...response.data };
     } catch (e) {
-      return { error: 'backend error' };
+      // console.log('error '+ JSON.stringify(e.response.data))
+      return { error: 'backend error: '+e.response.data.error };
     }
     return {};
   }
