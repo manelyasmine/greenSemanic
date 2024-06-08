@@ -14,11 +14,18 @@ function generateToken(): string {
 }
 
 export interface NewTaskParams {
+<<<<<<< HEAD
   taskName?: string;
   targetName?: string;
   dueDate?: string;
   usersIds?: string[];
   createdBy?:string;
+=======
+  name?: string;
+  target?: string;
+  dueDate?: Date | null;
+  usersIds?: string[];
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
 }
 
 class TaskApis {
@@ -42,6 +49,7 @@ class TaskApis {
 
     return {};
   }
+<<<<<<< HEAD
 async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
   // Make API request
   try {
@@ -61,6 +69,16 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
    
 
       return {res : {...response.data }}
+=======
+
+  async createTask(id: string,data: NewTaskParams): Promise<{res? :Task,  error?: string }> {
+    // Make API request
+    try { 
+      const response = await this.apiTask.post('/', data , { withCredentials: true });
+      console.log("create task apis===>",response,id,data);
+
+      return {res : {...response.data, id: response.data._id}}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
     } catch (e) {
       return { error: 'backend error' };
     } 

@@ -44,11 +44,16 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
     setAnchorEl(event.currentTarget);
   };
 
+<<<<<<< HEAD
  
+=======
+  const [user, setUser] = React.useState<User>({});
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
 
   const handleClose = () => {
     setAnchorEl(null);
     setIsUpdate(false)
+<<<<<<< HEAD
     setIsAssign(false);
   };
   
@@ -70,6 +75,33 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
       dispatch(setTasks(newTasks));
       setIsUpdate(false)
 
+=======
+  };
+  
+  // const handleModify = () => {
+  //   handleClose();
+  //   // onModify?.(); // Call the onModify function if provided
+  // };
+
+
+  const handleModify = React.useCallback(async (data:  Task): Promise<void> => {
+
+    const { error, res } = await taskApis.updateTask(data);
+    if (error) {
+      return;
+    } else {
+      const indexToRemove = tasks.indexOf(Task); 
+
+      const newTasks =  targets.map((tar : Task) => {
+        if (tar.id === data.id) {
+          return data;
+        }
+        return tar;
+      });
+      //setIsDeleteOpen(false);
+      dispatch(setTasks(newTasks));
+      setIsUpdate(false)
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
     }
     handleClose();
   }, []);
@@ -163,6 +195,38 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
       }, 
 [dispatch]);      
 
+ const handleTargets= React.useCallback(async (): Promise<void> => {
+    handleClose();
+    try {
+      const { res } = await targetApis.getTargets();
+      dispatch(setTargets(res));
+       
+      
+    } catch (error) {
+      console.error('Error fetching users:', error); 
+    }
+
+    console.log("user api drop===>",users)
+     
+        }, [dispatch]);  
+
+ 
+  const handleUsers= React.useCallback(async (): Promise<void> => {
+          handleClose();
+          try {
+            const { res } = await userApis.getUsers();
+            dispatch(setUsers(res));
+            console.log("useeeeeeeeee",Object.keys(res),Object.keys(users))
+             
+            
+          } catch (error) {
+            console.error('Error fetching users:', error); 
+          }
+      
+          console.log("user api drop===>",users)
+           
+              }, [dispatch]);      
+
   return (
     <div>
       <IconButton onClick={handleOpen}> <DotsHorizontal />  </IconButton>    
@@ -173,9 +237,19 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
         MenuListProps={{ 'aria-labelledby': 'dropdown-button' }}
       >
         <Box sx={DropDOwn}>
+<<<<<<< HEAD
           <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}> <ListItemIcon>  <ModifyIcon />  </ListItemIcon> <ListItemText primary="Modify" /></MenuItem>  
             <Divider variant="middle" />  
           <MenuItem onClick={() => {setIsDeleteOpen(!isDeleteOpen);  }}sx={itemMenu}> <ListItemIcon>  <DeleteIcon />    </ListItemIcon>  <ListItemText primary="Delete" /></MenuItem>
+=======
+          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}>
+            <ListItemIcon>
+              {' '}
+              <ModifyIcon />{' '}
+            </ListItemIcon>
+            <ListItemText primary="Modify" />
+          </MenuItem>
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           <Divider variant="middle" />
           <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsAssign(!isAssign)}} sx={itemMenu}>   <ListItemIcon>  <AssignIcon />   </ListItemIcon><ListItemText primary="Assign" /> </MenuItem>
         </Box>
@@ -193,6 +267,7 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
           handleDelete={handleDelete} 
           primaryColor={{ backgroundColor: palette.danger[500] }}
         />} 
+<<<<<<< HEAD
       {(isUpdate  ) &&(
        <UpdateBottomDrawerTask 
        open={isUpdate  } 
@@ -225,6 +300,10 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
        
        />)
       }
+=======
+
+       <UpdateBottomDrawerTask open={isUpdate} handleCancelTask={ handleClose } onUpdateTask={handleModify } task ={task} users={users} targets={targets} />
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
      </div>
   );
 };

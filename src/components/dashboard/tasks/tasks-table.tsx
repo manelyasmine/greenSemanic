@@ -110,9 +110,16 @@ export function TasksTable({ count = 100, rows = [], rowsPerPage = 5 }: TasksTab
                     />
                   </TableCell>
                   <TableCell>
+<<<<<<< HEAD
                      
                       <Typography variant="bodyB3">{row.taskName}</Typography>
                      
+=======
+                    <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
+                      
+                      <Typography variant="bodyB3">{row.taskName}</Typography>
+                    </Stack>
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
                   </TableCell>
 
                   <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
