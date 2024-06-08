@@ -3,6 +3,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './reducer/userSlice';
 import targetReducer from './reducer/useTarget';
+import  taskReducer from './reducer/useTask';
+import usersReducer from './reducer/useUser';;
 import fileReducer from './reducer/useFile'
 
 const persistConfig = {
@@ -17,6 +19,8 @@ const persistedReducer = persistReducer(persistConfig, userReducer);
 const rootReducer = combineReducers({
   user: persistedReducer,
   target: targetReducer,
+  task: taskReducer,
+  users:usersReducer,
   file: fileReducer
 });
 

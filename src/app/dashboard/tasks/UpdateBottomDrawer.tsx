@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import {
   Box,
   Button,
@@ -15,47 +15,65 @@ import Slide from '@mui/material/Slide';
 import {  Filter,  } from '@/styles/theme/Filter';
 import {header,body,HeaderBody,FooterBody,FooterBox} from '@/styles/theme/Bottom-drawer';
 import Card from '@mui/material/Card';
- 
+ import { useDispatch, useSelector } from 'react-redux';
+import { Task } from '@/types/task'; 
+import {User} from '@/types/user';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-interface FormTask {
-  taskName?: string;
-  targetName?: string;
-  dueDate?: string;
-  usersIds?: string[];
+
+/* interface User {
+  _id: string; // Assuming your user has an ID property
+  username: string;
+  email: string;
 }
-interface BottomDrawerProps {
-  newTask: FormTask;
-  setNewTask: any; 
+ */
+
+interface UpdateBottomDrawerTaskProps {
+  open: boolean;
   handleCancelTask: () => void;
-  handleCreateTask: any; // Function to handle task creation
-  open:boolean,
   users:any;
   targets:any;
-
+  task : Task;
+  onUpdateTask: (task: Task) => void; // Function to handle task creation
 }
+ 
 
-const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,handleCancelTask, handleCreateTask,users,targets  }) => {
-  console.log("BottomDrawer===>",users)
-  const handleChange = (name: string, event: any) => {
+const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets}) => {
+  
   
  
-    setNewTask({ ...newTask, [name]: event });
-     
-  };
-  
-  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
-    const value = event.target.value as string | string[];
-    handleChange(name, value);
-  };
-  const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const value = event.target.value as string[];
-    handleChange('usersIds', value);
-  };
-  
+ const dispatch = useDispatch();
+ const [updatedTask, setupdatedTask] = useState<Task>(task);
+ 
+ 
+ const [error, setError] = useState(false);
+ const handleUpdateTask = () => {
+   console.log('update,updatedTask',updatedTask)
+   onUpdateTask(updatedTask);
+   
+ };
 
-  return ( 
+ const handleChange = (name: string, event: Task) => {
+  
+ 
+  setupdatedTask({ ...updatedTask, [name]: event });
+   
+};
+
+const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
+  const value = event.target.value as string | string[];
+  handleChange(name, value);
+};
+const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const value = event.target.value as string[];
+  handleChange('usersIds', value);
+};
+
+ return ( 
     
-    <form onSubmit={handleCreateTask}>
+    <form onSubmit={handleUpdateTask}>
     
   
     <Drawer anchor="bottom" open={open} onClose={handleCancelTask}>
@@ -68,9 +86,8 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
                 color: 'var(--Foundation-Grey-grey-700, #121417)',
                 fontFeatureSettings: '"cv04" on, "cv03" on, "cv02" on, "cv11" on, "clig" off, "liga" off',
               }}
-            >
-              {' '}
-              Add Task{' '}
+            > 
+              Update Task{' '}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="help">need help?</Typography>
@@ -90,7 +107,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
                 alignSelf: 'stretch',
               }}
             >
-              <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>Create New Task</Typography>
+              <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>Update Old Task</Typography>
               <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}> Add a new task to further streamline your carbon emission management process.</Typography>
               
             </Box>
@@ -102,16 +119,17 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
 
       <Grid item xs={12} >
       <Grid container spacing={2} alignItems="center">
-           
+      
          
       <Typography variant='subtitle3'>Task Name</Typography>
       <TextField
             label="Task Title"
-            value={newTask.taskName}
-            onChange={(e) => setNewTask(e.target.value)}
+            value={updatedTask.taskName}
+            onChange={(e) => handleChange('taskName', e.target.value)}
             margin="normal"
             fullWidth
           />
+ 
       
         </Grid>
         </Grid>
@@ -126,11 +144,13 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={newTask.targetName}
-                    onChange={(e) => handleChange('target', e.newTask.value)}
+                  value={updatedTask.targetName}
+                  onChange={(e) => handleSelectChange(e, 'targetName')}
+                      
+                       
                   label="Select"
                 >
-                    {targets && Array.isArray(targets) ? (  
+              {targets && Array.isArray(targets) ? (  
                 Object.entries(targets).map(([key, value]) => (
                   <MenuItem key={value.id} value={value.id}>
                     {value.name}  
@@ -141,7 +161,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
                 <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
                   {targets === undefined ? 'Loading targets...' : 'No targets available'}
                 </Typography>
-              )} 
+              )}  
                 </Select>
               </FormControl>
       </Grid>
@@ -153,9 +173,9 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
               
       <Typography variant='subtitle3'>Due Date</Typography>
       <TextField
-            label="Due Date"
-            value={newTask.dueDate}
-            onChange={(e) => setNewTask(e.target.value)}
+            label="Task Title"
+            value={updatedTask.dueDate}
+            onChange={(e) => handleChange('dueDate',e.target.value)}
             margin="normal"
             fullWidth
           />
@@ -167,48 +187,30 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
             
       <Typography variant='subtitle3'>Assigned To</Typography>
       <FormControl fullWidth>
-      {/* <Select
+      <Select
             labelId="demo-multiple-select-label"
             id="demo-multiple-select"
             multiple
-            value={newTask.usersIds}
-            //onChange={handleMultiSelectChange}
+            value={updatedTask.usersIds}
+            onChange={handleMultiSelectChange}
                        
             label="Assigned To"
           >
       
               {users && Array.isArray(users) ? ( // Check if users is an array and defined
-                  Object.entries(users).map(([key, value]) => (
-                    <MenuItem key={value._id} value={value._id}>
-                      {value.email}  
-                    </MenuItem>
-                    ))
+            Object.entries(users).map(([key, value]) => (
+              <MenuItem key={value._id} value={value._id}>
+                {value.email}  
+              </MenuItem>
+              ))
             ) : (
               // Display a message while users are loading or unavailable
               <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
                 {users === undefined ? 'Loading users...' : 'No users available'}
               </Typography>
-            )}   */} 
+            )}  
         
-        <Select
-                   labelId="demo-multiple-select-label"
-                    id="demo-multiple-select"
-                   value={newTask.usersIds}
-                    onChange={ handleMultiSelectChange}
-                  label="Select"
-                >
-                    {users && Array.isArray(users) ? ( // Check if users is an array and defined
-                  Object.entries(users).map(([key, value]) => (
-                    <MenuItem key={value._id} value={value._id}>
-                      {value.email}  
-                    </MenuItem>
-                    ))
-            ) : (
-              // Display a message while users are loading or unavailable
-              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                {users === undefined ? 'Loading users...' : 'No users available'}
-              </Typography>
-            )}
+             
           </Select>
               </FormControl>
          </Grid>
@@ -221,8 +223,8 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
           <Divider sx={{ mt: 2,color:"black" }} />
           <Grid sx={FooterBox}>
             <Grid sx={FooterBody}>
-              <Button
-                variant="contained"
+            <Button
+               
                 btnType="secondaryGray"
                 onClick={handleCancelTask}
                 sx={{
@@ -238,9 +240,9 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
               </Button>
 
               <Button
-                variant="contained"
+               
                 btnType="primary"
-                onClick={handleCreateTask}
+                onClick={handleUpdateTask}
                 sx={{
                   borderRadius: '0.375rem',
                   background: 'var(--Green-green-500, #16B364)',
@@ -275,4 +277,4 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
   );
 };
 
-export default BottomDrawer;
+export default UpdateBottomDrawerTask;

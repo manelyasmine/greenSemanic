@@ -14,13 +14,7 @@ import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { DropDOwn, itemMenu } from '@/styles/theme/DropDown';
 import UpdateBottomDrawer from '@/app/dashboard/target/UpdateBottomDrawer';
 
-interface DropdownProps {
-  // Function to handle modification triggered from the dropdown
-  // onModify?: (data: any) => void;
-  // // Function to handle deletion triggered from the dropdown
-  // onDelete?: (data: any) => void;
-  // // Function to handle assignment triggered from the dropdown (optional)
-  // onAssign?: (data: any) => void;
+interface DropdownProps { 
   target: Target;
 }
 
