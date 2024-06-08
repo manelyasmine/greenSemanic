@@ -22,22 +22,39 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
+<<<<<<< HEAD
  
 interface UpdateBottomDrawerTaskProps {
   open: boolean;
   isAssign:boolean;
+=======
+
+/* interface User {
+  _id: string; // Assuming your user has an ID property
+  username: string;
+  email: string;
+}
+ */
+
+interface UpdateBottomDrawerTaskProps {
+  open: boolean;
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
   handleCancelTask: () => void;
   users:any;
   targets:any;
   task : Task;
+<<<<<<< HEAD
   userId:User;
   headerName:string;
   titleName:string;
   subtitleName:string;
+=======
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
   onUpdateTask: (task: Task) => void; // Function to handle task creation
 }
  
 
+<<<<<<< HEAD
 const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets,isAssign,headerName,titleName,subtitleName}) => {
  
  const [updatedTask, setupdatedTask] = useState<Task>(task);
@@ -50,6 +67,19 @@ const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, h
  const [error, setError] = useState(false);
  const handleUpdateTask = () => {
    console.log('update,updatedTask=====>',updatedTask)
+=======
+const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets}) => {
+  
+  
+ 
+ const dispatch = useDispatch();
+ const [updatedTask, setupdatedTask] = useState<Task>(task);
+ 
+ 
+ const [error, setError] = useState(false);
+ const handleUpdateTask = () => {
+   console.log('update,updatedTask',updatedTask)
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
    onUpdateTask(updatedTask);
    
  };
@@ -61,6 +91,7 @@ const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, h
    
 };
 
+<<<<<<< HEAD
 useEffect(() => {
   // Set initial target only once on component mount
   setInitialTarget(task.targetName);
@@ -70,6 +101,8 @@ useEffect(() => {
 }, [task.targetName]); // Re-run effect if task.targetName changes
 
 
+=======
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
 const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
   const value = event.target.value as string | string[];
   handleChange(name, value);
@@ -77,9 +110,14 @@ const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: 
 const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
   const value = event.target.value as string[];
   handleChange('usersIds', value);
+<<<<<<< HEAD
   console.log("handle change user ids",updatedTask.usersIds)
 };
  
+=======
+};
+
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
  return ( 
     
     <form onSubmit={handleUpdateTask}>
@@ -96,7 +134,11 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                 fontFeatureSettings: '"cv04" on, "cv03" on, "cv02" on, "cv11" on, "clig" off, "liga" off',
               }}
             > 
+<<<<<<< HEAD
               {headerName} 
+=======
+              Update Task{' '}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="help">need help?</Typography>
@@ -116,8 +158,13 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                 alignSelf: 'stretch',
               }}
             >
+<<<<<<< HEAD
               <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>{titleName}</Typography>
               <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}>{subtitleName}</Typography>
+=======
+              <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>Update Old Task</Typography>
+              <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}> Add a new task to further streamline your carbon emission management process.</Typography>
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
               
             </Box>
  
@@ -133,12 +180,19 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
       <Typography variant='subtitle3'>Task Name</Typography>
       <TextField
             label="Task Title"
+<<<<<<< HEAD
             value={updatedTask.taskName || ''}
             defaultValue={task.taskName}
             onChange={(e) => handleChange('taskName', e.target.value)}
             margin="normal"
             fullWidth
             disabled={isAssign} 
+=======
+            value={updatedTask.taskName}
+            onChange={(e) => handleChange('taskName', e.target.value)}
+            margin="normal"
+            fullWidth
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           />
  
       
@@ -155,10 +209,15 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
+<<<<<<< HEAD
                   
                   value={updatedTask.targetName || initialTarget}
                   onChange={(e) => handleSelectChange(e, 'targetName')}
                   disabled={isAssign} 
+=======
+                  value={updatedTask.targetName}
+                  onChange={(e) => handleSelectChange(e, 'targetName')}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
                       
                        
                   label="Select"
@@ -187,10 +246,15 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
       <Typography variant='subtitle3'>Due Date</Typography>
       <TextField
             label="Task Title"
+<<<<<<< HEAD
             defaultValue={task.dueDate}
             value={updatedTask.dueDate || ''}
             onChange={(e) => handleChange('dueDate',e.target.value)}
             disabled={isAssign} 
+=======
+            value={updatedTask.dueDate}
+            onChange={(e) => handleChange('dueDate',e.target.value)}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
             margin="normal"
             fullWidth
           />
@@ -206,8 +270,14 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
             labelId="demo-multiple-select-label"
             id="demo-multiple-select"
             multiple
+<<<<<<< HEAD
             value={updatedTask.usersIds || ''}  
             onChange={handleMultiSelectChange}
+=======
+            value={updatedTask.usersIds}
+            onChange={handleMultiSelectChange}
+                       
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
             label="Assigned To"
           >
       

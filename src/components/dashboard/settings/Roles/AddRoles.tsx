@@ -178,14 +178,33 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     dispatch(addRole({ name: roleName, permissions: selectedPermissions }));  
     // Handle success or error from the dispatched action
   };
+  //this a async function to handle submit of roles
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const selectedPermissions = Object.entries(permissions)
+      .filter(([key, value]) => value)
+      .map(([key]) => key); // Extract selected permission keys
+
+    dispatch(addRole({ name: roleName, permissions: selectedPermissions }));
+    // Handle success or error from the dispatched action
+  };
+
+
 
 
 
   return (
+<<<<<<< HEAD
     <form onSubmit={handleCreateRole}>
     
   
     <Drawer anchor="bottom" open={open} onClose={handleCancelRole}>
+=======
+    <form onSubmit={handleSubmit}>
+    
+  
+    <Drawer anchor="bottom" open={open} onClose={onClose}>
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={header}>
@@ -288,7 +307,11 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={4}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="all"   onChange={handleCheckboxChange} /> select all
+=======
+            <Checkbox   /> select all
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           
@@ -305,17 +328,29 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="read_user_management"  onChange={handleCheckboxChange}   /> Read
+=======
+            <Checkbox name="userManagementRead"   /> Read
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="write_user_management"  onChange={handleCheckboxChange}   /> Write
+=======
+            <Checkbox name="userManagementWrite"   /> Write
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="create_user_management"  onChange={handleCheckboxChange}   /> Create
+=======
+            <Checkbox name="userManagementCreate"   /> Create
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
       
@@ -331,17 +366,29 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="read_emission_tracking"  onChange={handleCheckboxChange}  /> Read
+=======
+            <Checkbox name="emissionTrackingRead"   /> Read
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="write_emission_tracking"  onChange={handleCheckboxChange}  /> Write
+=======
+            <Checkbox name="emissionTrackingWrite"    /> Write
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="create_emission_tracking"  onChange={handleCheckboxChange}  /> Create
+=======
+            <Checkbox name="emissionTrackingCreate"    /> Create
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
       </Grid>
@@ -354,17 +401,29 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
            <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox  name="read_task" onChange={handleCheckboxChange}   /> Read
+=======
+            <Checkbox  name="TasksRead"   /> Read
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox  name="write_task"  onChange={handleCheckboxChange} /> Write
+=======
+            <Checkbox  name="TasksWrite"   /> Write
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox  name="create_task"   onChange={handleCheckboxChange} /> Create
+=======
+            <Checkbox  name="TasksCreate"   /> Create
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           </Grid>
@@ -377,17 +436,29 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox  name="read_targets" onChange={handleCheckboxChange}   /> Read
+=======
+            <Checkbox  name="TargetsRead"   /> Read
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="write_targets"  onChange={handleCheckboxChange} /> Write
+=======
+            <Checkbox name="TargetsWrite"   /> Write
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="create_targets"  onChange={handleCheckboxChange}  /> Create
+=======
+            <Checkbox name="TargetsCreate"   /> Create
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
          </Grid>
@@ -403,17 +474,29 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="read_reports" onChange={handleCheckboxChange}  /> Read
+=======
+            <Checkbox name="ReportsRead"   /> Read
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="write_reports"  onChange={handleCheckboxChange} /> Write
+=======
+            <Checkbox name="ReportsWrite"   /> Write
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
             <Checkbox name="create_reports"  onChange={handleCheckboxChange} /> Create
+=======
+            <Checkbox name="ReportsCreate"   /> Create
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
           </Box>
           </Grid>
          </Grid>
@@ -443,7 +526,11 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
               <Button
                 variant="contained"
                 btnType="primary"
+<<<<<<< HEAD
                 onClick={handleCreateRole}
+=======
+                onClick={handleSubmit}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
                 sx={{
                   borderRadius: '0.375rem',
                   background: 'var(--Green-green-500, #16B364)',

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography}from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
@@ -32,8 +33,34 @@ const names = [
   'Virginia Andrews',
   'Kelly Snyder',
 ];
+=======
+import {
+  Box,
+  Button,
+  Drawer,FormControl,Select,
+   
+  IconButton,
+  Grid,Checkbox,Divider,MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { Label } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+import {  Filter,  } from '@/styles/theme/Filter';
+import {header,body,HeaderBody,FooterBody,FooterBox} from '@/styles/theme/Bottom-drawer';
+import Card from '@mui/material/Card';
+ 
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
 
+interface FormTask {
+  taskName?: string;
+  targetName?: string;
+  dueDate?: string;
+  usersIds?: string[];
+}
 interface BottomDrawerProps {
+<<<<<<< HEAD
   
   newTask:any;
   setNewTask:any;
@@ -85,6 +112,36 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
     setNewTask({ ...newTask, usersIds: userIds }); */
   };
 
+=======
+  newTask: FormTask;
+  setNewTask: any; 
+  handleCancelTask: () => void;
+  handleCreateTask: any; // Function to handle task creation
+  open:boolean,
+  users:any;
+  targets:any;
+
+}
+
+const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,handleCancelTask, handleCreateTask,users,targets  }) => {
+  console.log("BottomDrawer===>",users)
+  const handleChange = (name: string, event: any) => {
+  
+ 
+    setNewTask({ ...newTask, [name]: event });
+     
+  };
+  
+  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
+    const value = event.target.value as string | string[];
+    handleChange(name, value);
+  };
+  const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const value = event.target.value as string[];
+    handleChange('usersIds', value);
+  };
+  
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
 
   return ( 
     
@@ -141,8 +198,12 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
       <TextField
             label="Task Title"
             value={newTask.taskName}
+<<<<<<< HEAD
            
             onChange={(e) => handleChange('taskName', e.target.value)}
+=======
+            onChange={(e) => setNewTask(e.target.value)}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
             margin="normal"
             fullWidth
           />
@@ -157,6 +218,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
           
       <Typography variant='subtitle3'>Target Name</Typography>
       <FormControl fullWidth>
+<<<<<<< HEAD
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -178,6 +240,29 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
         )}  
           </Select>
         </FormControl>
+=======
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={newTask.targetName}
+                    onChange={(e) => handleChange('target', e.newTask.value)}
+                  label="Select"
+                >
+                    {targets && Array.isArray(targets) ? (  
+                Object.entries(targets).map(([key, value]) => (
+                  <MenuItem key={value.id} value={value.id}>
+                    {value.name}  
+                  </MenuItem>
+                ))
+              ) : (
+                // Display a message while users are loading or unavailable
+                <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+                  {targets === undefined ? 'Loading targets...' : 'No targets available'}
+                </Typography>
+              )} 
+                </Select>
+              </FormControl>
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
       </Grid>
 
       </Grid>
@@ -189,7 +274,11 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
       <TextField
             label="Due Date"
             value={newTask.dueDate}
+<<<<<<< HEAD
             onChange={(e) => handleChange('dueDate',e.target.value)}
+=======
+            onChange={(e) => setNewTask(e.target.value)}
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
             margin="normal"
             fullWidth
           />
@@ -199,6 +288,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
       <Grid item xs={12}  >
       <Grid container spacing={2} alignItems="center">
             
+<<<<<<< HEAD
     
 
 
@@ -228,6 +318,54 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
         )}
         </Select>
       </FormControl>
+=======
+      <Typography variant='subtitle3'>Assigned To</Typography>
+      <FormControl fullWidth>
+      {/* <Select
+            labelId="demo-multiple-select-label"
+            id="demo-multiple-select"
+            multiple
+            value={newTask.usersIds}
+            //onChange={handleMultiSelectChange}
+                       
+            label="Assigned To"
+          >
+      
+              {users && Array.isArray(users) ? ( // Check if users is an array and defined
+                  Object.entries(users).map(([key, value]) => (
+                    <MenuItem key={value._id} value={value._id}>
+                      {value.email}  
+                    </MenuItem>
+                    ))
+            ) : (
+              // Display a message while users are loading or unavailable
+              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+                {users === undefined ? 'Loading users...' : 'No users available'}
+              </Typography>
+            )}   */} 
+        
+        <Select
+                   labelId="demo-multiple-select-label"
+                    id="demo-multiple-select"
+                   value={newTask.usersIds}
+                    onChange={ handleMultiSelectChange}
+                  label="Select"
+                >
+                    {users && Array.isArray(users) ? ( // Check if users is an array and defined
+                  Object.entries(users).map(([key, value]) => (
+                    <MenuItem key={value._id} value={value._id}>
+                      {value.email}  
+                    </MenuItem>
+                    ))
+            ) : (
+              // Display a message while users are loading or unavailable
+              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+                {users === undefined ? 'Loading users...' : 'No users available'}
+              </Typography>
+            )}
+          </Select>
+              </FormControl>
+>>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
          </Grid>
       </Grid>
 
