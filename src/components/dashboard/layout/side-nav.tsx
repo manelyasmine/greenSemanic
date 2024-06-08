@@ -69,14 +69,24 @@ export function SideNav({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSide
               flexDirection: 'column',
               justifyContent: 'space-between',
               height: '80vh',
+              
             }}
           >
-            <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
+            <Box component="nav" sx={{ flex: '1 1 auto', p: '12px'}}>
               {renderNavItems({ pathname, items: navItems })}
             </Box>
             <Stack sx={{ padding: '10px' }}>
               <NavItem key="7" pathname={pathname} icon={SupportIcon} title="Support" />
-              <NavItem key="8" pathname={pathname} icon={SettingsIcon} title="Settings" />
+              <NavItem key="Settings" href={paths.dashboard.settings} pathname={pathname} icon={SettingsIcon} title="Settings" />
+              {/* 
+              
+              {
+    key: 'Settings',
+    title: 'Settings',
+    href: paths.dashboard.settings,
+    icon: SettingsIcon,
+  },
+              */}
             </Stack>
           </Box>
         </Box>
@@ -95,7 +105,7 @@ function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pat
   }, []);
 
   return (
-    <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0 }}>
+    <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0}}>
       {children}
     </Stack>
   );
@@ -111,7 +121,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
   const Icon = icon ? icon : null;
 
   return (
-    <li style={{ listStyleType: 'none' }}>
+    <li style={{ listStyleType: 'none'  }}>
       <Box
         {...(href
           ? {
@@ -120,13 +130,14 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
               target: external ? '_blank' : undefined,
               rel: external ? 'noreferrer' : undefined,
             }
-          : { role: 'button' })}
+          : { role: 'button'  })}
         sx={{
           alignItems: 'center',
           borderRadius: 1,
           color: active ? palette.primary[800] : 'var(--NavItem-color)',
           cursor: 'pointer',
           display: 'flex',
+          
           flex: '0 0 auto',
           gap: 1,
           p: '6px 16px',
@@ -137,7 +148,7 @@ function NavItem({ disabled, external, href, icon, matcher, pathname, title }: N
           ...(disabled && {
             bgcolor: 'var(--NavItem-disabled-background)',
             color: 'var(--NavItem-disabled-color)',
-            cursor: 'not-allowed',
+            cursor: 'allowed',
           }),
         }}
       >

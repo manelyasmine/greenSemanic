@@ -24,13 +24,17 @@ function noop(): void {
 }
 
 export interface Customer {
-  id: string;
-  avatar: string;
-  name: string;
-  email: string;
-  address: { city: string; state: string; country: string; street: string };
-  phone: string;
-  createdAt: Date;
+  id?:string;
+  _id?:string;
+  taskName?: string;
+  targetName?: string;
+  dueDate?:string;
+  usersIds?: string;
+  status?:string;
+  createdBy?:string;
+  progress?:string;
+  createdAt?: string;
+  timezone?: string; 
 }
 
 interface CustomersTableProps {
@@ -107,18 +111,15 @@ export function MyTasksTable({
                     />
                   </TableCell>
                   <TableCell>
-                    <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                      <Avatar src={row.avatar} />
-                      <Typography variant="subtitle2">{row.name}</Typography>
-                    </Stack>
+                    <Typography variant="subtitle2">{row.taskName}</Typography>
+                    
                   </TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>
-                    {row.address.city}, {row.address.state}, {row.address.country}
-                  </TableCell>
-                  <TableCell>{row.phone}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
-                  <DropdownTableCell />
+
+                  <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>20%</TableCell>
+                  <TableCell>{row.status}</TableCell>
+                  
+                  <DropdownTableCell task={row}/>
                 </TableRow>
               );
             })}

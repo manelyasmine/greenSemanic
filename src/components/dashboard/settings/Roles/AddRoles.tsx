@@ -41,8 +41,23 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
     setNewRole('');
     onClose();
   };
+  //this a async function to handle submit of roles
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const selectedPermissions = Object.entries(permissions)
+      .filter(([key, value]) => value)
+      .map(([key]) => key); // Extract selected permission keys
+
+    dispatch(addRole({ name: roleName, permissions: selectedPermissions }));
+    // Handle success or error from the dispatched action
+  };
+
+
 
   return (
+    <form onSubmit={handleSubmit}>
+    
+  
     <Drawer anchor="bottom" open={open} onClose={onClose}>
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -128,7 +143,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
           </Grid>
           <Grid item xs={4}>
           <Box>
-            <Checkbox defaultChecked /> select all
+            <Checkbox   /> select all
           </Box>
           </Grid>
           
@@ -145,17 +160,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Read
+            <Checkbox name="userManagementRead"   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Write
+            <Checkbox name="userManagementWrite"   /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Create
+            <Checkbox name="userManagementCreate"   /> Create
           </Box>
           </Grid>
       
@@ -171,17 +186,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Read
+            <Checkbox name="emissionTrackingRead"   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Write
+            <Checkbox name="emissionTrackingWrite"    /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Create
+            <Checkbox name="emissionTrackingCreate"    /> Create
           </Box>
           </Grid>
       </Grid>
@@ -194,22 +209,22 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
           </Grid>
            <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Read
+            <Checkbox  name="TasksRead"   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Write
+            <Checkbox  name="TasksWrite"   /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Create
+            <Checkbox  name="TasksCreate"   /> Create
           </Box>
           </Grid>
           </Grid>
       </Grid>
-
+      
       <Grid item xs={12}  >
       <Grid container spacing={2} alignItems="center">
           <Grid item xs={6}>
@@ -217,17 +232,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Read
+            <Checkbox  name="TargetsRead"   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Write
+            <Checkbox name="TargetsWrite"   /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Create
+            <Checkbox name="TargetsCreate"   /> Create
           </Box>
           </Grid>
          </Grid>
@@ -243,17 +258,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Read
+            <Checkbox name="ReportsRead"   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Write
+            <Checkbox name="ReportsWrite"   /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox defaultChecked /> Create
+            <Checkbox name="ReportsCreate"   /> Create
           </Box>
           </Grid>
          </Grid>
@@ -283,7 +298,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
               <Button
                 variant="contained"
                 btnType="primary"
-                onClick={onClose}
+                onClick={handleSubmit}
                 sx={{
                   borderRadius: '0.375rem',
                   background: 'var(--Green-green-500, #16B364)',
@@ -298,6 +313,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open, onClose, onCreateUser }) => {
         </Box>
       </Slide>
     </Drawer>
+    </form>
   );
 };
 

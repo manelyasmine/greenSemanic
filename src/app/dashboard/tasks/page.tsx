@@ -1,136 +1,179 @@
 'use client';
 
-import React ,{useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs'; 
-  
- 
 import BottomDrawer from './BottomDrawer'; 
 import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
- 
-import { CustomersTable } from '@/components/dashboard/customer/customers-table';
-import { MyTasksTable } from '@/components/dashboard/customer/myTasks-table';
- 
-const customers = [
-  {
-    id: 'USR-010',
-    name: 'Alcides Antonio',
-    avatar: '/assets/avatar-10.png',
-    email: 'alcides.antonio@devias.io',
-    phone: '908-691-3242',
-    target:"target 01",
-    address: { city: 'Madrid', country: 'Spain', state: 'Comunidad de Madrid', street: '4158 Hedge Street' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-009',
-    name: 'Marcus Finn',
-    avatar: '/assets/avatar-9.png',
-    email: 'marcus.finn@devias.io',
-    phone: '415-907-2647',
-    target:"target 01",
-    address: { city: 'Carson City', country: 'USA', state: 'Nevada', street: '2188 Armbrester Drive' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-008',
-    name: 'Jie Yan',
-    avatar: '/assets/avatar-8.png',
-    email: 'jie.yan.song@devias.io',
-    phone: '770-635-2682',
-    target:"target 01",
-    address: { city: 'North Canton', country: 'USA', state: 'Ohio', street: '4894 Lakeland Park Drive' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-007',
-    name: 'Nasimiyu Danai',
-    avatar: '/assets/avatar-7.png',
-    email: 'nasimiyu.danai@devias.io',
-    phone: '801-301-7894',
-    target:"target 01",
-    address: { city: 'Salt Lake City', country: 'USA', state: 'Utah', street: '368 Lamberts Branch Road' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-006',
-    name: 'Iulia Albu',
-    avatar: '/assets/avatar-6.png',
-    email: 'iulia.albu@devias.io',
-    phone: '313-812-8947',
-    target:"target 01",
-    address: { city: 'Murray', country: 'USA', state: 'Utah', street: '3934 Wildrose Lane' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-005',
-    name: 'Fran Perez',
-    avatar: '/assets/avatar-5.png',
-    email: 'fran.perez@devias.io',
-    phone: '712-351-5711',
-    target:"target 01",
-    address: { city: 'Atlanta', country: 'USA', state: 'Georgia', street: '1865 Pleasant Hill Road' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
+import { TasksTable } from '@/components/dashboard/tasks/tasks-table';
+import { MyTasksTable } from '@/components/dashboard/tasks/myTasks-table';
+import { taskApis } from '@/lib/task/taskApis';
+import { Task } from '@/types/task';
+import { setTasks } from '@/lib/store/reducer/useTask';
+import { useDispatch, useSelector } from 'react-redux';
+import { userApis } from '@/lib/user/userApis';
+import { User } from '@/types/user';
+import { Target } from '@/types/target';
+import { setTargets } from '@/lib/store/reducer/useTarget';
+import { setUsers } from '@/lib/store/reducer/useUser';
+import { targetApis } from '@/lib/target/targetApis';
 
-  {
-    id: 'USR-004',
-    name: 'Penjani Inyene',
-    avatar: '/assets/avatar-4.png',
-    email: 'penjani.inyene@devias.io',
-    phone: '858-602-3409',
-    target:"target 01",
-    address: { city: 'Berkeley', country: 'USA', state: 'California', street: '317 Angus Road' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-003',
-    name: 'Carson Darrin',
-    avatar: '/assets/avatar-3.png',
-    email: 'carson.darrin@devias.io',
-    phone: '304-428-3097',
-    target:"target 01",
-    address: { city: 'Cleveland', country: 'USA', state: 'Ohio', street: '2849 Fulton Street' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-002',
-    name: 'Siegbert Gottfried',
-    avatar: '/assets/avatar-2.png',
-    email: 'siegbert.gottfried@devias.io',
-    phone: '702-661-1654',
-    target:"target 01",
-    address: { city: 'Los Angeles', country: 'USA', state: 'California', street: '1798 Hickory Ridge Drive' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-001',
-    name: 'Miron Vitold',
-    avatar: '/assets/avatar-1.png',
-    email: 'miron.vitold@devias.io',
-    phone: '972-333-4106',
-    target:"target 01",
-    address: { city: 'San Diego', country: 'USA', state: 'California', street: '75247' },
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-] satisfies Customer[];
+
+
+
+
+
+
+
+
+
+
+
 
 export default function Page(): React.JSX.Element {
+  
+  const [newTask, setNewTask] = useState<Task>({});
   const [selectedTab, setSelectedTab] = React.useState<string>('All Tasks');
+
+  const { targets } = useSelector((state: any) => state.target);
+  const { users } = useSelector((state: any) => state.users); 
   // Function to handle tab changes
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
+
   const page = 0;
   const rowsPerPage = 5;
-  const [isNewTask,setIsNewTask]=useState(false);
-  const paginatedCustomers = applyPagination(customers, page, rowsPerPage);
+  const [isNewTask,setIsNewTask]=useState(false); 
+  const dispatch = useDispatch();
+
+  const { tasks } = useSelector((state: any) => state.task);
+  const { user } = useSelector((state: any) => state.user);
+  const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
 const handleNewTask=()=>{ 
+   handleTargets();  
+ 
+  //handleClose();
   setIsNewTask(!isNewTask);
+ 
 }
+const [errorAlert, setErrorAlert] = useState('');
+const handleCreateTask = React.useCallback(async (): Promise<void> => {
+  const regex = /^\d{4}-\d{4}$/;
+ 
+  //const { res , error } = await taskApis.createTask(newTask);
+ /*  if (error) {
+    setErrorAlert(error);
+    return
+  } */
+  //dispatch(setTasks([...tasks , res]))
+  handleClose();
+}, [newTask]);
+
+/* const getTasks = React.useCallback(async (): Promise<void> => {
+  const { error, res } = await taskApis.getTasks();
+  console.log("useruseruser",user.id,res)
+  if (error) {
+    return;
+  }  
+  if(selectedTab === 'All Tasks'){
+  dispatch(setTasks(res));
+  setPaginatedTasks(applyPagination(res, page, rowsPerPage));
+  setTasks(res);
+  }else{
+
+    const filteredTasks: Task[] = res.filter((task: Task) => task.createdBy === user.id);
+
+  dispatch(setTasks(filteredTasks));
+  setPaginatedTasks(applyPagination(filteredTasks, page, rowsPerPage));
+  setTasks(filteredTasks);
+
+  }
+ 
+
+}, [page, rowsPerPage]);
+
+useEffect(() => {
+  getTasks();
+}, [getTasks]); */
+
+const handleTargets= React.useCallback(async (): Promise<void> => {
+ 
+  
+  try {
+    const { res } = await targetApis.getTargets();
+    dispatch(setTargets(res)); 
+     
+    
+  } catch (error) {
+    console.error('Error fetching users:', error); 
+  }
+
+  console.log("user api drop===>",users)
+   
+      }, [dispatch]);  
+
+
+const handleUsers= React.useCallback(async (): Promise<void> => {
+        
+  try {
+    const { res } = await userApis.getUsers();
+     dispatch(setUsers(res));
+    console.log("handleUsers get user",res)
+      
+    
+  } catch (error) {
+    console.error('Error fetching users:', error); 
+  }
+
+  console.log("handleUsers===>",users)
+    
+}, [dispatch]);    
+
+
+
+ 
+const getTasks = React.useCallback(async (): Promise<void> => {
+  try {
+    const { error, res } = await taskApis.getTasks();
+     
+    
+    if (error) {
+      return;
+    }
+    
+    let filteredTasks: Task[];
+    console.log("filteredTasksfilteredTasks==>",res[0].usersIds)
+    if (selectedTab === 'All Tasks') {
+      filteredTasks = res;
+
+      console.log("filteredTasks all tasks",res)
+    } else {
+      //filteredTasks = res.filter((task: Task) =>  task.usersIds['_id'].includes(user.id)); 
+       filteredTasks=res.filter((task: Task) => 
+        task.usersIds.some((userObj: any) => userObj._id === user.id)
+      );
+      
+      console.log("filteredTasks myyyyy tasks",filteredTasks)
+    }
+
+    dispatch(setTasks(filteredTasks));
+    setPaginatedTasks(applyPagination(filteredTasks, page, rowsPerPage));
+    setTasks(filteredTasks);
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+  }
+}, [selectedTab, user.id, page, rowsPerPage, dispatch]);
+
+useEffect(() => {
+  getTasks();
+}, [getTasks]);
+
+
+
 const handleClose=()=>{setIsNewTask(false)}
   return (
     <Stack spacing={3}>
@@ -159,7 +202,7 @@ const handleClose=()=>{setIsNewTask(false)}
               borderRadius: '0.375rem',
               background: 'var(--Green-green-500, #16B364)',
             }}
-            onClick={handleNewTask}
+            onClick={ ()=>{handleUsers(),handleNewTask()}}
           >
             New Task
           </Button>
@@ -169,39 +212,32 @@ const handleClose=()=>{setIsNewTask(false)}
  
            
       
-              <BottomDrawer open={isNewTask} onClose={handleClose}/>
+              <BottomDrawer 
+                open={isNewTask}
+                newTask={newTask}
+                setNewTask={setNewTask}
+                handleCancelTask={handleClose}
+               handleCreateTask={handleCreateTask}
+               users={users} targets={targets}
+              />
             
  
      
             
  
       {selectedTab === 'All Tasks' && (
-        <CustomersTable
-          count={paginatedCustomers.length}
-          page={page}
-          rows={paginatedCustomers}
-          rowsPerPage={rowsPerPage}
-        />
+       
+
+        <TasksTable count={paginatedTask.length} page={page} rows={tasks} rowsPerPage={rowsPerPage} />
       )}
       {selectedTab !== 'All Tasks' && (
-        <MyTasksTable
-          count={paginatedCustomers.length}
-          page={page}
-          rows={paginatedCustomers}
-          rowsPerPage={rowsPerPage}
-        />
-      )}
-
-      {/* <CustomersTable
-        count={paginatedCustomers.length}
-        page={page}
-        rows={paginatedCustomers}
-        rowsPerPage={rowsPerPage}
-      /> */}
+        <MyTasksTable  count={paginatedTask.length}  page={page} rows={tasks} rowsPerPage={rowsPerPage} />)
+      }  
+          
     </Stack>
   );
 }
 
-function applyPagination(rows: Customer[], page: number, rowsPerPage: number): Customer[] {
+function applyPagination(rows: any[], page: number, rowsPerPage: number): Task[] {
   return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 }

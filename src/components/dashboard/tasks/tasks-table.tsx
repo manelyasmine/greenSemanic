@@ -18,29 +18,33 @@ import { useSelection } from '@/hooks/use-selection';
 import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 import FilterColumns from '../../commun/Filters/FilterColumns';
 import { Pagination } from '@mui/material';
-
+import { Target } from '@/types/target';
 function noop(): void {
   // do nothing
 }
 
 export interface Customer {
-  id: string;
-  avatar: string;
-  name: string;
-  email: string;
-  address: { city: string; state: string; country: string; street: string };
-  phone: string;
-  createdAt: Date;
+  id?:string;
+  _id?:string;
+  taskName?: string;
+  targetName?: string;
+  dueDate?:string;
+  usersIds?: string;
+  status?:string;
+  createdBy?:string;
+  progress?:string;
+  createdAt?: string;
+  timezone?: string; 
 }
 
-interface CustomersTableProps {
+interface TasksTableProps {
   count?: number;
   page?: number;
   rows?: Customer[];
   rowsPerPage?: number;
 }
 
-export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: CustomersTableProps): React.JSX.Element {
+export function TasksTable({ count = 100, rows = [], rowsPerPage = 5 }: TasksTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((customer) => customer.id);
   }, [rows]);
@@ -107,22 +111,34 @@ export function CustomersTable({ count = 100, rows = [], rowsPerPage = 5 }: Cust
                   </TableCell>
                   <TableCell>
                     <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                      <Avatar src={row.avatar} />
-                      <Typography variant="bodyB3">{row.name}</Typography>
+                      
+                      <Typography variant="bodyB3">{row.taskName}</Typography>
                     </Stack>
                   </TableCell>
-                  <TableCell>
-                  <Typography variant="bodyP3">{row.email}</Typography>
-                    </TableCell>
-                  <TableCell>
-                    {row.address.city}, {row.address.state}, {row.address.country}
+
+                  <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
+                 
+                  <TableCell> 
+                    {Array.isArray(row.usersIds) ? (
+                      row.usersIds.map((user, index) => (
+                        <span key={index}>{user.username}</span>
+                      ))
+                    ) : (
+                      <span> </span>
+                    )}
                   </TableCell>
-                  <TableCell>{row.phone}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
-                  <TableCell>{row.target}</TableCell>
+
+                        <TableCell>70%</TableCell>
+                  <TableCell>
+                
+                  <Typography variant="bodyP3">{row.targetName}</Typography>
+                    </TableCell>
+                 
+                  <TableCell>2020-2023 </TableCell>
+                 
                   <Box  style={{ display: 'flex',
                    justifyContent: 'center',alignItems:"center",marginTop:"2rem" }}>
-                  <DropdownTableCell />
+                  <DropdownTableCell task={row}/>
                   
                   </Box>
                  

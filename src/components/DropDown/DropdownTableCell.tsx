@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { AssignIcon, DashboardIcon, DeleteIcon, DotsHorizontal, ModifyIcon } from '@/icons';
 import { MoreVert as MoreVertIcon, Update } from '@mui/icons-material';
 import { Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
@@ -7,111 +7,126 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Task } from '@/types/task';
+import { setTasks } from '@/lib/store/reducer/useTask';
+
+import { setUsers } from '@/lib/store/reducer/useUser';
+
+import { taskApis } from '@/lib/task/taskApis';
+import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
+import { DropDOwn, itemMenu } from '@/styles/theme/DropDown'; 
+import { palette } from '@/styles/theme/colors';
+
+import UpdateBottomDrawerTask from "@/app/dashboard/tasks/UpdateBottomDrawer";
+import { userApis } from '@/lib/user/userApis';
+import { User } from '@/types/user';
+
 import { Target } from '@/types/target';
 import { setTargets } from '@/lib/store/reducer/useTarget';
 import { targetApis } from '@/lib/target/targetApis';
-import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
-import { DropDOwn, itemMenu } from '@/styles/theme/DropDown';
-import UpdateBottomDrawer from '@/app/dashboard/target/UpdateBottomDrawer';
-import { palette } from '@/styles/theme/colors';
-interface DropdownProps {
-  // Function to handle modification triggered from the dropdown
-  // onModify?: (data: any) => void;
-  // // Function to handle deletion triggered from the dropdown
-  // onDelete?: (data: any) => void;
-  // // Function to handle assignment triggered from the dropdown (optional)
-  // onAssign?: (data: any) => void;
-  target: Target;
+interface DropdownTaskProps { 
+  task: Task;
 }
  
-const Dropdown: React.FC<DropdownProps> = ({ task }) => {
+
+const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isUpdate , setIsUpdate] = useState(false)
-  //const { targets } = useSelector((state: any) => state.target);
-  //const { targets } = useSelector((state: any) => state.target);
+  const { tasks } = useSelector((state: any) => state.task); 
+
+  const { targets } = useSelector((state: any) => state.target);
+  const { users } = useSelector((state: any) => state.users); 
   const dispatch = useDispatch();
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const [user, setUser] = React.useState<User>({});
+
   const handleClose = () => {
     setAnchorEl(null);
+    setIsUpdate(false)
   };
-
+  
   // const handleModify = () => {
   //   handleClose();
   //   // onModify?.(); // Call the onModify function if provided
   // };
 
-  const handleModify = React.useCallback(async (data:  Target): Promise<void> => {
 
-    // const { error, res } = await targetApis.updateTarget(data);
-    // if (error) {
-    //   return;
-    // } else {
-    //   const indexToRemove = targets.indexOf(target);
-    //   //const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
-    // const { error, res } = await targetApis.updateTarget(data);
-    // if (error) {
-    //   return;
-    // } else {
-    //   const indexToRemove = targets.indexOf(target);
-    //   //const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
+  const handleModify = React.useCallback(async (data:  Task): Promise<void> => {
 
-    //   const newTargets =  targets.map((tar : Target) => {
-    //     if (tar.id === data.id) {
-    //       return data;
-    //     }
-    //     return tar;
-    //   });
-    //   //setIsDeleteOpen(false);
-    //   dispatch(setTargets(newTargets));
-    //   setIsUpdate(false)
-    // }
-    // handleClose();
-    //   const newTargets =  targets.map((tar : Target) => {
-    //     if (tar.id === data.id) {
-    //       return data;
-    //     }
-    //     return tar;
-    //   });
-    //   //setIsDeleteOpen(false);
-    //   dispatch(setTargets(newTargets));
-    //   setIsUpdate(false)
-    // }
-    // handleClose();
+    const { error, res } = await taskApis.updateTask(data);
+    if (error) {
+      return;
+    } else {
+      const indexToRemove = tasks.indexOf(Task); 
+
+      const newTasks =  targets.map((tar : Task) => {
+        if (tar.id === data.id) {
+          return data;
+        }
+        return tar;
+      });
+      //setIsDeleteOpen(false);
+      dispatch(setTasks(newTasks));
+      setIsUpdate(false)
+    }
+    handleClose();
   }, []);
 
   const handleDelete = React.useCallback(async (): Promise<void> => {
+    console.log("handle deelte task===>",task,Task)
+    const { error, res } = await taskApis.deleteTask(task.id);
+    if (error) {
+      return;
+    } else {
+      const indexToRemove = tasks.indexOf(task);
+      const newTasks = tasks.filter((_: any, i: any) => i !== indexToRemove);
+      setIsDeleteOpen(false);
+      dispatch(setTasks(newTasks));
+    }
 
-    // const { error, res } = await targetApis.deleteTarget(target.id);
-    // if (error) {
-    //   return;
-    // } else {
-    //   const indexToRemove = targets.indexOf(target);
-    //   const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
-    //   setIsDeleteOpen(false);
-    //   dispatch(setTargets(newTargets));
-    // }
-    // const { error, res } = await targetApis.deleteTarget(target.id);
-    // if (error) {
-    //   return;
-    // } else {
-    //   const indexToRemove = targets.indexOf(target);
-    //   const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
-    //   setIsDeleteOpen(false);
-    //   dispatch(setTargets(newTargets));
-    // }
-
-    // handleClose();
-    // handleClose();
+    handleClose();
   }, []);
 
   const handleAssign = () => {
     handleClose();
     //onAssign?.(); // Call the onAssign function if provided (optional)
   };
+
+ const handleTargets= React.useCallback(async (): Promise<void> => {
+    handleClose();
+    try {
+      const { res } = await targetApis.getTargets();
+      dispatch(setTargets(res));
+       
+      
+    } catch (error) {
+      console.error('Error fetching users:', error); 
+    }
+
+    console.log("user api drop===>",users)
+     
+        }, [dispatch]);  
+
+ 
+  const handleUsers= React.useCallback(async (): Promise<void> => {
+          handleClose();
+          try {
+            const { res } = await userApis.getUsers();
+            dispatch(setUsers(res));
+            console.log("useeeeeeeeee",Object.keys(res),Object.keys(users))
+             
+            
+          } catch (error) {
+            console.error('Error fetching users:', error); 
+          }
+      
+          console.log("user api drop===>",users)
+           
+              }, [dispatch]);      
 
   return (
     <div>
@@ -126,7 +141,7 @@ const Dropdown: React.FC<DropdownProps> = ({ task }) => {
         MenuListProps={{ 'aria-labelledby': 'dropdown-button' }}
       >
         <Box sx={DropDOwn}>
-          <MenuItem onClick={() => {handleClose() ,setIsUpdate(!isUpdate)}} sx={itemMenu}>
+          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}>
             <ListItemIcon>
               {' '}
               <ModifyIcon />{' '}
@@ -168,10 +183,11 @@ const Dropdown: React.FC<DropdownProps> = ({ task }) => {
           secondary="Cancel"
           handleDelete={handleDelete} 
           primaryColor={{ backgroundColor: palette.danger[500] }}
-        />}
-     {/*   <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
-   */}  </div>
+        />} 
+
+       <UpdateBottomDrawerTask open={isUpdate} handleCancelTask={ handleClose } onUpdateTask={handleModify } task ={task} users={users} targets={targets} />
+     </div>
   );
 };
 
-export default Dropdown;
+export default DropdownTask;

@@ -2,7 +2,9 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import userReducer from './reducer/userSlice';
-import targetReducer from './reducer/useTarget'
+import targetReducer from './reducer/useTarget';
+import  taskReducer from './reducer/useTask';
+import usersReducer from './reducer/useUser';
 
 const persistConfig = {
   key: 'root',
@@ -16,6 +18,8 @@ const persistedReducer = persistReducer(persistConfig, userReducer);
 const rootReducer = combineReducers({
   user: persistedReducer,
   target: targetReducer,
+  task: taskReducer,
+  users:usersReducer,
 });
 
 // Configure the store with the combined reducer

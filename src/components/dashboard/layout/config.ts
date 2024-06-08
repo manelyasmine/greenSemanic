@@ -1,5 +1,5 @@
 import React from 'react';
-import { DashboardIcon, DataIcon, EmissionTrackingIcon, ReportIcon, TargetIcon, TasksIcon } from '@/icons';
+import { DashboardIcon, DataIcon, EmissionTrackingIcon, ReportIcon, SettingsIcon, TargetIcon, TasksIcon } from '@/icons';
 
 import type { NavItemConfig } from '@/types/nav';
 import { paths } from '@/paths';
@@ -41,4 +41,7 @@ export const navItems: NavItemConfig[] = [
     href: paths.dashboard.report,
     icon: ReportIcon,
   },
+
+
+  
 ];
