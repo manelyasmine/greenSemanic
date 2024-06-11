@@ -28,7 +28,7 @@ const CustomTabs: FC<CustomTabsProps> = ({ value, handleChange,screen }) => {
   : [
     
     { label: 'All Tasks', value: 'All Tasks' },
-    { label: 'My Targets', value: 'My Targets' }, // Different label for "target" screen
+    { label: 'My Tasks', value: 'My Tasks' },
     ];
   const theme = useTheme();
 

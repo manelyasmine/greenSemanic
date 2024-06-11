@@ -1,57 +1,90 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  Drawer,FormControl,Select,
-   
-  IconButton,
-  Grid,Checkbox,Divider,MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { Label } from '@mui/icons-material';
+import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography}from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
-import {  Filter,  } from '@/styles/theme/Filter';
-import {header,body,HeaderBody,FooterBody,FooterBox} from '@/styles/theme/Bottom-drawer';
-import Card from '@mui/material/Card';
- 
+ import OutlinedInput from '@mui/material/OutlinedInput';
 
-interface FormTask {
-  taskName?: string;
-  targetName?: string;
-  dueDate?: string;
-  usersIds?: string[];
-}
+import {header,FooterBox,FooterBody,body} from '@/styles/theme/Bottom-drawer';
+import {Task} from '@/types/task';
+
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
+
 interface BottomDrawerProps {
-  newTask: FormTask;
-  setNewTask: any; 
+  
+  newTask:any;
+  setNewTask:any;
   handleCancelTask: () => void;
-  handleCreateTask: any; // Function to handle task creation
+  onCreateTask: (task: Task) => void;
   open:boolean,
   users:any;
-  targets:any;
+  targets:any; 
 
 }
-
-const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,handleCancelTask, handleCreateTask,users,targets  }) => {
-  console.log("BottomDrawer===>",users)
-  const handleChange = (name: string, event: any) => {
-  
  
+const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCreateTask,users,targets,newTask, setNewTask  }) => {
+  console.log("BottomDrawer targets===>",targets,users)
+   
+  const handleChange = (name: string, event: Task) => {
+   
     setNewTask({ ...newTask, [name]: event });
      
-  };
+  };  
   
   const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
     const value = event.target.value as string | string[];
+     console.log("handle select change",name,value)
     handleChange(name, value);
   };
-  const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const value = event.target.value as string[];
-    handleChange('usersIds', value);
-  };
   
+  const handleCreateTask = () => {
+     setNewTask({ ...newTask, ['usersIds']: usersIds })
+    onCreateTask(newTask);
+
+    console.log('update,updatedTask=====>',newTask,usersIds)
+    
+  };
+
+
+  const [usersIds, setUsersIds] = React.useState<string[]>([]);
+
+  const handleMultiSelectChange = (event: SelectChangeEvent<typeof usersIds>) => {
+    const {
+      target: { value },
+    } = event;
+    setUsersIds(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+    console.log("usersIdsusersIdsusersIdsusersIds==>",usersIds)
+    setNewTask({ ...newTask, usersIds: usersIds });
+   /*  const userIds = event.target.value as string[]; // Type assertion
+    setNewTask({ ...newTask, usersIds: userIds }); */
+  };
+
 
   return ( 
     
@@ -108,7 +141,8 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
       <TextField
             label="Task Title"
             value={newTask.taskName}
-            onChange={(e) => setNewTask(e.target.value)}
+           
+            onChange={(e) => handleChange('taskName', e.target.value)}
             margin="normal"
             fullWidth
           />
@@ -123,27 +157,27 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
           
       <Typography variant='subtitle3'>Target Name</Typography>
       <FormControl fullWidth>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={newTask.targetName}
-                    onChange={(e) => handleChange('target', e.newTask.value)}
-                  label="Select"
-                >
-                    {targets && Array.isArray(targets) ? (  
-                Object.entries(targets).map(([key, value]) => (
-                  <MenuItem key={value.id} value={value.id}>
-                    {value.name}  
-                  </MenuItem>
-                ))
-              ) : (
-                // Display a message while users are loading or unavailable
-                <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                  {targets === undefined ? 'Loading targets...' : 'No targets available'}
-                </Typography>
-              )} 
-                </Select>
-              </FormControl>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={newTask.targetName || ''}
+          onChange={(e) => handleSelectChange(e, 'targetName')}
+          label="Select"
+        >
+        {targets && Array.isArray(targets) ? (  
+          Object.entries(targets).map(([key, value]) => (
+            <MenuItem key={value.id} value={value.id}>
+              {value.name}  
+            </MenuItem>
+          ))
+        ) : (
+          // Display a message while users are loading or unavailable
+          <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+            {targets === undefined ? 'Loading targets...' : 'No targets available'}
+          </Typography>
+        )}  
+          </Select>
+        </FormControl>
       </Grid>
 
       </Grid>
@@ -155,7 +189,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
       <TextField
             label="Due Date"
             value={newTask.dueDate}
-            onChange={(e) => setNewTask(e.target.value)}
+            onChange={(e) => handleChange('dueDate',e.target.value)}
             margin="normal"
             fullWidth
           />
@@ -165,52 +199,35 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
       <Grid item xs={12}  >
       <Grid container spacing={2} alignItems="center">
             
-      <Typography variant='subtitle3'>Assigned To</Typography>
-      <FormControl fullWidth>
-      {/* <Select
-            labelId="demo-multiple-select-label"
-            id="demo-multiple-select"
-            multiple
-            value={newTask.usersIds}
-            //onChange={handleMultiSelectChange}
-                       
-            label="Assigned To"
-          >
-      
-              {users && Array.isArray(users) ? ( // Check if users is an array and defined
-                  Object.entries(users).map(([key, value]) => (
-                    <MenuItem key={value._id} value={value._id}>
-                      {value.email}  
-                    </MenuItem>
-                    ))
-            ) : (
-              // Display a message while users are loading or unavailable
-              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                {users === undefined ? 'Loading users...' : 'No users available'}
-              </Typography>
-            )}   */} 
-        
+    
+
+
+        <Typography variant='subtitle3'>Assigned To</Typography>
+        <FormControl  fullWidth> 
         <Select
-                   labelId="demo-multiple-select-label"
-                    id="demo-multiple-select"
-                   value={newTask.usersIds}
-                    onChange={ handleMultiSelectChange}
-                  label="Select"
-                >
-                    {users && Array.isArray(users) ? ( // Check if users is an array and defined
-                  Object.entries(users).map(([key, value]) => (
-                    <MenuItem key={value._id} value={value._id}>
-                      {value.email}  
-                    </MenuItem>
-                    ))
-            ) : (
-              // Display a message while users are loading or unavailable
-              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                {users === undefined ? 'Loading users...' : 'No users available'}
-              </Typography>
-            )}
-          </Select>
-              </FormControl>
+          labelId="demo-multiple-name-label"
+          id="demo-multiple-name"
+          multiple
+          fullWidth
+          value={usersIds}
+          onChange={handleMultiSelectChange}
+          input={<OutlinedInput label="Name" />}
+          MenuProps={MenuProps}
+        >
+           {users && Array.isArray(users) ? ( // Check if users is an array and defined
+            Object.entries(users).map(([key, value]) => (
+              <MenuItem key={value._id} value={value._id}>
+                {value.email}  
+              </MenuItem>
+              ))
+        ) : (
+          // Display a message while users are loading or unavailable
+          <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+            {users === undefined ? 'Loading targets...' : 'No targets available'}
+          </Typography>
+        )}
+        </Select>
+      </FormControl>
          </Grid>
       </Grid>
 

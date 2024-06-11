@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
 import dayjs from 'dayjs'; 
 import BottomDrawer from './BottomDrawer'; 
+import UpdateBottomDrawerTask from './UpdateBottomDrawer';
 import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
 import { TasksTable } from '@/components/dashboard/tasks/tasks-table';
 import { MyTasksTable } from '@/components/dashboard/tasks/myTasks-table';
@@ -15,123 +16,88 @@ import { Task } from '@/types/task';
 import { setTasks } from '@/lib/store/reducer/useTask';
 import { useDispatch, useSelector } from 'react-redux';
 import { userApis } from '@/lib/user/userApis';
-import { User } from '@/types/user';
-import { Target } from '@/types/target';
+import { User } from '@/types/user'; 
 import { setTargets } from '@/lib/store/reducer/useTarget';
-import { setUsers } from '@/lib/store/reducer/useUser';
+ 
 import { targetApis } from '@/lib/target/targetApis';
-
-
-
-
-
-
-
-
-
-
-
 
 
 export default function Page(): React.JSX.Element {
   
-  const [newTask, setNewTask] = useState<Task>({});
   const [selectedTab, setSelectedTab] = React.useState<string>('All Tasks');
-
+  const [users, setUsers] = useState<User>({});
+  const [isNewTask,setIsNewTask]=useState(false); 
+  const { tasks } = useSelector((state: any) => state.task); 
   const { targets } = useSelector((state: any) => state.target);
-  const { users } = useSelector((state: any) => state.users); 
-  // Function to handle tab changes
+  const { user } = useSelector((state: any) => state.user); 
+  const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
+
+  const [newTask, setNewTask] = useState<Task>({['createdBy']:user.id});
+  const rowsPerPage = 5;
+  const page = 0;
+  const dispatch = useDispatch();
+  
+  
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
 
-  const page = 0;
-  const rowsPerPage = 5;
-  const [isNewTask,setIsNewTask]=useState(false); 
-  const dispatch = useDispatch();
-
-  const { tasks } = useSelector((state: any) => state.task);
-  const { user } = useSelector((state: any) => state.user);
-  const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
 const handleNewTask=()=>{ 
+  console.log('hNDDDDDDDDDDD NEW TASK')
    handleTargets();  
+   handleUsers();
+  
+  
  
-  //handleClose();
-  setIsNewTask(!isNewTask);
  
 }
 const [errorAlert, setErrorAlert] = useState('');
 const handleCreateTask = React.useCallback(async (): Promise<void> => {
-  const regex = /^\d{4}-\d{4}$/;
- 
-  //const { res , error } = await taskApis.createTask(newTask);
- /*  if (error) {
+   
+  setNewTask({ ...newTask, ['createdBy']: user.id });
+ console.log("handle create task,=========",newTask,user.id)
+  const { res , error } = await taskApis.createTask(newTask);
+   if (error) {
     setErrorAlert(error);
     return
-  } */
-  //dispatch(setTasks([...tasks , res]))
+  } 
+  dispatch(setTasks([...tasks , res]))
   handleClose();
 }, [newTask]);
 
-/* const getTasks = React.useCallback(async (): Promise<void> => {
-  const { error, res } = await taskApis.getTasks();
-  console.log("useruseruser",user.id,res)
-  if (error) {
-    return;
-  }  
-  if(selectedTab === 'All Tasks'){
-  dispatch(setTasks(res));
-  setPaginatedTasks(applyPagination(res, page, rowsPerPage));
-  setTasks(res);
-  }else{
-
-    const filteredTasks: Task[] = res.filter((task: Task) => task.createdBy === user.id);
-
-  dispatch(setTasks(filteredTasks));
-  setPaginatedTasks(applyPagination(filteredTasks, page, rowsPerPage));
-  setTasks(filteredTasks);
-
-  }
  
-
-}, [page, rowsPerPage]);
-
-useEffect(() => {
-  getTasks();
-}, [getTasks]); */
-
 const handleTargets= React.useCallback(async (): Promise<void> => {
  
   
   try {
     const { res } = await targetApis.getTargets();
-    dispatch(setTargets(res)); 
-     
+    dispatch(setTargets(res));  
     
   } catch (error) {
-    console.error('Error fetching users:', error); 
+    console.error('Error fetching targets:', error); 
   }
-
-  console.log("user api drop===>",users)
+ 
    
       }, [dispatch]);  
 
 
 const handleUsers= React.useCallback(async (): Promise<void> => {
-        
+  
   try {
     const { res } = await userApis.getUsers();
-     dispatch(setUsers(res));
-    console.log("handleUsers get user",res)
+    
+    //dispatch(setUsers(res));
+   setUsers(res) 
+   console.log("useeeeeeeeee",users)
       
     
   } catch (error) {
     console.error('Error fetching users:', error); 
   }
-
-  console.log("handleUsers===>",users)
+ 
     
-}, [dispatch]);    
+      }, 
+[dispatch]);    
 
 
 
@@ -202,7 +168,8 @@ const handleClose=()=>{setIsNewTask(false)}
               borderRadius: '0.375rem',
               background: 'var(--Green-green-500, #16B364)',
             }}
-            onClick={ ()=>{handleUsers(),handleNewTask()}}
+            //onClick={()=>handleNewTask, setIsNewTask(!isNewTask)}
+            onClick={() => {handleUsers() , handleTargets(),setIsNewTask(!isNewTask)}}
           >
             New Task
           </Button>
@@ -212,18 +179,40 @@ const handleClose=()=>{setIsNewTask(false)}
  
            
       
-              <BottomDrawer 
+            {/*   <BottomDrawer 
                 open={isNewTask}
                 newTask={newTask}
                 setNewTask={setNewTask}
                 handleCancelTask={handleClose}
                handleCreateTask={handleCreateTask}
-               users={users} targets={targets}
-              />
+               
+              /> */}
             
  
-     
-            
+           <BottomDrawer 
+            open={isNewTask} 
+            handleCancelTask={handleClose}  
+            newTask={newTask}
+            setNewTask={setNewTask}
+            onCreateTask={handleCreateTask}  
+            users={users} 
+            targets={targets}/>  
+     {/* 
+     {(isNewTask  ) &&(
+       <UpdateBottomDrawerTask 
+       open={isNewTask  } 
+       handleCancelTask={ handleClose } 
+       onUpdateTask={handleCreateTask } 
+       task ={newTask} 
+       users={users} 
+       targets={targets} 
+       isAssign={isNewTask}
+       headerName="New Task"
+       titleName="Add new Task"
+       subtitleName="Add new task to further streamline your carbon emission management process."
+       
+       />)
+      } */}
  
       {selectedTab === 'All Tasks' && (
        

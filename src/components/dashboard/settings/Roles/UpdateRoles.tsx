@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -42,8 +42,8 @@ interface NewRoleProps {
   headerName:any;
 }
   
-const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole, setNewRole ,headerName  }) => {
-   
+const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole, setNewRole   }) => {
+   console.log("rrrrrrrrrr",users)
   const [permissions, setPermissions] = useState({
     read_user_management: false,
     write_user_management: false,
@@ -62,7 +62,35 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     create_reports:false,
   });
 
-  const [usersIds, setUsersIds] = React.useState<string[]>([]);
+  const [usersIds, setUsersIds] = React.useState<string[]>(
+   
+  );
+  useEffect(() => {
+    if (newRole?.users) {
+      const extractedIds = newRole.users.map((user) => user._id);
+      setUsersIds(extractedIds); 
+    }
+  }, []);
+
+  useEffect(() => {
+    if (newRole?.permissions) {
+      setPermissions((prevPermissions) => {
+        // Create a new object to avoid mutation
+        const updatedPermissions = { ...prevPermissions };
+  
+        // Update individual permission values based on newRole.permissions
+        newRole.permissions.forEach((permission) => {
+          updatedPermissions[permission] = true; // Assuming a true value indicates permission granted
+        });
+  
+        return updatedPermissions;
+      });
+    }
+      
+
+  }, [newRole]);
+
+
    
 
   const handleCreateRole =  async() => {
@@ -106,19 +134,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
   setNewRole(updatedNewRole)
     
   };  
-
-
- /*  const handleCheckboxChange = (event) => {
-    const { name, checked } = event.target;
-    setPermissions((prevPermissions) => {
-      return checked && name === 'all'
-        ? { ...prevPermissions, all: true } // Set only "all" to true
-        : {
-            ...prevPermissions,
-            [name]: checked, // Update specific permission if not "all"
-          };
-    });
-  }; */
+ 
 
 
   
@@ -128,15 +144,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     const {
       target: { value },
     } = event;
-   /*  setUsersIds(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
- */
-    /* const adjustedUsersIds = typeof updatedRole.usersIds === 'string'
-    ? [updatedRole.usersIds] // Convert single user ID to array
-    : updatedRole.usersIds; // Use array as is for multiple users
- */
+  
 
     setUsersIds(
       typeof value === 'string' ? value.split(',') :value
@@ -154,31 +162,11 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
      
   };  
   
-  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
-    const value = event.target.value as string | string[];
-     console.log("handle select change",name,value)
-    handleChange(name, value);
-  };
-  
+   
   
  
  
-  const handleCreateUser = () => {
-    //onCreateUser(newRole);
-    setNewRole('');
-    handleCancelRole();
-  };
-  //this a async function to handle submit of roles
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-      const selectedPermissions = Object.entries(permissions)
-      .filter(([key, value]) => value)
-      .map(([key]) => key); // Extract selected permission keys
-
-    dispatch(addRole({ name: roleName, permissions: selectedPermissions }));  
-    // Handle success or error from the dispatched action
-  };
-
+  
 
 
   return (
@@ -196,8 +184,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
                 fontFeatureSettings: '"cv04" on, "cv03" on, "cv02" on, "cv11" on, "clig" off, "liga" off',
               }}
             >
-              {' '}
-              {headerName}{' '}
+              Update Role
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="help">need help?</Typography>
@@ -219,7 +206,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
               <Typography variant="subtitle3">Role Name *</Typography>
               <TextField
                 label="Role Name *"
-                value={newRole.name}
+                value={newRole?.name}
                 
             onChange={(e) => handleChange('name', e.target.value)}
                 margin="normal"
@@ -242,6 +229,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           id="demo-multiple-name"
           multiple
           fullWidth
+          defaultValue={newRole?.users}
           value={usersIds}
           onChange={handleMultiSelectChange}
           input={<OutlinedInput label="Name" />}
@@ -305,17 +293,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="read_user_management"  onChange={handleCheckboxChange}   /> Read
+            <Checkbox name="read_user_management" checked={permissions.read_user_management} onChange={handleCheckboxChange}   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="write_user_management"  onChange={handleCheckboxChange}   /> Write
+            <Checkbox name="write_user_management" checked={permissions.write_user_management} onChange={handleCheckboxChange}   /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="create_user_management"  onChange={handleCheckboxChange}   /> Create
+            <Checkbox name="create_user_management"  checked={permissions.create_user_management} onChange={handleCheckboxChange}   /> Create
           </Box>
           </Grid>
       
@@ -331,17 +319,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="read_emission_tracking"  onChange={handleCheckboxChange}  /> Read
+            <Checkbox name="read_emission_tracking" checked={permissions.read_emission_tracking} onChange={handleCheckboxChange}  /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="write_emission_tracking"  onChange={handleCheckboxChange}  /> Write
+            <Checkbox name="write_emission_tracking" checked={permissions.write_emission_tracking} onChange={handleCheckboxChange}  /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="create_emission_tracking"  onChange={handleCheckboxChange}  /> Create
+            <Checkbox name="create_emission_tracking" checked={permissions.create_emission_tracking} onChange={handleCheckboxChange}  /> Create
           </Box>
           </Grid>
       </Grid>
@@ -354,17 +342,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
            <Grid item xs={2}>
           <Box>
-            <Checkbox  name="read_task" onChange={handleCheckboxChange}   /> Read
+            <Checkbox  name="read_task" checked={permissions.read_task} onChange={handleCheckboxChange}   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox  name="write_task"  onChange={handleCheckboxChange} /> Write
+            <Checkbox  name="write_task" checked={permissions.write_task}  onChange={handleCheckboxChange} /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox  name="create_task"   onChange={handleCheckboxChange} /> Create
+            <Checkbox  name="create_task"  checked={permissions.create_task} onChange={handleCheckboxChange} /> Create
           </Box>
           </Grid>
           </Grid>
@@ -377,17 +365,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox  name="read_targets" onChange={handleCheckboxChange}   /> Read
+            <Checkbox  name="read_targets" checked={permissions.read_targets} onChange={handleCheckboxChange}   /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="write_targets"  onChange={handleCheckboxChange} /> Write
+            <Checkbox name="write_targets" checked={permissions.write_targets} onChange={handleCheckboxChange} /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="create_targets"  onChange={handleCheckboxChange}  /> Create
+            <Checkbox name="create_targets" checked={permissions.create_targets} onChange={handleCheckboxChange}  /> Create
           </Box>
           </Grid>
          </Grid>
@@ -403,17 +391,17 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="read_reports" onChange={handleCheckboxChange}  /> Read
+            <Checkbox name="read_reports" checked={permissions.read_reports} onChange={handleCheckboxChange}  /> Read
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="write_reports"  onChange={handleCheckboxChange} /> Write
+            <Checkbox name="write_reports"  checked={permissions.write_reports} onChange={handleCheckboxChange} /> Write
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
-            <Checkbox name="create_reports"  onChange={handleCheckboxChange} /> Create
+            <Checkbox name="create_reports" checked={permissions.create_reports} onChange={handleCheckboxChange} /> Create
           </Box>
           </Grid>
          </Grid>
