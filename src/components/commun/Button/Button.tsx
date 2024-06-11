@@ -6,13 +6,13 @@ import { palette } from '@/styles/theme/colors';
 
 export type ButtonProps = MuiButtonProps & {
   children?: React.ReactNode;
-  btnType?: 'primary' | 'secondary' | 'tertiary' | 'primaryLight' | 'secondaryGray' | 'dashBorder' | 'link';
+  btnType?: 'primary' | 'secondary' | 'tertiary' | 'primaryLight' | 'secondaryGray' | 'dashBorder' | 'link' | 'error';
   size?: 'small' | 'medium' | 'large';
 };
 
 const StyledButton = styled(MuiButton, {
   shouldForwardProp: (prop) => prop !== 'btnType',
-})<ButtonProps>(({ btnType  }) => {
+})<ButtonProps>(({ btnType }) => {
   let backgroundColor, color, borderColor, border, boxShadow;
   let borderRadius = '6px';
   let padding = '6px 12px';
@@ -44,7 +44,7 @@ const StyledButton = styled(MuiButton, {
       color = palette.gray[600];
       borderRadius = '8px';
       boxShadow = '0px 1px 2px 0px rgba(16, 24, 40, 0.05)';
-      border= '1px solid var(--Grey-grey-200, #B3B8C2)';
+      border = '1px solid var(--Grey-grey-200, #B3B8C2)';
 
       break;
     case 'dashBorder':
@@ -55,6 +55,10 @@ const StyledButton = styled(MuiButton, {
     case 'link':
       backgroundColor = 'transparent';
       color = palette.gray[600];
+      break;
+    case 'error':
+      backgroundColor = palette.danger[500];
+      color = palette.common.white;
       break;
     default:
       backgroundColor = 'inherit';
@@ -86,7 +90,7 @@ const StyledButton = styled(MuiButton, {
 
 export const Button: React.FC<ButtonProps> = ({ children, btnType = 'primary', type = 'button', ...props }) => {
   return (
-    <StyledButton btnType={btnType} type={type}  {...props}>
+    <StyledButton btnType={btnType} type={type} {...props}>
       {children}
     </StyledButton>
   );

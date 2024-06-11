@@ -11,19 +11,19 @@ export interface CarbonEmissionsCategoryProps {
   sx?: any; // Define any custom styling props here
   showScopesTabs?: boolean;
   value?:string;
-
+  data?:[];
   handleChange: (event: React.ChangeEvent<any>, value: string) => void;
  
 }
 
-export function CarbonEmissionsCategory({ sx, showScopesTabs,value,handleChange}: CarbonEmissionsCategoryProps): React.JSX.Element {
-  const data = [
-    { label: 'Transportation', value: 30 },
-    { label: 'Energy', value: 10 },
-    { label: 'Waste (food)', value: 50 },
-    { label: 'Manufacturing', value: 20 },
-    { label: 'Building', value: 10 },
-  ];
+export function CarbonEmissionsCategory({ sx, showScopesTabs,value,handleChange , data = []}: CarbonEmissionsCategoryProps): React.JSX.Element {
+  // const data = [
+  //   { label: 'Transportation', value: 30 },
+  //   { label: 'Energy', value: 10 },
+  //   { label: 'Waste (food)', value: 50 },
+  //   { label: 'Manufacturing', value: 20 },
+  //   { label: 'Building', value: 10 },
+  // ];
   //   const maxValue = Math.max(...data.map((item) => item.value));
   const options = {
     chart: {

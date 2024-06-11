@@ -30,9 +30,6 @@ import empty from '../../../../public/assets/empty.png';
 import EmptySVG from '../../../../public/assets/svg/empty';
 import FilterColumns from '../../commun/Filters/FilterColumns';
 
-function noop(): void {
-  // do nothing
-}
 
 export interface Customer {
   id: string;

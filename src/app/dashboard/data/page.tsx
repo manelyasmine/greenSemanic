@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CalanderIcon, ExportIcon, FilterIcon, ImportIcon, PlusIcon } from '@/icons';
 import { Box, Button, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -9,11 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import { DataTable } from '@/components/dashboard/data/Data-table';
-import ExportStep1 from '@/components/dashboard/data/ExportStep1';
+import ButtomDrower from '@/components/dashboard/data/ButtomDrower';
 import { CarbonEmissionsCategory } from '@/components/dashboard/overview/CarbonEmissionsCategory';
 import { MonthlyCarbonEmissions } from '@/components/dashboard/overview/MonthlyCarbonEmissions';
 import Scopes from '@/components/dashboard/overview/Scopes';
 import { MuiButton } from '@/styles/theme/components/button';
+import { dataApis } from '@/lib/data/dataApis';
+import { setDataDB } from '@/lib/store/reducer/useFile';
 
 const reports = [
   {
@@ -39,18 +41,12 @@ const reports = [
 ] satisfies reports[];
 export default function Page(): React.JSX.Element {
   const [selectedTab, setSelectedTab] = useState<string>('7 Days');
+  const dispatch = useDispatch()
   const page = 0;
-  const rowsPerPage = 3;
+  const rowsPerPage = 4;
   const [isOpen, setIsOpen] = useState(false);
-  const [isUpdate, setIsUpdate] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const { targets } = useSelector((state: any) => state.target);
-  const [target, setTarget] = React.useState<Target>({});
-  const [paginatedTarget, setPaginatedTarget] = useState<Target[]>([]);
-  // Function to handle tab changes
-  const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
-    setSelectedTab(newValue);
-  };
+  const { dataDB } = useSelector((state: any) => state.file);
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     console.log('nexttt', activeStep);
@@ -62,6 +58,18 @@ export default function Page(): React.JSX.Element {
 
     console.log('handleImporter', isOpen);
   };
+
+  const getData = React.useCallback(async (): Promise<void> => {
+    const { error, res } = await dataApis.getData();
+    if (error) {
+      return;
+    }
+    dispatch(setDataDB(res));
+  }, [page, rowsPerPage]);
+
+  useEffect(() => {
+    getData();
+  }, [getData])
 
   return (
     <Box>
@@ -113,23 +121,21 @@ export default function Page(): React.JSX.Element {
         </Grid>
       </Grid>
 
-      <DataTable count={paginatedTarget.length} page={page} rows={reports} rowsPerPage={rowsPerPage} />
+      <DataTable count={dataDB.length} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
       {isOpen && (
-        <ExportStep1
+        <ButtomDrower
           open={isOpen}
           onClose={() => {
-            setIsUpdate(!isUpdate);
+            setIsOpen(!isOpen);
             setActiveStep(0);
           }}
           onUpdateTarget={handleModify}
-          target={target}
-          activeStep={activeStep}
           /* onNext={handleNext}  */
         />
       )}
     </Box>
   );
 }
-function applyPagination(rows: any[], page: number, rowsPerPage: number): Target[] {
-  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-}
+// function applyPagination(rows: any[], page: number, rowsPerPage: number): Target[] {
+//   return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+// }

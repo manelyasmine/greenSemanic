@@ -35,11 +35,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({ open, onClose, onCreateTask
   const dispatch = useDispatch();
   const { targets } = useSelector((state: any) => state.target);
   const handleCreateTask = React.useCallback(async (): Promise<void> => {
-    const regex = /^\d{4}-\d{4}$/;
-    // if (!regex.test(newTarget.baseToTargetYear)){ 
-    //   setErrorAlert('base To Target Year not ');
-    //   return
-    // }
     
     const { res , error } = await targetApis.createTarget(newTarget);
     if (error) {
