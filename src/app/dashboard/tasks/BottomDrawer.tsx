@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography}from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
@@ -52,14 +53,44 @@ import {header,body,HeaderBody,FooterBody,FooterBox} from '@/styles/theme/Bottom
 import Card from '@mui/material/Card';
  
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography}from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+ import OutlinedInput from '@mui/material/OutlinedInput';
 
-interface FormTask {
-  taskName?: string;
-  targetName?: string;
-  dueDate?: string;
-  usersIds?: string[];
-}
+import {header,FooterBox,FooterBody,body} from '@/styles/theme/Bottom-drawer';
+import {Task} from '@/types/task';
+
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
+
 interface BottomDrawerProps {
+<<<<<<< HEAD
 <<<<<<< HEAD
   
   newTask:any;
@@ -115,33 +146,63 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
 =======
   newTask: FormTask;
   setNewTask: any; 
+=======
+  
+  newTask:any;
+  setNewTask:any;
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   handleCancelTask: () => void;
-  handleCreateTask: any; // Function to handle task creation
+  onCreateTask: (task: Task) => void;
   open:boolean,
   users:any;
-  targets:any;
+  targets:any; 
 
 }
-
-const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,handleCancelTask, handleCreateTask,users,targets  }) => {
-  console.log("BottomDrawer===>",users)
-  const handleChange = (name: string, event: any) => {
-  
  
+const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCreateTask,users,targets,newTask, setNewTask  }) => {
+  console.log("BottomDrawer targets===>",targets,users)
+   
+  const handleChange = (name: string, event: Task) => {
+   
     setNewTask({ ...newTask, [name]: event });
      
-  };
+  };  
   
   const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
     const value = event.target.value as string | string[];
+     console.log("handle select change",name,value)
     handleChange(name, value);
   };
-  const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const value = event.target.value as string[];
-    handleChange('usersIds', value);
-  };
   
+<<<<<<< HEAD
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+  const handleCreateTask = () => {
+     setNewTask({ ...newTask, ['usersIds']: usersIds })
+    onCreateTask(newTask);
+
+    console.log('update,updatedTask=====>',newTask,usersIds)
+    
+  };
+
+
+  const [usersIds, setUsersIds] = React.useState<string[]>([]);
+
+  const handleMultiSelectChange = (event: SelectChangeEvent<typeof usersIds>) => {
+    const {
+      target: { value },
+    } = event;
+    setUsersIds(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+    console.log("usersIdsusersIdsusersIdsusersIds==>",usersIds)
+    setNewTask({ ...newTask, usersIds: usersIds });
+   /*  const userIds = event.target.value as string[]; // Type assertion
+    setNewTask({ ...newTask, usersIds: userIds }); */
+  };
+
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
   return ( 
     
@@ -199,11 +260,16 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
             label="Task Title"
             value={newTask.taskName}
 <<<<<<< HEAD
+<<<<<<< HEAD
            
             onChange={(e) => handleChange('taskName', e.target.value)}
 =======
             onChange={(e) => setNewTask(e.target.value)}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+           
+            onChange={(e) => handleChange('taskName', e.target.value)}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             margin="normal"
             fullWidth
           />
@@ -219,6 +285,9 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
       <Typography variant='subtitle3'>Target Name</Typography>
       <FormControl fullWidth>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -240,6 +309,7 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
         )}  
           </Select>
         </FormControl>
+<<<<<<< HEAD
 =======
                 <Select
                   labelId="demo-simple-select-label"
@@ -263,6 +333,8 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
                 </Select>
               </FormControl>
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
       </Grid>
 
       </Grid>
@@ -275,10 +347,14 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
             label="Due Date"
             value={newTask.dueDate}
 <<<<<<< HEAD
+<<<<<<< HEAD
             onChange={(e) => handleChange('dueDate',e.target.value)}
 =======
             onChange={(e) => setNewTask(e.target.value)}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            onChange={(e) => handleChange('dueDate',e.target.value)}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             margin="normal"
             fullWidth
           />
@@ -289,11 +365,15 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
       <Grid container spacing={2} alignItems="center">
             
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
     
 
 
         <Typography variant='subtitle3'>Assigned To</Typography>
         <FormControl  fullWidth> 
+<<<<<<< HEAD
         <Select
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
@@ -366,6 +446,32 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open, newTask, setNewTask,ha
           </Select>
               </FormControl>
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+        <Select
+          labelId="demo-multiple-name-label"
+          id="demo-multiple-name"
+          multiple
+          fullWidth
+          value={usersIds}
+          onChange={handleMultiSelectChange}
+          input={<OutlinedInput label="Name" />}
+          MenuProps={MenuProps}
+        >
+           {users && Array.isArray(users) ? ( // Check if users is an array and defined
+            Object.entries(users).map(([key, value]) => (
+              <MenuItem key={value._id} value={value._id}>
+                {value.email}  
+              </MenuItem>
+              ))
+        ) : (
+          // Display a message while users are loading or unavailable
+          <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+            {users === undefined ? 'Loading targets...' : 'No targets available'}
+          </Typography>
+        )}
+        </Select>
+      </FormControl>
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
          </Grid>
       </Grid>
 

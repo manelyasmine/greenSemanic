@@ -15,6 +15,7 @@ function generateToken(): string {
 
 export interface NewTaskParams {
 <<<<<<< HEAD
+<<<<<<< HEAD
   taskName?: string;
   targetName?: string;
   dueDate?: string;
@@ -26,6 +27,13 @@ export interface NewTaskParams {
   dueDate?: Date | null;
   usersIds?: string[];
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+  taskName?: string;
+  targetName?: string;
+  dueDate?: string;
+  usersIds?: string[];
+  createdBy?:string;
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 }
 
 class TaskApis {
@@ -50,10 +58,14 @@ class TaskApis {
     return {};
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
   // Make API request
   try {
     const res = await this.apiTask.patch('/',task,{ withCredentials: true });
+<<<<<<< HEAD
 
     return {  };
   } catch (e) {
@@ -70,15 +82,28 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
 
       return {res : {...response.data }}
 =======
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
-  async createTask(id: string,data: NewTaskParams): Promise<{res? :Task,  error?: string }> {
+    return {  };
+  } catch (e) {
+    return { error: 'backend error' };
+  }
+
+  return {};
+}
+  async createTask(data: NewTaskParams): Promise<{res? :Task,  error?: string }> {
     // Make API request
     try { 
       const response = await this.apiTask.post('/', data , { withCredentials: true });
-      console.log("create task apis===>",response,id,data);
+   
 
+<<<<<<< HEAD
       return {res : {...response.data, id: response.data._id}}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+      return {res : {...response.data }}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
     } catch (e) {
       return { error: 'backend error' };
     } 

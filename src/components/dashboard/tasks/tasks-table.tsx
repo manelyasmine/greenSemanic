@@ -111,6 +111,7 @@ export function TasksTable({ count = 100, rows = [], rowsPerPage = 5 }: TasksTab
                   </TableCell>
                   <TableCell>
 <<<<<<< HEAD
+<<<<<<< HEAD
                      
                       <Typography variant="bodyB3">{row.taskName}</Typography>
                      
@@ -120,6 +121,11 @@ export function TasksTable({ count = 100, rows = [], rowsPerPage = 5 }: TasksTab
                       <Typography variant="bodyB3">{row.taskName}</Typography>
                     </Stack>
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+                     
+                      <Typography variant="bodyB3">{row.taskName}</Typography>
+                     
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
                   </TableCell>
 
                   <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>

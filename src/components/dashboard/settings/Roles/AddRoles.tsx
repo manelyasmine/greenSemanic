@@ -167,6 +167,19 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     //onCreateUser(newRole);
     setNewRole('');
     handleCancelRole();
+<<<<<<< HEAD
+  };
+  //this a async function to handle submit of roles
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+      const selectedPermissions = Object.entries(permissions)
+      .filter(([key, value]) => value)
+      .map(([key]) => key); // Extract selected permission keys
+
+    dispatch(addRole({ name: roleName, permissions: selectedPermissions }));  
+    // Handle success or error from the dispatched action
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   };
   //this a async function to handle submit of roles
   const handleSubmit = async (event) => {
@@ -178,22 +191,13 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     dispatch(addRole({ name: roleName, permissions: selectedPermissions }));  
     // Handle success or error from the dispatched action
   };
-  //this a async function to handle submit of roles
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const selectedPermissions = Object.entries(permissions)
-      .filter(([key, value]) => value)
-      .map(([key]) => key); // Extract selected permission keys
-
-    dispatch(addRole({ name: roleName, permissions: selectedPermissions }));
-    // Handle success or error from the dispatched action
-  };
 
 
 
 
 
   return (
+<<<<<<< HEAD
 <<<<<<< HEAD
     <form onSubmit={handleCreateRole}>
     
@@ -205,6 +209,12 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
   
     <Drawer anchor="bottom" open={open} onClose={onClose}>
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+    <form onSubmit={handleCreateRole}>
+    
+  
+    <Drawer anchor="bottom" open={open} onClose={handleCancelRole}>
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={header}>
@@ -308,10 +318,14 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           <Grid item xs={4}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="all"   onChange={handleCheckboxChange} /> select all
 =======
             <Checkbox   /> select all
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="all"   onChange={handleCheckboxChange} /> select all
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           
@@ -329,28 +343,40 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="read_user_management"  onChange={handleCheckboxChange}   /> Read
 =======
             <Checkbox name="userManagementRead"   /> Read
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="read_user_management"  onChange={handleCheckboxChange}   /> Read
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <Checkbox name="write_user_management"  onChange={handleCheckboxChange}   /> Write
 =======
             <Checkbox name="userManagementWrite"   /> Write
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="write_user_management"  onChange={handleCheckboxChange}   /> Write
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="create_user_management"  onChange={handleCheckboxChange}   /> Create
 =======
             <Checkbox name="userManagementCreate"   /> Create
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="create_user_management"  onChange={handleCheckboxChange}   /> Create
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
       
@@ -367,28 +393,40 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="read_emission_tracking"  onChange={handleCheckboxChange}  /> Read
 =======
             <Checkbox name="emissionTrackingRead"   /> Read
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="read_emission_tracking"  onChange={handleCheckboxChange}  /> Read
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <Checkbox name="write_emission_tracking"  onChange={handleCheckboxChange}  /> Write
 =======
             <Checkbox name="emissionTrackingWrite"    /> Write
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="write_emission_tracking"  onChange={handleCheckboxChange}  /> Write
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="create_emission_tracking"  onChange={handleCheckboxChange}  /> Create
 =======
             <Checkbox name="emissionTrackingCreate"    /> Create
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="create_emission_tracking"  onChange={handleCheckboxChange}  /> Create
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
       </Grid>
@@ -402,28 +440,40 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
            <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox  name="read_task" onChange={handleCheckboxChange}   /> Read
 =======
             <Checkbox  name="TasksRead"   /> Read
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox  name="read_task" onChange={handleCheckboxChange}   /> Read
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <Checkbox  name="write_task"  onChange={handleCheckboxChange} /> Write
 =======
             <Checkbox  name="TasksWrite"   /> Write
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox  name="write_task"  onChange={handleCheckboxChange} /> Write
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox  name="create_task"   onChange={handleCheckboxChange} /> Create
 =======
             <Checkbox  name="TasksCreate"   /> Create
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox  name="create_task"   onChange={handleCheckboxChange} /> Create
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           </Grid>
@@ -437,28 +487,40 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox  name="read_targets" onChange={handleCheckboxChange}   /> Read
 =======
             <Checkbox  name="TargetsRead"   /> Read
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox  name="read_targets" onChange={handleCheckboxChange}   /> Read
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <Checkbox name="write_targets"  onChange={handleCheckboxChange} /> Write
 =======
             <Checkbox name="TargetsWrite"   /> Write
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="write_targets"  onChange={handleCheckboxChange} /> Write
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="create_targets"  onChange={handleCheckboxChange}  /> Create
 =======
             <Checkbox name="TargetsCreate"   /> Create
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="create_targets"  onChange={handleCheckboxChange}  /> Create
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
          </Grid>
@@ -475,28 +537,40 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="read_reports" onChange={handleCheckboxChange}  /> Read
 =======
             <Checkbox name="ReportsRead"   /> Read
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="read_reports" onChange={handleCheckboxChange}  /> Read
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
+<<<<<<< HEAD
 <<<<<<< HEAD
             <Checkbox name="write_reports"  onChange={handleCheckboxChange} /> Write
 =======
             <Checkbox name="ReportsWrite"   /> Write
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="write_reports"  onChange={handleCheckboxChange} /> Write
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
           <Grid item xs={2}>
           <Box>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <Checkbox name="create_reports"  onChange={handleCheckboxChange} /> Create
 =======
             <Checkbox name="ReportsCreate"   /> Create
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            <Checkbox name="create_reports"  onChange={handleCheckboxChange} /> Create
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           </Box>
           </Grid>
          </Grid>
@@ -527,10 +601,14 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
                 variant="contained"
                 btnType="primary"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 onClick={handleCreateRole}
 =======
                 onClick={handleSubmit}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+                onClick={handleCreateRole}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
                 sx={{
                   borderRadius: '0.375rem',
                   background: 'var(--Green-green-500, #16B364)',

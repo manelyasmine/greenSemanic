@@ -17,6 +17,7 @@ import { setTasks } from '@/lib/store/reducer/useTask';
 import { useDispatch, useSelector } from 'react-redux';
 import { userApis } from '@/lib/user/userApis';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { User } from '@/types/user'; 
 import { setTargets } from '@/lib/store/reducer/useTarget';
  
@@ -24,11 +25,15 @@ import { targetApis } from '@/lib/target/targetApis';
 =======
 import { User } from '@/types/user';
 import { Target } from '@/types/target';
+=======
+import { User } from '@/types/user'; 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 import { setTargets } from '@/lib/store/reducer/useTarget';
-import { setUsers } from '@/lib/store/reducer/useUser';
+ 
 import { targetApis } from '@/lib/target/targetApis';
 
 
+<<<<<<< HEAD
 
 
 
@@ -60,16 +65,35 @@ export default function Page(): React.JSX.Element {
   
 =======
   const [newTask, setNewTask] = useState<Task>({});
+=======
+export default function Page(): React.JSX.Element {
+  
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   const [selectedTab, setSelectedTab] = React.useState<string>('All Tasks');
-
+  const [users, setUsers] = useState<User>({});
+  const [isNewTask,setIsNewTask]=useState(false); 
+  const { tasks } = useSelector((state: any) => state.task); 
   const { targets } = useSelector((state: any) => state.target);
+<<<<<<< HEAD
   const { users } = useSelector((state: any) => state.users); 
   // Function to handle tab changes
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+  const { user } = useSelector((state: any) => state.user); 
+  const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
+
+  const [newTask, setNewTask] = useState<Task>({['createdBy']:user.id});
+  const rowsPerPage = 5;
+  const page = 0;
+  const dispatch = useDispatch();
+  
+  
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 const handleNewTask=()=>{ 
   console.log('hNDDDDDDDDDDD NEW TASK')
@@ -87,22 +111,35 @@ const handleNewTask=()=>{
   const { tasks } = useSelector((state: any) => state.task);
   const { user } = useSelector((state: any) => state.user);
   const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 const handleNewTask=()=>{ 
+  console.log('hNDDDDDDDDDDD NEW TASK')
    handleTargets();  
+   handleUsers();
+  
+  
  
+<<<<<<< HEAD
   //handleClose();
   setIsNewTask(!isNewTask);
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
  
 }
 const [errorAlert, setErrorAlert] = useState('');
 const handleCreateTask = React.useCallback(async (): Promise<void> => {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
    
   setNewTask({ ...newTask, ['createdBy']: user.id });
  console.log("handle create task,=========",newTask,user.id)
   const { res , error } = await taskApis.createTask(newTask);
    if (error) {
+<<<<<<< HEAD
     setErrorAlert(error);
     return
   } 
@@ -116,33 +153,17 @@ const handleCreateTask = React.useCallback(async (): Promise<void> => {
  
   //const { res , error } = await taskApis.createTask(newTask);
  /*  if (error) {
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
     setErrorAlert(error);
     return
-  } */
-  //dispatch(setTasks([...tasks , res]))
+  } 
+  dispatch(setTasks([...tasks , res]))
   handleClose();
 }, [newTask]);
 
-/* const getTasks = React.useCallback(async (): Promise<void> => {
-  const { error, res } = await taskApis.getTasks();
-  console.log("useruseruser",user.id,res)
-  if (error) {
-    return;
-  }  
-  if(selectedTab === 'All Tasks'){
-  dispatch(setTasks(res));
-  setPaginatedTasks(applyPagination(res, page, rowsPerPage));
-  setTasks(res);
-  }else{
-
-    const filteredTasks: Task[] = res.filter((task: Task) => task.createdBy === user.id);
-
-  dispatch(setTasks(filteredTasks));
-  setPaginatedTasks(applyPagination(filteredTasks, page, rowsPerPage));
-  setTasks(filteredTasks);
-
-  }
  
+<<<<<<< HEAD
 
 }, [page, rowsPerPage]);
 
@@ -151,11 +172,14 @@ useEffect(() => {
 }, [getTasks]); */
 
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 const handleTargets= React.useCallback(async (): Promise<void> => {
  
   
   try {
     const { res } = await targetApis.getTargets();
+<<<<<<< HEAD
 <<<<<<< HEAD
     dispatch(setTargets(res));  
     
@@ -166,18 +190,26 @@ const handleTargets= React.useCallback(async (): Promise<void> => {
 =======
     dispatch(setTargets(res)); 
      
+=======
+    dispatch(setTargets(res));  
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
     
   } catch (error) {
-    console.error('Error fetching users:', error); 
+    console.error('Error fetching targets:', error); 
   }
+<<<<<<< HEAD
 
   console.log("user api drop===>",users)
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+ 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
    
       }, [dispatch]);  
 
 
 const handleUsers= React.useCallback(async (): Promise<void> => {
+<<<<<<< HEAD
 <<<<<<< HEAD
   
   try {
@@ -193,11 +225,21 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
      dispatch(setUsers(res));
     console.log("handleUsers get user",res)
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+  
+  try {
+    const { res } = await userApis.getUsers();
+    
+    //dispatch(setUsers(res));
+   setUsers(res) 
+   console.log("useeeeeeeeee",users)
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
       
     
   } catch (error) {
     console.error('Error fetching users:', error); 
   }
+<<<<<<< HEAD
 <<<<<<< HEAD
  
     
@@ -209,6 +251,12 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
     
 }, [dispatch]);    
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+ 
+    
+      }, 
+[dispatch]);    
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
 
 
@@ -280,11 +328,16 @@ const handleClose=()=>{setIsNewTask(false)}
               background: 'var(--Green-green-500, #16B364)',
             }}
 <<<<<<< HEAD
+<<<<<<< HEAD
             //onClick={()=>handleNewTask, setIsNewTask(!isNewTask)}
             onClick={() => {handleUsers() , handleTargets(),setIsNewTask(!isNewTask)}}
 =======
             onClick={ ()=>{handleUsers(),handleNewTask()}}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            //onClick={()=>handleNewTask, setIsNewTask(!isNewTask)}
+            onClick={() => {handleUsers() , handleTargets(),setIsNewTask(!isNewTask)}}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           >
             New Task
           </Button>
@@ -295,15 +348,20 @@ const handleClose=()=>{setIsNewTask(false)}
            
       
 <<<<<<< HEAD
+<<<<<<< HEAD
             {/*   <BottomDrawer 
 =======
               <BottomDrawer 
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            {/*   <BottomDrawer 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
                 open={isNewTask}
                 newTask={newTask}
                 setNewTask={setNewTask}
                 handleCancelTask={handleClose}
                handleCreateTask={handleCreateTask}
+<<<<<<< HEAD
 <<<<<<< HEAD
                
               /> */}
@@ -311,6 +369,10 @@ const handleClose=()=>{setIsNewTask(false)}
                users={users} targets={targets}
               />
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+               
+              /> */}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             
  
            <BottomDrawer 
