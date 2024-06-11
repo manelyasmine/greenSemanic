@@ -23,6 +23,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 interface UpdateBottomDrawerTaskProps {
   open: boolean;
@@ -39,21 +40,34 @@ interface UpdateBottomDrawerTaskProps {
 interface UpdateBottomDrawerTaskProps {
   open: boolean;
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+ 
+interface UpdateBottomDrawerTaskProps {
+  open: boolean;
+  isAssign:boolean;
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   handleCancelTask: () => void;
   users:any;
   targets:any;
   task : Task;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   userId:User;
   headerName:string;
   titleName:string;
   subtitleName:string;
+<<<<<<< HEAD
 =======
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
   onUpdateTask: (task: Task) => void; // Function to handle task creation
 }
  
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets,isAssign,headerName,titleName,subtitleName}) => {
  
@@ -71,15 +85,25 @@ const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, h
 const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets}) => {
   
   
+=======
+const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets,isAssign,headerName,titleName,subtitleName}) => {
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
  
- const dispatch = useDispatch();
  const [updatedTask, setupdatedTask] = useState<Task>(task);
- 
+ const [initialTarget, setInitialTarget] = useState<string | undefined>(task.targetName);
+ /* const [initialUsers, setInitialUsers] = useState<string[] | undefined>(
+  task.usersIds?.map((userId: { _id: string }) => userId._id) || [],
+); */
+
  
  const [error, setError] = useState(false);
  const handleUpdateTask = () => {
+<<<<<<< HEAD
    console.log('update,updatedTask',updatedTask)
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+   console.log('update,updatedTask=====>',updatedTask)
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
    onUpdateTask(updatedTask);
    
  };
@@ -92,6 +116,9 @@ const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, h
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 useEffect(() => {
   // Set initial target only once on component mount
   setInitialTarget(task.targetName);
@@ -101,8 +128,11 @@ useEffect(() => {
 }, [task.targetName]); // Re-run effect if task.targetName changes
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
   const value = event.target.value as string | string[];
   handleChange(name, value);
@@ -111,6 +141,7 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
   const value = event.target.value as string[];
   handleChange('usersIds', value);
 <<<<<<< HEAD
+<<<<<<< HEAD
   console.log("handle change user ids",updatedTask.usersIds)
 };
  
@@ -118,6 +149,11 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
 };
 
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+  console.log("handle change user ids",updatedTask.usersIds)
+};
+ 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
  return ( 
     
     <form onSubmit={handleUpdateTask}>
@@ -135,10 +171,14 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
               }}
             > 
 <<<<<<< HEAD
+<<<<<<< HEAD
               {headerName} 
 =======
               Update Task{' '}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+              {headerName} 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="help">need help?</Typography>
@@ -159,12 +199,17 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
               }}
             >
 <<<<<<< HEAD
+<<<<<<< HEAD
               <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>{titleName}</Typography>
               <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}>{subtitleName}</Typography>
 =======
               <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>Update Old Task</Typography>
               <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}> Add a new task to further streamline your carbon emission management process.</Typography>
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+              <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>{titleName}</Typography>
+              <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}>{subtitleName}</Typography>
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
               
             </Box>
  
@@ -181,6 +226,7 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
       <TextField
             label="Task Title"
 <<<<<<< HEAD
+<<<<<<< HEAD
             value={updatedTask.taskName || ''}
             defaultValue={task.taskName}
             onChange={(e) => handleChange('taskName', e.target.value)}
@@ -193,6 +239,14 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
             margin="normal"
             fullWidth
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            value={updatedTask.taskName || ''}
+            defaultValue={task.taskName}
+            onChange={(e) => handleChange('taskName', e.target.value)}
+            margin="normal"
+            fullWidth
+            disabled={isAssign} 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           />
  
       
@@ -210,6 +264,7 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
 <<<<<<< HEAD
+<<<<<<< HEAD
                   
                   value={updatedTask.targetName || initialTarget}
                   onChange={(e) => handleSelectChange(e, 'targetName')}
@@ -218,6 +273,12 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                   value={updatedTask.targetName}
                   onChange={(e) => handleSelectChange(e, 'targetName')}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+                  
+                  value={updatedTask.targetName || initialTarget}
+                  onChange={(e) => handleSelectChange(e, 'targetName')}
+                  disabled={isAssign} 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
                       
                        
                   label="Select"
@@ -247,6 +308,7 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
       <TextField
             label="Task Title"
 <<<<<<< HEAD
+<<<<<<< HEAD
             defaultValue={task.dueDate}
             value={updatedTask.dueDate || ''}
             onChange={(e) => handleChange('dueDate',e.target.value)}
@@ -255,6 +317,12 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
             value={updatedTask.dueDate}
             onChange={(e) => handleChange('dueDate',e.target.value)}
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            defaultValue={task.dueDate}
+            value={updatedTask.dueDate || ''}
+            onChange={(e) => handleChange('dueDate',e.target.value)}
+            disabled={isAssign} 
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             margin="normal"
             fullWidth
           />
@@ -271,6 +339,7 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
             id="demo-multiple-select"
             multiple
 <<<<<<< HEAD
+<<<<<<< HEAD
             value={updatedTask.usersIds || ''}  
             onChange={handleMultiSelectChange}
 =======
@@ -278,6 +347,10 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
             onChange={handleMultiSelectChange}
                        
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+            value={updatedTask.usersIds || ''}  
+            onChange={handleMultiSelectChange}
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             label="Assigned To"
           >
       

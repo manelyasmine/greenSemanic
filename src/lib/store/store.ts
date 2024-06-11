@@ -13,7 +13,13 @@ import roleReducer from './reducer/useRole';
 import globalActionsReducer from './reducer/useGlobalActions'
 =======
 import usersReducer from './reducer/useUser';
+<<<<<<< HEAD
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+import companyReducer from './reducer/useCompany';
+import emissionReducer from './reducer/useEmission';
+import roleReducer from './reducer/useRole';
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
 const persistConfig = {
   key: 'root',
@@ -30,6 +36,7 @@ const rootReducer = combineReducers({
   task: taskReducer,
   users:usersReducer,
 <<<<<<< HEAD
+<<<<<<< HEAD
   company:companyReducer,
   emission:emissionReducer,
   role:roleReducer,
@@ -38,6 +45,11 @@ const rootReducer = combineReducers({
   file: fileReducer
 =======
 >>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
+=======
+  company:companyReducer,
+  emission:emissionReducer,
+  role:roleReducer,
+>>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 });
 
 // Configure the store with the combined reducer
