@@ -15,25 +15,18 @@ import dayjs from 'dayjs';
 import { useSelection } from '@/hooks/use-selection'; 
 import Header from './Header';
 import { Pagination } from '@mui/material';
+import { Emission } from '@/types/emission';
 
 function noop(): void {
   // do nothing
 }
 
-export interface Customer {
-  id: string;
-  avatar: string;
-  name: string;
-  email: string;
-  address: { city: string; state: string; country: string; street: string };
-  phone: string;
-  createdAt: Date;
-}
+ 
 
 interface CustomersTableProps {
   count?: number;
   page?: number;
-  rows?: Customer[];
+  rows?: Emission[];
   rowsPerPage?: number;
 }
 
@@ -57,82 +50,96 @@ export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }:
   return (
     <Card>
        <Header/>
-      <Divider />
-      <Box sx={{ overflowX: 'auto' }}>
-        <Table sx={{ minWidth: '800px' }}>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  checked={selectedAll}
-                  indeterminate={selectedSome}
-                  onChange={(event) => {
-                    if (event.target.checked) {
-                      selectAll();
-                    } else {
-                      deselectAll();
-                    }
-                  }}
-                />
-              </TableCell>
-              <TableCell>Name</TableCell> 
+     <Divider />
+    <Box sx={{ overflowX: 'auto' }}>
+      <Table sx={{ minWidth: '800px' }}>
+        <TableHead>
+          <TableRow>
+            <TableCell padding="checkbox">
+              <Checkbox
+                checked={selectedAll}
+                indeterminate={selectedSome}
+                onChange={(event) => {
+                  if (event.target.checked) {
+                    selectAll();
+                  } else {
+                    deselectAll();
+                  }
+                }}
+              />
+            </TableCell>
+            <TableCell>Name</TableCell> 
               <TableCell>Category</TableCell>
               <TableCell>Unit</TableCell>
               <TableCell>Source</TableCell>
               <TableCell>  Year </TableCell>
-              
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => {
-              const isSelected = selected?.has(row.id);
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => {
+            const isSelected = selected?.has(row.id);
 
-              return (
-                <TableRow hover key={row.id} selected={isSelected}>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={(event) => {
-                        if (event.target.checked) {
-                          selectOne(row.id);
-                        } else {
-                          deselectOne(row.id);
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>{row.name} </TableCell>
-                        
-                       
-                    
-                  
-                  <TableCell>{row.category}</TableCell>
-                  <TableCell>{row.unit}</TableCell>
-                    
-                  
-                  <TableCell>{row.source}</TableCell>
-                  <TableCell>{dayjs(row.year).format('YYYY')}</TableCell>
-                  
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </Box>
-      <Divider />
-      <Box style={{ display: 'flex', justifyContent: 'center' }}>
-      <Pagination
-        count={count} // Total number of pages
-        page={4} // Current page
-        onChange={handleChangePage}  
-        color="primary" // Set color
-        size="medium"   
-        showFirstButton  
-        showLastButton 
-        shape="rounded"
-         
-      />
-      </Box>
-    </Card>
+            return (
+              <TableRow hover key={row.id} selected={isSelected}>
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={(event) => {
+                      if (event.target.checked) {
+                        selectOne(row.id);
+                      } else {
+                        deselectOne(row.id);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                   
+                    <Typography variant="bodyB3">{row.Name}</Typography>
+                   
+                </TableCell>
+                <TableCell>
+              
+              <Typography variant="bodyP3">{row.Category}</Typography>
+                </TableCell>
+
+                <TableCell>
+              
+              <Typography variant="bodyP3">{row.Unit}</Typography>
+                </TableCell>
+
+                <TableCell>
+              
+              <Typography variant="bodyP3">{row.Source}</Typography>
+                </TableCell>
+                <TableCell>{dayjs(row.Year).format('MMM D, YYYY')}</TableCell>
+               
+                 
+                
+                
+                 
+               
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </Box>
+    <Divider />
+    <Box style={{ display: 'flex', justifyContent: 'center' }}>
+    <Pagination
+      count={count} // Total number of pages
+      page={4} // Current page
+      onChange={handleChangePage}  
+      color="primary" // Set color
+      size="medium"   
+      showFirstButton  
+      showLastButton 
+      shape="rounded"
+       
+    />
+    </Box>
+  </Card>
   );
 }

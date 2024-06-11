@@ -14,10 +14,11 @@ function generateToken(): string {
 }
 
 export interface NewTaskParams {
-  name?: string;
-  target?: string;
-  dueDate?: Date | null;
+  taskName?: string;
+  targetName?: string;
+  dueDate?: string;
   usersIds?: string[];
+  createdBy?:string;
 }
 
 class TaskApis {
@@ -41,14 +42,25 @@ class TaskApis {
 
     return {};
   }
+async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
+  // Make API request
+  try {
+    const res = await this.apiTask.patch('/',task,{ withCredentials: true });
 
-  async createTask(id: string,data: NewTaskParams): Promise<{res? :Task,  error?: string }> {
+    return {  };
+  } catch (e) {
+    return { error: 'backend error' };
+  }
+
+  return {};
+}
+  async createTask(data: NewTaskParams): Promise<{res? :Task,  error?: string }> {
     // Make API request
     try { 
       const response = await this.apiTask.post('/', data , { withCredentials: true });
-      console.log("create task apis===>",response,id,data);
+   
 
-      return {res : {...response.data, id: response.data._id}}
+      return {res : {...response.data }}
     } catch (e) {
       return { error: 'backend error' };
     } 

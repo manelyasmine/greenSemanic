@@ -1,29 +1,103 @@
 "use client";
-import * as React from 'react'; 
+import React,{useState,useEffect} from 'react'; 
 import Typography from '@mui/material/Typography'; 
 import { MuiButton } from '@/styles/theme/components/button';
 import Stack from '@mui/material/Stack'; 
 import Divider from '@mui/material/Divider'; 
-import {Grid,Button} from '@mui/material';
-import {Input} from '../../commun/Inputs/Input';
-import { InputSelect } from '../../commun/Inputs/InputSelect';
+import {Grid,Button,TextField} from '@mui/material'; 
 import {CompanyLogo} from '../../commun/Inputs/CompanyLogo'; 
+import { companyApis } from '@/lib/company/companyApis';
+import { setCompany } from '@/lib/store/reducer/useCompany';
+import { useDispatch,useSelector } from 'react-redux';
+import { Company } from '@/types/company'; 
+
 
 interface CompanyProfileProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+  open: boolean;
+  onClose: () => void;
+  onCreateTask: (task: string) => void; // Function to handle task creation
+}
+
+interface FormCompany {
+  name?: string;
+  email?: string;
+  website?: string;
+  logo?: string;
+  size?: string;
+  headOffice?: string;
+  description?: string;
+  business?:string;
 }
 
 
 
+
+export   function CompanyProfile() { 
+  const [newCompany, setNewCompany] = useState<Company>({
+    name: '',
+    email: '',
+    website: '',
+    logo: '',
+    size: '',
+    headOffice: '',
+    description: '',
+    business: ''
+  });
+
+  const { company } = useSelector((state: any) => state.company);
+  const [errorAlert, setErrorAlert] = useState('');
+  const dispatch = useDispatch();
+  const handleChange = (name: string, event: any) => {
+   
+    setNewCompany({ ...newCompany, [name]: event });
+    
+  };
+  const handleCreateCompany = React.useCallback(async (): Promise<void> => {
+    console.log('handlecreatecompany====>', newCompany);
+    const { res, error } = await companyApis.createCompany(newCompany);
+    if (error) {
+      setErrorAlert(error);
+      return;
+    }
+    dispatch(setCompany(res));
+    setCompany(res);
+    // onClose();
+  }, [newCompany]);
+
+  const getCompany = React.useCallback(async (): Promise<void> => {
+    const { error, res } = await companyApis.getCompany();
+    if (error) {
+      return;
+    }
+    dispatch(setCompany(res));
+
+    // Set the newCompany state based on fetched company data
+    setNewCompany({
+     
+      name: res.name,
+      email: res.email,
+      website: res.website,
+      logo: res.logo,
+      size: res.size,
+      headOffice: res.headOffice,
+      description: res.description,
+      business: res.business,
+    });
+    dispatch(setCompany(res));
+    
+    setCompany(company);
+
+  }, []);
+
+  useEffect(() => {
+    getCompany();
+  }, [getCompany]);
  
 
-export   function CompanyProfile() {
-  const [value, setValue] = React.useState(0);
- 
 
+  console.log("new company====>",newCompany,company)
   return (
+   
     <Stack spacing={6}   >
      <Grid container alignItems="center" >
       <Grid item xs={6}>
@@ -63,6 +137,7 @@ export   function CompanyProfile() {
         justifyContent: 'flex-end',
         background: "var(--Green-green-500, #16B364)",
       }}
+      onClick={handleCreateCompany}
     >
       <Typography variant="h7" sx={{ color: "var(--Colors-Base-00, #FFF)" }}>
         Save
@@ -77,13 +152,76 @@ export   function CompanyProfile() {
 </Grid>
 <Grid container   >
       <Grid item xs={8}>
-        <Input labelText="Comany name" required={0} />
-        <InputSelect labelText="Business Field" required={0} />
-        <Input labelText="Head office" required={1}/>
-        <Input labelText="Email" required={1}/>
-        <Input labelText="Comany Website" required={1}/>
-        <InputSelect labelText="Business Size" required={1} />
-        <Input labelText="Description" required={1}/>
+      <Typography variant="subtitle2">Company name  </Typography>
+        <TextField
+          required
+          label={newCompany.name}
+          //value={newCompany.name}
+          value={newCompany.name || company?.name  }
+          onChange={(e) => handleChange('name', e.target.value)}
+          margin="normal"
+          fullWidth
+        /> 
+         <Typography variant="subtitle2">Business Field</Typography>
+        <TextField
+          required
+          value={newCompany.business || company?.business}
+          
+          onChange={(e) => handleChange('business', e.target.value)}
+          margin="normal"
+          fullWidth
+        />
+
+      <Typography variant="subtitle2">Head office</Typography>
+      <TextField
+          required
+          value={newCompany.headOffice || company?.headOffice}
+          
+          onChange={(e) => handleChange('headOffice', e.target.value)}
+          margin="normal"
+          fullWidth
+        /> 
+
+
+    <Typography variant="subtitle2">Email</Typography>
+      <TextField
+          required
+          value={newCompany.email || company?.email}
+          
+          onChange={(e) => handleChange('email', e.target.value)}
+          margin="normal"
+          fullWidth
+        /> 
+
+    <Typography variant="subtitle2">Comany Website</Typography>
+      <TextField
+          required
+          value={newCompany.website || company?.website}
+          
+          onChange={(e) => handleChange('website', e.target.value)}
+          margin="normal"
+          fullWidth
+        />  
+
+      <Typography variant="subtitle2">Company Size</Typography>
+      <TextField
+          required
+          value={newCompany.size || company?.size}
+          
+          onChange={(e) => handleChange('size', e.target.value)}
+          margin="normal"
+          fullWidth
+        />
+         <Typography variant="subtitle2">Description</Typography>
+      <TextField
+          required
+          value={newCompany.description || company?.description}
+          
+          onChange={(e) => handleChange('description', e.target.value)}
+          margin="normal"
+          fullWidth
+        />
+  
       </Grid>
       <Grid item xs={1} sx={{
         display: 'flex',

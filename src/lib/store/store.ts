@@ -6,6 +6,9 @@ import targetReducer from './reducer/useTarget';
 import  taskReducer from './reducer/useTask';
 import usersReducer from './reducer/useUser';;
 import fileReducer from './reducer/useFile'
+import companyReducer from './reducer/useCompany';
+import emissionReducer from './reducer/useEmission';
+import roleReducer from './reducer/useRole';
 
 const persistConfig = {
   key: 'root',
@@ -21,6 +24,9 @@ const rootReducer = combineReducers({
   target: targetReducer,
   task: taskReducer,
   users:usersReducer,
+  company:companyReducer,
+  emission:emissionReducer,
+  role:roleReducer,
   file: fileReducer
 });
 

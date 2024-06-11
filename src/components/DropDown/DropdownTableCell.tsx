@@ -38,30 +38,27 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
   const { targets } = useSelector((state: any) => state.target);
   const { users } = useSelector((state: any) => state.users); 
   const dispatch = useDispatch();
+  const [user, setUser] = React.useState<User>({});
+  const [isAssign,setIsAssign]=useState(false);
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const [user, setUser] = React.useState<User>({});
+ 
 
   const handleClose = () => {
     setAnchorEl(null);
     setIsUpdate(false)
+    setIsAssign(false);
   };
   
-  // const handleModify = () => {
-  //   handleClose();
-  //   // onModify?.(); // Call the onModify function if provided
-  // };
-
-
+ 
   const handleModify = React.useCallback(async (data:  Task): Promise<void> => {
 
     const { error, res } = await taskApis.updateTask(data);
     if (error) {
       return;
-    } else {
-      const indexToRemove = tasks.indexOf(Task); 
+    } else { 
 
       const newTasks =  targets.map((tar : Task) => {
         if (tar.id === data.id) {
@@ -72,9 +69,51 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
       //setIsDeleteOpen(false);
       dispatch(setTasks(newTasks));
       setIsUpdate(false)
+
     }
     handleClose();
   }, []);
+
+
+  const handleAssign = React.useCallback(async (data:  Task): Promise<void> => {
+    console.log("handle assign data===>",data)
+    const { error, res } = await taskApis.assignTask(data);
+    if (error) {
+      return;
+    } else { 
+
+      const newTasks =  targets.map((tar : Task) => {
+        if (tar.id === data.id) {
+          return data;
+        }
+        return tar;
+      });
+     
+      dispatch(setTasks(newTasks));
+      setIsAssign(false)
+
+    }
+    handleClose();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const handleDelete = React.useCallback(async (): Promise<void> => {
     console.log("handle deelte task===>",task,Task)
@@ -91,10 +130,7 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
     handleClose();
   }, []);
 
-  const handleAssign = () => {
-    handleClose();
-    //onAssign?.(); // Call the onAssign function if provided (optional)
-  };
+  
 
  const handleTargets= React.useCallback(async (): Promise<void> => {
     handleClose();
@@ -106,69 +142,42 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
     } catch (error) {
       console.error('Error fetching users:', error); 
     }
-
-    console.log("user api drop===>",users)
+ 
      
-        }, [dispatch]);  
+}, [dispatch]);  
 
  
-  const handleUsers= React.useCallback(async (): Promise<void> => {
-          handleClose();
-          try {
-            const { res } = await userApis.getUsers();
-            dispatch(setUsers(res));
-            console.log("useeeeeeeeee",Object.keys(res),Object.keys(users))
-             
-            
-          } catch (error) {
-            console.error('Error fetching users:', error); 
-          }
+const handleUsers= React.useCallback(async (): Promise<void> => {
+  handleClose();
+  try {
+    const { res } = await userApis.getUsers();
+    dispatch(setUsers(res));
+    console.log("useeeeeeeeee",Object.keys(res),Object.keys(users))
       
-          console.log("user api drop===>",users)
-           
-              }, [dispatch]);      
+    
+  } catch (error) {
+    console.error('Error fetching users:', error); 
+  }
+ 
+    
+      }, 
+[dispatch]);      
 
   return (
     <div>
-      <IconButton onClick={handleOpen}>
-        <DotsHorizontal />
-      </IconButton>
-
-      <Menu
+      <IconButton onClick={handleOpen}> <DotsHorizontal />  </IconButton>    
+     <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleClose}
         MenuListProps={{ 'aria-labelledby': 'dropdown-button' }}
       >
         <Box sx={DropDOwn}>
-          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}>
-            <ListItemIcon>
-              {' '}
-              <ModifyIcon />{' '}
-            </ListItemIcon>
-            <ListItemText primary="Modify" />
-          </MenuItem>
+          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}> <ListItemIcon>  <ModifyIcon />  </ListItemIcon> <ListItemText primary="Modify" /></MenuItem>  
+            <Divider variant="middle" />  
+          <MenuItem onClick={() => {setIsDeleteOpen(!isDeleteOpen);  }}sx={itemMenu}> <ListItemIcon>  <DeleteIcon />    </ListItemIcon>  <ListItemText primary="Delete" /></MenuItem>
           <Divider variant="middle" />
-          <MenuItem
-            onClick={() => {
-              setIsDeleteOpen(!isDeleteOpen);
-            }}
-            sx={itemMenu}
-          >
-            <ListItemIcon>
-              {' '}
-              <DeleteIcon />{' '}
-            </ListItemIcon>
-            <ListItemText primary="Delete" />
-          </MenuItem>
-          <Divider variant="middle" />
-          <MenuItem onClick={handleAssign} sx={itemMenu}>
-            <ListItemIcon>
-              {' '}
-              <AssignIcon />{' '}
-            </ListItemIcon>
-            <ListItemText primary="Assign" />
-          </MenuItem>
+          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsAssign(!isAssign)}} sx={itemMenu}>   <ListItemIcon>  <AssignIcon />   </ListItemIcon><ListItemText primary="Assign" /> </MenuItem>
         </Box>
       </Menu>
      {/* <DeleteConfirmation open={isDeleteOpen} setOpen={setIsDeleteOpen} handleDelete={handleDelete} />
@@ -184,8 +193,38 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
           handleDelete={handleDelete} 
           primaryColor={{ backgroundColor: palette.danger[500] }}
         />} 
+      {(isUpdate  ) &&(
+       <UpdateBottomDrawerTask 
+       open={isUpdate  } 
+       handleCancelTask={ handleClose } 
+       onUpdateTask={handleModify } 
+       task ={task} 
+       users={users} 
+       targets={targets} 
+       isAssign={isAssign}
+       headerName="Update Task"
+       titleName="Update a Task"
+       subtitleName="update task to further streamline your carbon emission management process."
+       
+       />)
+      }
 
-       <UpdateBottomDrawerTask open={isUpdate} handleCancelTask={ handleClose } onUpdateTask={handleModify } task ={task} users={users} targets={targets} />
+{( isAssign) &&(
+       <UpdateBottomDrawerTask 
+       open={isAssign} 
+       handleCancelTask={ handleClose } 
+       onUpdateTask={handleAssign } 
+       task ={task} 
+       users={users} 
+       targets={targets} 
+       isAssign={isAssign}
+
+       headerName="Assign Task"
+       titleName="Assign a Task"
+       subtitleName="assign a task to further streamline your carbon emission management process."
+       
+       />)
+      }
      </div>
   );
 };

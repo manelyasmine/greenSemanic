@@ -4,7 +4,7 @@ export interface Task {
     taskName?: string;
     targetName?: string;
     dueDate?:string;
-    usersIds?: string;
+    usersIds?: string[];
     status?:string;
     createdBy?:string;
     progress?:string;

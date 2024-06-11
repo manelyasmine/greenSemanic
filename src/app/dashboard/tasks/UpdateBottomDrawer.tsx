@@ -22,35 +22,34 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-
-/* interface User {
-  _id: string; // Assuming your user has an ID property
-  username: string;
-  email: string;
-}
- */
-
+ 
 interface UpdateBottomDrawerTaskProps {
   open: boolean;
+  isAssign:boolean;
   handleCancelTask: () => void;
   users:any;
   targets:any;
   task : Task;
+  userId:User;
+  headerName:string;
+  titleName:string;
+  subtitleName:string;
   onUpdateTask: (task: Task) => void; // Function to handle task creation
 }
  
 
-const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets}) => {
-  
-  
+const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, handleCancelTask, onUpdateTask  , task,users,targets,isAssign,headerName,titleName,subtitleName}) => {
  
- const dispatch = useDispatch();
  const [updatedTask, setupdatedTask] = useState<Task>(task);
- 
+ const [initialTarget, setInitialTarget] = useState<string | undefined>(task.targetName);
+ /* const [initialUsers, setInitialUsers] = useState<string[] | undefined>(
+  task.usersIds?.map((userId: { _id: string }) => userId._id) || [],
+); */
+
  
  const [error, setError] = useState(false);
  const handleUpdateTask = () => {
-   console.log('update,updatedTask',updatedTask)
+   console.log('update,updatedTask=====>',updatedTask)
    onUpdateTask(updatedTask);
    
  };
@@ -62,6 +61,15 @@ const UpdateBottomDrawerTask: React.FC<UpdateBottomDrawerTaskProps> = ({ open, h
    
 };
 
+useEffect(() => {
+  // Set initial target only once on component mount
+  setInitialTarget(task.targetName);
+ 
+
+  
+}, [task.targetName]); // Re-run effect if task.targetName changes
+
+
 const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
   const value = event.target.value as string | string[];
   handleChange(name, value);
@@ -69,8 +77,9 @@ const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: 
 const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
   const value = event.target.value as string[];
   handleChange('usersIds', value);
+  console.log("handle change user ids",updatedTask.usersIds)
 };
-
+ 
  return ( 
     
     <form onSubmit={handleUpdateTask}>
@@ -87,7 +96,7 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                 fontFeatureSettings: '"cv04" on, "cv03" on, "cv02" on, "cv11" on, "clig" off, "liga" off',
               }}
             > 
-              Update Task{' '}
+              {headerName} 
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="help">need help?</Typography>
@@ -107,8 +116,8 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                 alignSelf: 'stretch',
               }}
             >
-              <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>Update Old Task</Typography>
-              <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}> Add a new task to further streamline your carbon emission management process.</Typography>
+              <Typography variant="h5" sx={{color:'var(--Grey-grey-900, #1A1D21)'}}>{titleName}</Typography>
+              <Typography variant="bodyP3" sx={{color:'var(--Grey-grey-400, #88909'}}>{subtitleName}</Typography>
               
             </Box>
  
@@ -124,10 +133,12 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
       <Typography variant='subtitle3'>Task Name</Typography>
       <TextField
             label="Task Title"
-            value={updatedTask.taskName}
+            value={updatedTask.taskName || ''}
+            defaultValue={task.taskName}
             onChange={(e) => handleChange('taskName', e.target.value)}
             margin="normal"
             fullWidth
+            disabled={isAssign} 
           />
  
       
@@ -144,8 +155,10 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={updatedTask.targetName}
+                  
+                  value={updatedTask.targetName || initialTarget}
                   onChange={(e) => handleSelectChange(e, 'targetName')}
+                  disabled={isAssign} 
                       
                        
                   label="Select"
@@ -174,8 +187,10 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
       <Typography variant='subtitle3'>Due Date</Typography>
       <TextField
             label="Task Title"
-            value={updatedTask.dueDate}
+            defaultValue={task.dueDate}
+            value={updatedTask.dueDate || ''}
             onChange={(e) => handleChange('dueDate',e.target.value)}
+            disabled={isAssign} 
             margin="normal"
             fullWidth
           />
@@ -191,9 +206,8 @@ const handleMultiSelectChange = (event: React.ChangeEvent<{ value: unknown }>) =
             labelId="demo-multiple-select-label"
             id="demo-multiple-select"
             multiple
-            value={updatedTask.usersIds}
+            value={updatedTask.usersIds || ''}  
             onChange={handleMultiSelectChange}
-                       
             label="Assigned To"
           >
       
