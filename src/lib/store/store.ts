@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
   company:companyReducer,
   emission:emissionReducer,
   role:roleReducer,
-  file: fileReducer
+  file: fileReducer,
 });
 
 // Configure the store with the combined reducer
