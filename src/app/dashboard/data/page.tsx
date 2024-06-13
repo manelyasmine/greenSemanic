@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { CalanderIcon, ExportIcon, FilterIcon, ImportIcon, PlusIcon } from '@/icons';
-import { Box, Button, Divider, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { Button } from '@/components/commun/Button';
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import { DataTable } from '@/components/dashboard/data/Data-table';
 import ButtomDrower from '@/components/dashboard/data/ButtomDrower';
@@ -16,6 +16,7 @@ import Scopes from '@/components/dashboard/overview/Scopes';
 import { MuiButton } from '@/styles/theme/components/button';
 import { dataApis } from '@/lib/data/dataApis';
 import { setDataDB } from '@/lib/store/reducer/useFile';
+import Toast from '@/components/commun/Toast/Toast';
 
 const reports = [
   {
@@ -86,6 +87,9 @@ export default function Page(): React.JSX.Element {
     //setIsDelModal(false);
   }, [selectedRow]);
 
+  const [openToast, setOpenToast] = React.useState(false);
+
+
   return (
     <Box>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -121,12 +125,14 @@ export default function Page(): React.JSX.Element {
 
             <Button
               btnType="Primary"
+              onClick={() => setOpenToast(true)}
               sx={{
                 ...MuiButton.styleOverrides.sizeSmall,
                 borderRadius: '6px',
                 background: 'var(--Green-green-500, #16B364)',
               }}
-              startIcon={<PlusIcon fontSize="var(--icon-fontSize-sm)" color="white" />}
+              startIcon={<PlusIcon fontSize="var(--icon-fontSize-sm)" color="white" 
+              />}
             >
               <Typography variant="h7" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
                 New
@@ -135,6 +141,7 @@ export default function Page(): React.JSX.Element {
           </Grid>
         </Grid>
       </Grid>
+      
 
       <DataTable  handleDelete={handleDelete} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
       {isOpen && (

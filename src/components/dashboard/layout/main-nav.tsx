@@ -20,12 +20,17 @@ import { palette } from '@/styles/theme/colors';
 
 import { MobileNav } from './mobile-nav';
 import { UserPopover } from './user-popover';
+import { useDispatch, useSelector } from 'react-redux';
+import Toast from '@/components/commun/Toast/Toast';
+import { setCloseToast } from '@/lib/store/reducer/useGlobalActions';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
   const [searchValue, setSearchValue] = React.useState<string>(''); // State for search value
 
   const userPopover = usePopover<HTMLDivElement>();
+  const { isOpenToast, message, type } = useSelector((state: any) => state.globalActions);
+  const dispatch = useDispatch();
 
   return (
     <React.Fragment>
@@ -96,6 +101,7 @@ export function MainNav(): React.JSX.Element {
       </Box>
       <UserPopover anchorEl={userPopover.anchorRef.current} onClose={userPopover.handleClose} open={userPopover.open} />
       <MobileNav onClose={() => setOpenNav(false)} open={openNav} />
+      <Toast message={message} open={isOpenToast} type={type} handleClose={() => dispatch(setCloseToast())} />
     </React.Fragment>
   );
 }

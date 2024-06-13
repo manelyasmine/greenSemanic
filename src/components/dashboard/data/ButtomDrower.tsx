@@ -29,6 +29,7 @@ import { Target } from '@/types/target';
 import { dataApis } from '@/lib/data/dataApis';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { Button } from '@/components/commun/Button';
+import Toast from '@/components/commun/Toast/Toast';
 import { body, FooterBody, FooterBox, header, HeaderBody } from '@/styles/theme/Bottom-drawer';
 import { palette } from '@/styles/theme/colors';
 import { MuiButton } from '@/styles/theme/components/button';
@@ -44,7 +45,8 @@ import Scopes from '../overview/Scopes';
 import { Tasks } from '../overview/Tasks';
 import { TotalEmissions } from '../overview/TotalEmissions';
 import ExportStepOne from './steps/ExportStepOne';
-import SwitchSteps from './steps/switchSteps';
+import SwitchSteps from './steps/SwitchSteps';
+import { setCloseToast, setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 
 const steps = [
   { value: 'Upload file', label: 'Step 01' },
@@ -60,19 +62,13 @@ interface ExportStep1Props {
 
 const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, onUpdateTarget }) => {
   const { data } = useSelector((state: any) => state.file);
-  // const [updatedTarget, setupdatedTarget] = useState<Target>({...target , baseToTargetYear:target.baseYear+'-'+target.targetYear});
-  // const [updatedTarget, setupdatedTarget] = useState<Target>(() => {
-  //   const baseToTargetYear = target?.baseYear && target?.targetYear ? target.baseYear + '-' + target.targetYear : null;
-  //   return { ...(target || {}), baseToTargetYear };
-  // });
+ 
+  // const [openToast, setOpenToast] = React.useState(false);
 
-  const [isActiveShare, setIsActiveShare] = useState(false);
-
+  // const [type, setType] = useState<'success' | 'error'>('success');
+  // const [message, setMessage] = useState('');
   const [activeStep, setActiveStep] = useState(0);
-  const handleShare = () => {
-    setIsActiveShare(!isActiveShare);
-  };
-
+  const dispatch = useDispatch();
   const handleStep = () => {
     setActiveStep(activeStep + 1);
   };
@@ -82,11 +78,11 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, onUpdateTarge
     const { res, error } = await dataApis.uploadData(data);
     if (error) {
       console.log('error');
-      //setErrorAlert(error);
+      dispatch(setOpenToast({message : error, type:'error'}))
       return;
     }
+    dispatch(setOpenToast({message : 'Data Added Successfully', type:'success'}))
     onClose();
-    //dispatch(setTargets([...targets , res]))
   }, [data]);
 
   return (
@@ -136,6 +132,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, onUpdateTarge
           </Grid>
           <Divider sx={{ backgroundColor: '#DBDBDB', height: '1px', width: '100%' }} />
           <SwitchSteps currentStep={activeStep} />
+
           <Divider sx={{ backgroundColor: '#DBDBDB', height: '1px', width: '100%' }} />
 
           <Grid sx={FooterBox}>
@@ -162,6 +159,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, onUpdateTarge
           </Grid>
         </Box>
       </Slide>
+     
     </Drawer>
   );
 };

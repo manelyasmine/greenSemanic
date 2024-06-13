@@ -4,7 +4,7 @@ export type AlertProps = MuiAlertProps & {
   children?: React.ReactNode;
   sx?: any;
   severity: 'success' | 'error' | 'info' | 'warning';
-  setChildren: any;
+  setChildren?: any;
 };
 
 export const Alert: React.FC<AlertProps> = ({ sx, severity, children , setChildren}: AlertProps) => {

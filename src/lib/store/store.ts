@@ -9,7 +9,7 @@ import fileReducer from './reducer/useFile'
 import companyReducer from './reducer/useCompany';
 import emissionReducer from './reducer/useEmission';
 import roleReducer from './reducer/useRole';
-
+import globalActionsReducer from './reducer/useGlobalActions'
 const persistConfig = {
   key: 'root',
   storage,
@@ -28,6 +28,7 @@ const rootReducer = combineReducers({
   emission:emissionReducer,
   role:roleReducer,
   file: fileReducer,
+  globalActions: globalActionsReducer,
 });
 
 // Configure the store with the combined reducer
