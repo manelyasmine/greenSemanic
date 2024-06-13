@@ -47,9 +47,10 @@ interface DataTableProps {
   rows?: object[];
   rowsPerPage?: number;
   importFunc?: boolean;
+  handleDelete: any
 }
 
-export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false }: DataTableProps): React.JSX.Element {
+export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false , handleDelete }: DataTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((Reports) => Reports.id);
   }, [rows]);
@@ -66,18 +67,27 @@ export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false }: Da
   const [isDelModal, setIsDelModal] = useState(false);
   const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   const { selectedRow ,dataDB } = useSelector((state: any) => state.file);
-  const handleDelete = React.useCallback(async (): Promise<void> => {
-    const { error, res } = await dataApis.deleteData(selectedRow._id);
-    console.log('see'+selectedRow)
-    if (error) {
-      return;
+  const deleteRow = () => { 
+    
+    const {error , result} = handleDelete()
+    if(error) { 
+      return
     }
-    const indexToRemove = dataDB.indexOf(selectedRow);
-    const newData = dataDB.filter((_: any, i: any) => i !== indexToRemove);
     setIsDelModal(false);
-    dispatch(setDataDB(newData));
     setIsDelModal(false);
-  }, [selectedRow]);
+  }
+  // const handleDelete = React.useCallback(async (): Promise<void> => {
+  //   const { error, res } = await dataApis.deleteData(selectedRow._id);
+  //   console.log('see'+selectedRow)
+  //   if (error) {
+  //     return;
+  //   }
+  //   const indexToRemove = dataDB.indexOf(selectedRow);
+  //   const newData = dataDB.filter((_: any, i: any) => i !== indexToRemove);
+  //   setIsDelModal(false);
+  //   dispatch(setDataDB(newData));
+  //   setIsDelModal(false);
+  // }, [selectedRow]);
 
   return (
     <Card>
@@ -197,7 +207,7 @@ export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false }: Da
       </Box>
       <DeleteModal
         onClose={() => setIsDelModal(!isDelModal)}
-        handleDelete={handleDelete}
+        handleDelete={deleteRow}
         open={isDelModal}
         title={'Do you want to delete this?'}
         subtitle={'Are you sure you want to delete this data.'}

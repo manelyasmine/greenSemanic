@@ -46,7 +46,7 @@ export default function Page(): React.JSX.Element {
   const rowsPerPage = 4;
   const [isOpen, setIsOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  const { dataDB } = useSelector((state: any) => state.file);
+  const {selectedRow, dataDB } = useSelector((state: any) => state.file);
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     console.log('nexttt', activeStep);
@@ -70,6 +70,21 @@ export default function Page(): React.JSX.Element {
   useEffect(() => {
     getData();
   }, [getData])
+  
+  // const { selectedRow ,dataDB } = useSelector((state: any) => state.file);
+  const handleDelete = React.useCallback(async (): Promise<string> => {
+    const { error, res } = await dataApis.deleteData(selectedRow._id);
+    console.log('see'+selectedRow)
+    if (error) {
+      return error;
+    }
+    const indexToRemove = dataDB.indexOf(selectedRow);
+    const newData = dataDB.filter((_: any, i: any) => i !== indexToRemove);
+    dispatch(setDataDB(newData));
+    return res
+    //setIsDelModal(false);
+    //setIsDelModal(false);
+  }, [selectedRow]);
 
   return (
     <Box>
@@ -121,7 +136,7 @@ export default function Page(): React.JSX.Element {
         </Grid>
       </Grid>
 
-      <DataTable count={dataDB.length} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
+      <DataTable  handleDelete={handleDelete} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
       {isOpen && (
         <ButtomDrower
           open={isOpen}

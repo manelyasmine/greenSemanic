@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { DataTable } from '../Data-table';
+import { FilterEmptyRow, isEmpty, isEmptyArray } from '@/lib/helper';
 import { setData } from '@/lib/store/reducer/useFile';
+
+import { DataTable } from '../Data-table';
 
 const reports = [
   {
@@ -29,7 +31,7 @@ const reports = [
 ];
 export default function ExportStepThree() {
   const { file, columnMapped } = useSelector((state: any) => state.file);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [rows, setRows] = useState([{}]);
   useEffect(() => {
     if (file) {
@@ -38,34 +40,40 @@ export default function ExportStepThree() {
         const fileContent = e.target.result;
 
         // Process the file content here
-        const lines = fileContent.split('\n');
+        let lines = fileContent.split('\n');
         const newRows = [{}];
-        lines.slice(1).map((line) => {
+        //lines = FilterEmptyRow(lines);
+        console.log('lines' + JSON.stringify(lines));
+        lines?.slice(1).map((line, index) => {
           const rowArray = line.split(',');
-          console.log('columnmapped' + [columnMapped['Date']]);
-          console.log('rowArray' + rowArray[columnMapped['Date']]);
-          newRows.push({
-            date: rowArray[columnMapped['Date']],
-            location: rowArray[columnMapped['Location']],
-            category: rowArray[columnMapped['Category']],
-            quantity: rowArray[columnMapped['Quantity']],
-            emission_tracker: rowArray[columnMapped['Emission Factor']],
-            source:'Bulk Upload'
-          });
-         
-          //console.log('line'+index + line);
+          if (!isEmptyArray(rowArray)) {
+            console.log('rowarrar' + rowArray);
+            newRows.push({
+              id: index,
+              date: rowArray[columnMapped['Date']],
+              location: rowArray[columnMapped['Location']],
+              category: rowArray[columnMapped['Category']],
+              quantity: rowArray[columnMapped['Quantity']],
+              emission_tracker: rowArray[columnMapped['Emission Factor']],
+            });
+          }
         });
-        console.log('newArray' + JSON.stringify(newRows))
-        dispatch(setData(newRows.slice(1)))
-        setRows(newRows.slice(1))
-        // console.log(lines[0].split(','));
-        // setColumnFile(lines[0].split(','));
+        console.log('newArray' + JSON.stringify(newRows));
+        dispatch(setData(newRows.slice(1)));
+        setRows(newRows.slice(1));
       };
       reader.readAsText(file);
     } else {
       console.log('No file selected');
     }
   }, [file]);
+  const { selectedRow } = useSelector((state: any) => state.file);
+  const handleDelete = () => {
+    const indexToRemove = rows.indexOf(selectedRow);
+    const newData = rows.filter((_: any, i: any) => i !== indexToRemove);
+    setRows(newData);
+    return 'success';
+  };
   return (
     <Grid
       container
@@ -90,7 +98,7 @@ export default function ExportStepThree() {
       </Grid>
 
       <Grid item xs={8}>
-        <DataTable count={3} page={1} rows={rows} rowsPerPage={4}  importFunc={true}/>
+        <DataTable page={1} rows={rows} rowsPerPage={4} importFunc={true} handleDelete={handleDelete} />
       </Grid>
     </Grid>
   );

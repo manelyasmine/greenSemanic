@@ -103,7 +103,7 @@ class DataApis {
     try {
       const res = await this.apiData.delete('/' + id, { withCredentials: true });
 
-      return {};
+      return {res};
     } catch (e) {
       return { error: 'backend error' + e };
     }
