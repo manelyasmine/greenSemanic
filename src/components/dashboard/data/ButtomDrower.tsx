@@ -57,10 +57,9 @@ const steps = [
 interface ExportStep1Props {
   open: boolean;
   onClose: () => void;
-  onUpdateTarget: (target: Target) => void; // Function to handle task creation
 }
 
-const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, onUpdateTarget }) => {
+const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
   const { data } = useSelector((state: any) => state.file);
  
   // const [openToast, setOpenToast] = React.useState(false);

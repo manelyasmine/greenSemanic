@@ -20,11 +20,11 @@ import { TotalEmissions } from '../../overview/TotalEmissions';
 
 export default function ExportStepFour() {
   const [selectedTab, setSelectedTab] = React.useState<string>('7 Days');
-  const { dataDB } = useSelector((state: any) => state.file);
-  const { scope1, scope2, scope3, sum } = CalculateScopes(dataDB);
-  const { scope1Arr, scope2Arr, scope3Arr } = extractScops(dataDB);
-  const emissionFactor = CalculateEmission(dataDB);
-  const dataEmissionByCat = getCarbonEmissionByCategory(dataDB)
+  const { dataDB , data } = useSelector((state: any) => state.file);
+  const { scope1, scope2, scope3, sum } = CalculateScopes(data);
+  const { scope1Arr, scope2Arr, scope3Arr } = extractScops(data);
+  const emissionFactor = CalculateEmission(data);
+  const dataEmissionByCat = getCarbonEmissionByCategory(data)
   const handleTabChange = () => {};
   return (
     <Grid

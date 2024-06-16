@@ -43,8 +43,6 @@ const DropdownTarget: React.FC<DropdownProps> = ({ target }) => {
     if (error) {
       return;
     } else {
-      const indexToRemove = targets.indexOf(target);
-      //const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
 
       const newTargets =  targets.map((tar : Target) => {
         if (tar.id === data.id) {

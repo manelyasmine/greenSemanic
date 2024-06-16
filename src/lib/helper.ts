@@ -1,3 +1,5 @@
+import { Data } from '@/types/data';
+
 export function CalculateScopes(data: []) {
   //data.map((ite) => console.log(ite.scope1))
   let scope1 = data.reduce((accumulateur, element) => accumulateur + (element.scope1 ?? 0), 0);
@@ -53,11 +55,58 @@ export const isEmpty = (obj: any) => {
   return Object.keys(obj).length === 0 || Object.values(obj).every((value) => !value);
 };
 export const isEmptyArray = (array: any) => {
-    return array.every(item => {
-        // Check for different empty values
-        return item === "" || item === null || item === undefined || (typeof item === "string" && item.trim() === "") || item === false;
-    });
-  };
+  return array.every((item) => {
+    // Check for different empty values
+    return (
+      item === '' ||
+      item === null ||
+      item === undefined ||
+      (typeof item === 'string' && item.trim() === '') ||
+      item === false
+    );
+  });
+};
 export const FilterEmptyRow = (data: []) => {
   return data.filter((item) => !isEmpty(item));
+};
+
+export const ContainKey = (obj: object, key: string) => {
+  return key in obj;
+};
+
+export const HasAllKeys = (obj: object, keys: string[]) => {
+  for (let key of keys) {
+    if (!obj.hasOwnProperty(key)) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const calculateDATA = (data: Data[], date, category, location) => {
+  const result = data.find((element) => {
+    if (
+      element.date == date &&
+      element.category == category &&
+      element.location == location &&
+      element.source !== 'Bulk Upload'
+    ) {
+      return true; // This will cause `find` to return this element
+    }
+    return false;
+  });
+  // console.log('result==> '+ JSON.stringify(result.emission_tracker))
+  return result
+    ? {
+        emission_tracker: result.emission_tracker,
+        scope1: result.scope1,
+        scope2: result.scope2,
+        scope3: result.scope3,
+      }
+    : {
+      emission_tracker: 0,
+      scope1:0,
+      scope2:0,
+      scope3: 0,
+    };
 };

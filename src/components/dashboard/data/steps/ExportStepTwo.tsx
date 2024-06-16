@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import FileIcon from '@/icons/FileIcon';
 import { Box, Card, CardContent, CardHeader, Grid, MenuItem, Select, Stack, Typography } from '@mui/material';
-import { ArrowRight, CheckCircle, File, Info } from '@phosphor-icons/react';
+import { ArrowRight, CheckCircle, File, Info, XCircle } from '@phosphor-icons/react';
 import { useSelector } from 'react-redux';
 
 import { IconButton } from '@/components/commun/Button/IconButton';
 import { palette } from '@/styles/theme/colors';
 
 import RowTable from '../RowTable';
+import { ContainKey, HasAllKeys } from '@/lib/helper';
 
 export default function ExportStepTwo() {
-  
+  const reqFields = ['Date' , 'Location' ,'Category' , 'Quantity'  ]
+  const { columnMapped } = useSelector((state: any) => state.file);
 
   return (
     <Grid
@@ -49,11 +51,7 @@ export default function ExportStepTwo() {
               </Grid>
             </Grid>
             
-            <RowTable title="Date" />
-            <RowTable title="Location" />
-            <RowTable title="Category" />
-            <RowTable title="Quantity" />
-            <RowTable title="Emission Factor" />
+            {reqFields.map((fields) => (<RowTable title={fields} />))}
           </Grid>
           <Grid item direction={'row'} xs={4} spacing={2}>
             <Card sx={{ background: palette.primary[50], marginY: 2, boxShadow: 0 }}>
@@ -66,27 +64,10 @@ export default function ExportStepTwo() {
                 </Typography>
 
                 <Box>
-                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
+                 {Object.keys(columnMapped).map((key) =>  <Stack direction={'row'} alignItems={'center'} spacing={1}>
                     <CheckCircle weight="fill" color={palette.primary[500]} />
-                    <Typography color={palette.primary[500]}>Data</Typography>
-                  </Stack>
-                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <CheckCircle weight="fill" color={palette.primary[500]} />
-                    <Typography color={palette.primary[500]}>Location</Typography>
-                  </Stack>
-                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <CheckCircle weight="fill" color={palette.primary[500]} />
-                    <Typography color={palette.primary[500]}>Category</Typography>
-                  </Stack>
-                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <CheckCircle weight="fill" color={palette.primary[500]} />
-                    <Typography color={palette.primary[500]}>Quantity</Typography>
-                  </Stack>
-
-                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
-                    <CheckCircle weight="fill" color={palette.primary[500]} />
-                    <Typography color={palette.primary[500]}>Emission Factor</Typography>
-                  </Stack>
+                    <Typography color={palette.primary[500]}>{key}</Typography>
+                  </Stack>)}
                 </Box>
               </CardContent>
             </Card>
@@ -96,9 +77,17 @@ export default function ExportStepTwo() {
                 <Typography gutterBottom variant="bodyB2" component="div">
                   Unassociated fields <Info />
                 </Typography>
-                <Typography variant="body2" color={palette.gray[500]} mb={1}>
+                {reqFields.map((fields)  => (
+                  !ContainKey(columnMapped , fields) && (
+                  <Stack direction={'row'} alignItems={'center'} spacing={1}>
+                    <XCircle weight="fill" color={palette.danger[300]} />
+                    <Typography color={palette.danger[300]}>{fields}</Typography>
+                  </Stack>)
+
+                ))}
+                { HasAllKeys(columnMapped , reqFields) && <Typography variant="body2" color={palette.gray[500]} mb={1}>
                   All fields are associated
-                </Typography>
+                </Typography>}
               </CardContent>
             </Card>
           </Grid>

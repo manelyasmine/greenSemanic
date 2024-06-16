@@ -6,17 +6,20 @@ import { Box, Divider, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { Data } from '@/types/data';
+import { dataApis } from '@/lib/data/dataApis';
+import { addDataDB, clearColumnMapped, clearSelectedRow, setDataDB, updateDataDB } from '@/lib/store/reducer/useFile';
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 import { Button } from '@/components/commun/Button';
 import CustomTabs from '@/components/commun/Tabs/tabs';
-import { DataTable } from '@/components/dashboard/data/Data-table';
 import ButtomDrower from '@/components/dashboard/data/ButtomDrower';
+import CreateUpdateButtomDrower from '@/components/dashboard/data/CreateUpdateButtomDrower';
+import { DataTable } from '@/components/dashboard/data/Data-table';
 import { CarbonEmissionsCategory } from '@/components/dashboard/overview/CarbonEmissionsCategory';
 import { MonthlyCarbonEmissions } from '@/components/dashboard/overview/MonthlyCarbonEmissions';
 import Scopes from '@/components/dashboard/overview/Scopes';
 import { MuiButton } from '@/styles/theme/components/button';
-import { dataApis } from '@/lib/data/dataApis';
-import { setDataDB } from '@/lib/store/reducer/useFile';
-import Toast from '@/components/commun/Toast/Toast';
 
 const reports = [
   {
@@ -42,16 +45,13 @@ const reports = [
 ] satisfies reports[];
 export default function Page(): React.JSX.Element {
   const [selectedTab, setSelectedTab] = useState<string>('7 Days');
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const page = 0;
   const rowsPerPage = 4;
   const [isOpen, setIsOpen] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const {selectedRow, dataDB } = useSelector((state: any) => state.file);
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    console.log('nexttt', activeStep);
-  };
+  const [isOpenCU, setIsOpenCU] = useState(false);
+  const { selectedRow, dataDB } = useSelector((state: any) => state.file);
+
   const handleModify = () => {};
 
   const handleImporter = () => {
@@ -70,26 +70,51 @@ export default function Page(): React.JSX.Element {
 
   useEffect(() => {
     getData();
-  }, [getData])
-  
+  }, [getData]);
+
   // const { selectedRow ,dataDB } = useSelector((state: any) => state.file);
   const handleDelete = React.useCallback(async (): Promise<string> => {
     const { error, res } = await dataApis.deleteData(selectedRow._id);
-    console.log('see'+selectedRow)
+    console.log('see' + selectedRow);
     if (error) {
       return error;
     }
+    
     const indexToRemove = dataDB.indexOf(selectedRow);
     const newData = dataDB.filter((_: any, i: any) => i !== indexToRemove);
     dispatch(setDataDB(newData));
-    return res
-    //setIsDelModal(false);
-    //setIsDelModal(false);
+    dispatch(clearSelectedRow());
+    return res;
   }, [selectedRow]);
 
-  const [openToast, setOpenToast] = React.useState(false);
+  const handleCreate = React.useCallback(
+    async (DataToCreate: any): Promise<void> => {
+      const { error } = await dataApis.createData(DataToCreate);
+      if (error) {
+        dispatch(setOpenToast({ message: error, type: 'error' }));
+        return
+      }
+      dispatch(setOpenToast({ message: 'Data Added Successfully', type: 'success' }));
+      dispatch(addDataDB(DataToCreate));
+      setIsOpenCU(false);
+    },
+    []
+  );
 
-
+  const handleUpdate = React.useCallback(
+    async (DataToUpdate: any): Promise<string> => {
+      const { error, res} = await dataApis.updateData(DataToUpdate);
+      if (error) {
+        dispatch(setOpenToast({ message: error, type: 'error' }));
+        return error 
+      }
+      dispatch(setOpenToast({ message: 'Data Updated Successfully', type: 'success' }));
+      dispatch(updateDataDB(DataToUpdate));
+      dispatch(clearSelectedRow());
+      return res
+    },
+    []
+  );
   return (
     <Box>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -125,14 +150,13 @@ export default function Page(): React.JSX.Element {
 
             <Button
               btnType="Primary"
-              onClick={() => setOpenToast(true)}
+              onClick={() => setIsOpenCU(true)}
               sx={{
                 ...MuiButton.styleOverrides.sizeSmall,
                 borderRadius: '6px',
                 background: 'var(--Green-green-500, #16B364)',
               }}
-              startIcon={<PlusIcon fontSize="var(--icon-fontSize-sm)" color="white" 
-              />}
+              startIcon={<PlusIcon fontSize="var(--icon-fontSize-sm)" color="white" />}
             >
               <Typography variant="h7" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
                 New
@@ -141,23 +165,27 @@ export default function Page(): React.JSX.Element {
           </Grid>
         </Grid>
       </Grid>
-      
 
-      <DataTable  handleDelete={handleDelete} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
+      <DataTable handleDelete={handleDelete} handleUpdate={handleUpdate} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
       {isOpen && (
         <ButtomDrower
           open={isOpen}
           onClose={() => {
             setIsOpen(!isOpen);
-            setActiveStep(0);
+            dispatch(clearColumnMapped())
           }}
-          onUpdateTarget={handleModify}
           /* onNext={handleNext}  */
         />
       )}
+
+      <CreateUpdateButtomDrower
+        open={isOpenCU}
+        onClose={() => setIsOpenCU(false)}
+        onAction={handleCreate}
+        title={'Data Entry'}
+        subTitle={'Enter specific details for each program category selected.'}
+        action={'create'}
+      />
     </Box>
   );
 }
-// function applyPagination(rows: any[], page: number, rowsPerPage: number): Target[] {
-//   return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-// }

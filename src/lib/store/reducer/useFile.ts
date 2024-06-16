@@ -3,9 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   file: null,
   columnMapped: {},
-  data:[],
-  dataDB:[],
-  selectedRow:null,
+  data: [],
+  dataDB: [],
+  selectedRow: null,
 };
 
 const fileSlice = createSlice({
@@ -18,23 +18,38 @@ const fileSlice = createSlice({
     clearFile(state) {
       state.file = null;
     },
-    setColumnMapped(state, action){
-      console.log('action '+ JSON.stringify(action.payload))
-      state.columnMapped = action.payload
+    setColumnMapped(state, action) {
+      state.columnMapped = action.payload;
     },
-    setData(state, action){
-      //console.log('action '+ JSON.stringify(action.payload))
-      state.data = action.payload
+    clearColumnMapped(state) {
+      state.columnMapped ={};
     },
-    setDataDB(state, action){
+    setData(state, action) {
       //console.log('action '+ JSON.stringify(action.payload))
-      state.dataDB = action.payload
+      state.data = action.payload;
+    },
+    setDataDB(state, action) {
+      //console.log('action '+ JSON.stringify(action.payload))
+      state.dataDB = action.payload;
+    },
+    addDataDB(state, action) {
+      state.dataDB.push(action.payload);
+      //state.dataDB = [...state.dataDB , action.payload]
+    },
+    updateDataDB(state, action) {
+      const newData = state.dataDB.map((data) => {
+        if (data.id == action.payload._id) {
+          return action.payload;
+        }
+        return data;
+      });
+      state.dataDB = newData;
     },
     clearDataDB(state) {
       state.dataDB = [];
     },
     setSelectedRow(state, action) {
-      console.log('selected data '+ JSON.stringify(action.payload))
+      console.log('selected data ' + JSON.stringify(action.payload));
       state.selectedRow = action.payload;
     },
     clearSelectedRow(state) {
@@ -43,7 +58,18 @@ const fileSlice = createSlice({
   },
 });
 
-
-export const { setFile, clearFile, setColumnMapped , setData  , setDataDB  , clearDataDB , setSelectedRow, clearSelectedRow} = fileSlice.actions;
+export const {
+  setFile,
+  clearFile,
+  setColumnMapped,
+  setData,
+  setDataDB,
+  addDataDB,
+  updateDataDB,
+  clearDataDB,
+  setSelectedRow,
+  clearSelectedRow,
+  clearColumnMapped
+} = fileSlice.actions;
 
 export default fileSlice.reducer;

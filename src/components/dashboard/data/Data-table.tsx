@@ -19,6 +19,7 @@ import { makeStyles } from '@mui/styles';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Data } from '@/types/data';
 import { dataApis } from '@/lib/data/dataApis';
 import { setDataDB, setSelectedRow } from '@/lib/store/reducer/useFile';
 import usePagination from '@/hooks/use-pagination';
@@ -30,6 +31,7 @@ import { Pagination } from '@/components/commun/Pagination/Pagination';
 import { palette } from '@/styles/theme/colors';
 
 import FilterColumns from '../../commun/Filters/FilterColumns';
+import CreateUpdateButtomDrower from './CreateUpdateButtomDrower';
 
 export interface Reports {
   id: string;
@@ -47,14 +49,20 @@ interface DataTableProps {
   rows?: object[];
   rowsPerPage?: number;
   importFunc?: boolean;
-  handleDelete: any
+  handleDelete: any;
+  handleUpdate: any;
 }
 
-export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false , handleDelete }: DataTableProps): React.JSX.Element {
+export function DataTable({
+  rows = [],
+  rowsPerPage = 5,
+  importFunc = false,
+  handleDelete,
+  handleUpdate,
+}: DataTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((Reports) => Reports.id);
   }, [rows]);
-
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
   const dispatch = useDispatch();
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
@@ -66,16 +74,23 @@ export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false , han
   };
   const [isDelModal, setIsDelModal] = useState(false);
   const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
-  const { selectedRow ,dataDB } = useSelector((state: any) => state.file);
-  const deleteRow = () => { 
-    
-    const {error , result} = handleDelete()
-    if(error) { 
-      return
+  const { selectedRow, dataDB } = useSelector((state: any) => state.file);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const deleteRow = () => {
+    const { error, result } = handleDelete();
+    if (error) {
+      return;
     }
     setIsDelModal(false);
-    setIsDelModal(false);
-  }
+  };
+
+  const UpdateRow = (dataToUpdate : any) => {
+    const { error, res } = handleUpdate(dataToUpdate);
+    if (error) {
+      return;
+    }
+    setOpenUpdate(false);
+  };
   // const handleDelete = React.useCallback(async (): Promise<void> => {
   //   const { error, res } = await dataApis.deleteData(selectedRow._id);
   //   console.log('see'+selectedRow)
@@ -161,7 +176,12 @@ export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false , han
                     {!importFunc && <TableCell>{row.IntegrationSource}</TableCell>}
                     <TableCell>
                       <Stack sx={{ display: 'flex', alignItems: 'flex-end', gap: 'var(--12, 12px), ' }} direction="row">
-                        <IconButton btnType="tertiary">
+                        <IconButton
+                          btnType="tertiary"
+                          onClick={() => {
+                            dispatch(setSelectedRow(row)), setOpenUpdate(true);
+                          }}
+                        >
                           <ModifyIcon />
                         </IconButton>
                         <IconButton
@@ -211,6 +231,14 @@ export function DataTable({ rows = [], rowsPerPage = 5, importFunc = false , han
         open={isDelModal}
         title={'Do you want to delete this?'}
         subtitle={'Are you sure you want to delete this data.'}
+      />
+      <CreateUpdateButtomDrower
+        open={openUpdate}
+        onClose={() => setOpenUpdate(false)}
+        title={'Update'}
+        subTitle={'Update data'}
+        action={'update'}
+        onAction={UpdateRow}
       />
     </Card>
   );

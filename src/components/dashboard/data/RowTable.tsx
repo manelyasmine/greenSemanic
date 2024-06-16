@@ -55,8 +55,6 @@ export default function rowTable({ title }: RowTableProps) {
         <Select
           size="small"
           sx={{ width: '100%' }}
-          //value={'Date'}
-          label="Age"
           onChange={handleChange}
         >
           {columnFile && columnFile.map((col: any, index: any) => <MenuItem value={index}>{col}</MenuItem>)}

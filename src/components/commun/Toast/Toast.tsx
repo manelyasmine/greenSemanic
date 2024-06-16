@@ -20,7 +20,7 @@ export default function Toast({
   handleClose,
   message,
   action,
-  vertical = 'bottom',
+  vertical = 'top',
   horizontal = 'center',
 }: ToastProps) {
   return (
