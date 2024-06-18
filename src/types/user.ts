@@ -1,3 +1,5 @@
+import { Role } from "./role";
+
 export interface User {
   id?: string;
   name?: string;
@@ -7,4 +9,6 @@ export interface User {
   city?: string;
   county?: string;
   timezone?:string;
+  isAdmin?:string;
+  role?:Role | null;
 }

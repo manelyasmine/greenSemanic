@@ -20,6 +20,8 @@ import  { SelectChangeEvent } from '@mui/material/Select';
 import { body, FooterBody, FooterBox, header, HeaderBody } from '@/styles/theme/Bottom-drawer';
 import {Role} from '@/types/role'; 
 
+import { setRoles } from '@/lib/store/reducer/useRole';
+import { useDispatch, useSelector } from 'react-redux';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -33,17 +35,16 @@ const MenuProps = {
 
 interface NewRoleProps {
   open: boolean;
-  handlenewRole: () => void; 
+  
   handleCancelRole: () => void;
   users:any;
   newRole:any;
-  setNewRole:any;
-  newPermissions:any;
-  headerName:any;
+  
+  onUpdateRole: (role: Role) => void;  
 }
   
-const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole, setNewRole   }) => {
-   console.log("rrrrrrrrrr",users)
+const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole}) => {
+     
   const [permissions, setPermissions] = useState({
     read_user_management: false,
     write_user_management: false,
@@ -62,15 +63,18 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     create_reports:false,
   });
 
-  const [usersIds, setUsersIds] = React.useState<string[]>(
-   
-  );
+  const { roles } = useSelector((state: any) => state.role);
+  const [usersIds, setUsersIds] = React.useState<string[]>();
+  const [updatedRole, setupdatedRole] = useState<Role>(newRole);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (newRole?.users) {
       const extractedIds = newRole.users.map((user) => user._id);
       setUsersIds(extractedIds); 
     }
   }, []);
+
+  
 
   useEffect(() => {
     if (newRole?.permissions) {
@@ -93,24 +97,35 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
 
    
 
-  const handleCreateRole =  async() => {
+
+
+
+
+
+  const handleUpdateRole =  async() => {
+    
     const selectedPermissions = Object.entries(permissions)
     .filter(([key, value]) => value) 
-    .map(([key]) => key);  
-
+    .map(([key]) => key);   
+    console.log('nee',newRole)
    newRole = {
-    ...newRole,
+    ...updatedRole,
     permissions: selectedPermissions,  
     usersIds:usersIds
   };  
-  setNewRole(newRole)
-   
-    const { res , error } = await roleApis.createRole(newRole);
+  console.log("update drawer",newRole)
+  setupdatedRole(newRole) 
+    const { res , error } = await roleApis.updateRole(newRole);
     if (error) { 
+      console.log("errrrrrr",error)
      return
    } 
-  
-    console.log('updated newRole with permissions:', newRole);
+   // Update the roles state with the updated role
+   const updatedRoles = roles.map((role) =>
+    role._id === newRole._id ? newRole : role
+  );
+
+  dispatch(setRoles(updatedRoles));
     handleCancelRole();
   };
 
@@ -128,10 +143,10 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     .map(([key]) => key); // Extract permission names
 
   const updatedNewRole = {
-    ...newRole,
+    ...updatedRole,
     permissions: selectedPermissions, // Update newRole with selected permissions
   };  
-  setNewRole(updatedNewRole)
+  setupdatedRole(updatedNewRole)
     
   };  
  
@@ -151,26 +166,33 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
     );
     
  
-   setNewRole({ ...newRole, usersIds:   usersIds });
+    setupdatedRole({ ...updatedRole, usersIds:   usersIds });
 
    
 
   };
-  const handleChange = (name: string, event: Role) => {
+/*   const handleChange = (name: string, event: Role) => {
    
-    setNewRole({ ...newRole, [name]: event });
+    newRole[name]=event;
+    setNewRole({ newRole});
+    console.log(newRole,name,event)
      
   };  
-  
+   */
    
-  
+  const handleChange = (name: string, value: any) => {
+    setupdatedRole((prevRole) => ({
+      ...prevRole,
+      [name]: value,
+    }));
+  };
  
  
   
 
 
   return (
-    <form onSubmit={handleCreateRole}>
+    <form onSubmit={handleUpdateRole}>
     
   
     <Drawer anchor="bottom" open={open} onClose={handleCancelRole}>
@@ -206,9 +228,10 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
               <Typography variant="subtitle3">Role Name *</Typography>
               <TextField
                 label="Role Name *"
-                value={newRole?.name}
-                
-            onChange={(e) => handleChange('name', e.target.value)}
+                defaultValue={newRole?.name}
+                value={updatedRole?.name || ''}
+               
+                onChange={(e) => handleChange('name', e.target.value)}
                 margin="normal"
                 fullWidth
               />
@@ -431,7 +454,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
               <Button
                 variant="contained"
                 btnType="primary"
-                onClick={handleCreateRole}
+                onClick={handleUpdateRole}
                 sx={{
                   borderRadius: '0.375rem',
                   background: 'var(--Green-green-500, #16B364)',

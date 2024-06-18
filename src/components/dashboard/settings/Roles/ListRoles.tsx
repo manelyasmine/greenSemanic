@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useCallback} from 'react';
 import { DeleteIcon, ExportIcon, LocalizationHeadIcon, LocalizationIcon, ModifyIcon, PlusIcon } from '@/icons';
 import {
   Box,
@@ -18,9 +18,9 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
-
-import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { palette } from '@/styles/theme/colors';
+import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
+ 
 import { MuiButton } from '@/styles/theme/components/button';
 import { boxFilterDropDown, Filter, outlinedInput } from '@/styles/theme/Filter';
 import {CheckIcon,GreneIcon} from '@/icons';
@@ -30,22 +30,41 @@ import UpdateRoles from './UpdateRoles';
  import { userApis } from '@/lib/user/userApis';
  import {User} from '@/types/user';
  import {Role} from '@/types/role';
+import { set } from 'react-hook-form';
+
+import { setRoles } from '@/lib/store/reducer/useRole';
+import { roleApis } from '@/lib/role/roleApis';
+
+import RoleDrawer from './RoleDrawer';
 interface ListRolesProps {
 roles:any;
+roleToDelete:Role;
 
 }
 const ListRoles:  React.FC<ListRolesProps>  = ({roles}) => {
   const [open,setIsOpen]=useState(false);
+  const [isDelete,setIsDelete]=useState(false);
   const [users, setUsers] = useState<User>({});
-  const [newRole, setNewRole] = useState<Role>({});
+  const [newRole, setNewRole] = useState<Role>({});  
+  const [roleToDelete,setRoleToDelete] = useState<Role | null>(null);
+ 
+  const { user } = useSelector((state: any) => state.user); 
   const dispatch = useDispatch();
-   const handleModify=(role)=>{
-     console.log("rooooole",role)
-     setIsOpen(!open);
-     setNewRole(role);
-     handleUsers();
-    
-console.log("is open",open)
+  const handleModify = async (role: Role) => {
+    console.log("rooooole", role);
+    await handleUsers();
+    setNewRole(role);
+    setIsOpen(!open);
+    console.log("is open", open);
+  };
+
+const handleDelete= (role:Role) => {
+  
+  setIsDelete(!isDelete);setRoleToDelete(role);
+};
+
+   const onUpdateRole=()=>{
+
    }
    const handleUsers= React.useCallback(async (): Promise<void> => {
   
@@ -63,8 +82,27 @@ console.log("is open",open)
         }, 
   [dispatch]);
 
+  const handleDeleteRole = useCallback(async (): Promise<void> => {
+    if (!roleToDelete) return;
+    console.log("handle delete role===>", roleToDelete,user);
+
+    const { error } = await roleApis.deleteRole(roleToDelete._id,user);
+    if (error) {
+      return;
+    }
+    const newRoles = roles.filter((role) => role._id !== roleToDelete._id);
+
+     dispatch(setRoles(newRoles));
+    setIsDelete(false);
+    setRoleToDelete(null);
+  }, [dispatch,roleToDelete, roles]);
+
+
+
+
+
   const handleCancelRole=()=>{
-    setIsUpdate(!isUpdate)
+    setIsOpen(false);
   }
   return (
     <Grid container spacing={2}>
@@ -156,13 +194,11 @@ primaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-500, #727
   <Button aria-label="modify" sx={{ display: 'contents' }} onClick={()=>handleModify(role)}>
     <ModifyIcon />
   </Button>
-
-
-
+ 
   {/* Add spacing between buttons */}
   <Box sx={{ width: '10px' }} />  {/* Adjust width as needed */}
 
-  <Button aria-label="delete" sx={{ display: 'contents', paddingRight: '15%' }} >
+  <Button aria-label="delete" sx={{ display: 'contents', paddingRight: '15%' }}  onClick={()=>handleDelete(role)} >
     <DeleteIcon />
   </Button>
 </ListItemSecondaryAction>
@@ -171,19 +207,50 @@ primaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-500, #727
             </List>
            
                      
-            {open && (
-              <UpdateRoles
-                open={open}
-                handleCancelRole={handleCancelRole}
-                users={users}  
-                newRole={role} 
-                 
-              />
-            )}
+            
                  
           </Paper>
         </Grid>
       ))}
+    {/*       {open && newRole && (
+        <UpdateRoles
+          open={open}
+          handleCancelRole={handleCancelRole}
+          onUpdateRole={onUpdateRole}
+          users={users}
+          newRole={newRole}
+        
+         
+        />
+
+
+        
+      )} */}
+
+ {open  && (
+<RoleDrawer
+
+open={open} handleCancelRole={handleCancelRole} users={users} role={newRole} headerName="Edits Roles" isUpdate={true}
+
+ 
+
+/>
+  )}
+
+      {isDelete && roleToDelete!=null && (
+          <DeleteConfirmation
+            open={isDelete}
+            handleDelete={handleDeleteRole}
+            setOpen={setIsDelete}
+            title="Do you want to delete this role?"
+            subtitle="Are you sure you want to delete this role."
+            primary="Delete"
+            secondary="Cancel"
+            
+          primaryColor={{ backgroundColor: palette.danger[500] }}
+          />
+      )}
+
        
     </Grid>
   );

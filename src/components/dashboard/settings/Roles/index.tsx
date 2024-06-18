@@ -15,6 +15,7 @@ import { User } from '@/types/user';
 import { setRoles } from '@/lib/store/reducer/useRole';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { roleApis } from '@/lib/role/roleApis';
+import RoleDrawer from './RoleDrawer';
 interface RolesListProps {
   children?: React.ReactNode;
   index: number;
@@ -45,6 +46,10 @@ const handleClose=()=>{
   //dispatch(newRole([...role , res]))
   handleClose();
 }, [newRole]); */
+
+
+
+
 const handleUsers= React.useCallback(async (): Promise<void> => {
   
   try {
@@ -124,8 +129,8 @@ useEffect(() => {
         </Grid>
       </Grid>
       <ListRoles roles={roles}/>
-      {isNewRole ? (
-   
+    {/*   {isNewRole && (
+    
    <AddRoles 
    open={isNewRole} handleCancelRole={handleClose}  
   users={users}
@@ -135,13 +140,20 @@ useEffect(() => {
    
         
         
-        />
+        />  
+      )} */}
+
+{isNewRole  && (
+<RoleDrawer
+
+open={isNewRole} handleCancelRole={handleClose} users={users} role={newRole} headerName="Add Roles" isUpdate={false}
 
  
+
+/>
+  )}
  
-   
-   ):(<></>)
-   }
+    
     </Stack>
   );
 }

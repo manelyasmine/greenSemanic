@@ -66,7 +66,7 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ open, handleCancelUser, userUpd
     create_reports: false,
   });
  
-  const [currentUser, setCurrentUser] = useState<User>(userUpdate || { username: '',email:'', passwords: '', role: '' });
+  const [currentUser, setCurrentUser] = useState<User>(userUpdate || { username: '',email:''  });
   const dispatch = useDispatch(); 
   const {user}=useSelector((state:any)=>state.user)
 
@@ -75,15 +75,19 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ open, handleCancelUser, userUpd
     
 
     const newUserData = {
-      ...currentUser, 
+     
+      // Exclude password property using destructuring assignment with rest syntax
+      ...(Object.fromEntries(Object.entries(currentUser).filter(([key]) => key !== 'password'))),
     };
+    
 
     setCurrentUser(newUserData);
 
     if (isUpdate) {
+      console.log("is update",Object.keys(newUserData))
       
-      
-      const { error } = await userApis.updateUser(user?.id,newUserData);
+      console.log("newUserData",newUserData,currentUser)
+      const { error } = await userApis.updateUser(newUserData);
       if (error) {
         console.log("Update error:", error);
         return;
@@ -188,6 +192,10 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ open, handleCancelUser, userUpd
                   alignSelf: 'stretch',
                 }}
               >
+                {isUpdate ? (
+                      <></>
+                ):(
+                  <>
                 <Typography variant="subtitle3">User Password *</Typography>
                 <TextField
                   label="User Name *"
@@ -196,6 +204,9 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ open, handleCancelUser, userUpd
                   margin="normal"
                   fullWidth
                 />
+               </>
+               
+               )}
               </Box>
 
 
@@ -232,7 +243,10 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ open, handleCancelUser, userUpd
                 }}
               >
 
-
+{isUpdate ? (
+                      <></>
+                ):(
+                  <>
                 <Typography variant="subtitle3">Role</Typography>
                 <FormControl fullWidth>
                 <Select
@@ -255,6 +269,8 @@ const UserDrawer: React.FC<UserDrawerProps> = ({ open, handleCancelUser, userUpd
                     )}
                   </Select>
                 </FormControl>
+</>
+                )}
               </Box>
 
             

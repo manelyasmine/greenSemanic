@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography}from '@mui/material';
+import React, { useState , useRef} from 'react';
+import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography,InputAdornment}from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
  import OutlinedInput from '@mui/material/OutlinedInput';
@@ -11,59 +9,21 @@ import {Task} from '@/types/task';
 
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-=======
-import {
-  Box,
-  Button,
-  Drawer,FormControl,Select,
-   
-  IconButton,
-  Grid,Checkbox,Divider,MenuItem,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { Label } from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import {  Filter,  } from '@/styles/theme/Filter';
-import {header,body,HeaderBody,FooterBody,FooterBox} from '@/styles/theme/Bottom-drawer';
-import Card from '@mui/material/Card';
+import { CalanderIcon, FilterIcon } from '@/icons';
  
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-import {Drawer,FormControl,Grid,Divider,MenuItem,Box,IconButton,TextField,Button,Typography}from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
- import OutlinedInput from '@mui/material/OutlinedInput';
 
-import {header,FooterBox,FooterBody,body} from '@/styles/theme/Bottom-drawer';
-import {Task} from '@/types/task';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import Stack from '@mui/material/Stack';
+import { palette } from '@/styles/theme/colors';
+import { MuiButton } from '@/styles/theme/components/button';
+import { boxFilterDropDown, Filter, outlinedInput,filterCalander } from '@/styles/theme/Filter';
+import dayjs from 'dayjs';
 
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
+import CircularProgress from '@mui/material/CircularProgress';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -74,24 +34,9 @@ const MenuProps = {
     },
   },
 };
-
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
-
+ 
+ 
 interface BottomDrawerProps {
-<<<<<<< HEAD
-<<<<<<< HEAD
   
   newTask:any;
   setNewTask:any;
@@ -104,69 +49,33 @@ interface BottomDrawerProps {
 }
  
 const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCreateTask,users,targets,newTask, setNewTask  }) => {
-  console.log("BottomDrawer targets===>",targets,users)
+ // console.log("BottomDrawer targets===>",targets,users)
    
-  const handleChange = (name: string, event: Task) => {
-   
-    setNewTask({ ...newTask, [name]: event });
-     
-  };  
-  
-  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
-    const value = event.target.value as string | string[];
-     console.log("handle select change",name,value)
-    handleChange(name, value);
-  };
-  
-  const handleCreateTask = () => {
-     setNewTask({ ...newTask, ['usersIds']: usersIds })
-    onCreateTask(newTask);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
-    console.log('update,updatedTask=====>',newTask,usersIds)
-    
-  };
-
-
-  const [usersIds, setUsersIds] = React.useState<string[]>([]);
-
-  const handleMultiSelectChange = (event: SelectChangeEvent<typeof usersIds>) => {
-    const {
-      target: { value },
-    } = event;
-    setUsersIds(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-    console.log("usersIdsusersIdsusersIdsusersIds==>",usersIds)
-    setNewTask({ ...newTask, usersIds: usersIds });
-   /*  const userIds = event.target.value as string[]; // Type assertion
-    setNewTask({ ...newTask, usersIds: userIds }); */
-  };
-
-=======
-  newTask: FormTask;
-  setNewTask: any; 
-=======
-  
-  newTask:any;
-  setNewTask:any;
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
-  handleCancelTask: () => void;
-  onCreateTask: (task: Task) => void;
-  open:boolean,
-  users:any;
-  targets:any; 
-
-}
+ const [isCalendarOpen, setIsCalendarOpen] = useState(false);
  
-const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCreateTask,users,targets,newTask, setNewTask  }) => {
-  console.log("BottomDrawer targets===>",targets,users)
-   
+ const [selectedDate, setSelectedDate] = useState<any>(null);
+
+ const toggleCalendar = () => { setIsCalendarOpen(!isCalendarOpen); };
+
+ const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (name: string, event: Task) => {
    
     setNewTask({ ...newTask, [name]: event });
      
   };  
+  const handleDateChange = (date: any) => {
+  
+    setSelectedDate(date);
+
+    setNewTask({ ...newTask,  'dueDate': dayjs(date).format('YYYY-MM-DD')})
+   // onFilterByDate(date);  
+    setIsCalendarOpen(false);
+
+   
+  };
   
   const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>, name: string) => {
     const value = event.target.value as string | string[];
@@ -174,35 +83,34 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
     handleChange(name, value);
   };
   
-<<<<<<< HEAD
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
   const handleCreateTask = () => {
+    setIsLoading(true);
+    console.log("handle create task",usersIds)
+
      setNewTask({ ...newTask, ['usersIds']: usersIds })
     onCreateTask(newTask);
+    setIsLoading(false);
 
-    console.log('update,updatedTask=====>',newTask,usersIds)
+    console.log('update,updatedTask=====>',Object.keys(newTask),selectedDate)
     
   };
 
 
   const [usersIds, setUsersIds] = React.useState<string[]>([]);
 
+ 
   const handleMultiSelectChange = (event: SelectChangeEvent<typeof usersIds>) => {
     const {
       target: { value },
     } = event;
-    setUsersIds(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-    console.log("usersIdsusersIdsusersIdsusersIds==>",usersIds)
-    setNewTask({ ...newTask, usersIds: usersIds });
-   /*  const userIds = event.target.value as string[]; // Type assertion
-    setNewTask({ ...newTask, usersIds: userIds }); */
+
+    setUsersIds(value);
+    setNewTask({ ...newTask, usersIds:  value });
+    console.log("usersids handle multiple",usersIds,value)
   };
 
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
+
+
 
   return ( 
     
@@ -259,17 +167,8 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
       <TextField
             label="Task Title"
             value={newTask.taskName}
-<<<<<<< HEAD
-<<<<<<< HEAD
            
             onChange={(e) => handleChange('taskName', e.target.value)}
-=======
-            onChange={(e) => setNewTask(e.target.value)}
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-           
-            onChange={(e) => handleChange('taskName', e.target.value)}
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             margin="normal"
             fullWidth
           />
@@ -284,10 +183,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
           
       <Typography variant='subtitle3'>Target Name</Typography>
       <FormControl fullWidth>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
@@ -309,32 +204,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
         )}  
           </Select>
         </FormControl>
-<<<<<<< HEAD
-=======
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={newTask.targetName}
-                    onChange={(e) => handleChange('target', e.newTask.value)}
-                  label="Select"
-                >
-                    {targets && Array.isArray(targets) ? (  
-                Object.entries(targets).map(([key, value]) => (
-                  <MenuItem key={value.id} value={value.id}>
-                    {value.name}  
-                  </MenuItem>
-                ))
-              ) : (
-                // Display a message while users are loading or unavailable
-                <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                  {targets === undefined ? 'Loading targets...' : 'No targets available'}
-                </Typography>
-              )} 
-                </Select>
-              </FormControl>
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
       </Grid>
 
       </Grid>
@@ -343,37 +212,70 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
          
               
       <Typography variant='subtitle3'>Due Date</Typography>
-      <TextField
+    {/*   <TextField
             label="Due Date"
             value={newTask.dueDate}
-<<<<<<< HEAD
-<<<<<<< HEAD
             onChange={(e) => handleChange('dueDate',e.target.value)}
-=======
-            onChange={(e) => setNewTask(e.target.value)}
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-            onChange={(e) => handleChange('dueDate',e.target.value)}
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
             margin="normal"
             fullWidth
-          />
+          /> */}
+
+{/* <Box sx={{
+  display: 'flex',
+  padding: 'var(--12, 12px) 16px',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  alignSelf: 'stretch',
+  gap: '8px',
+}}>
+  
+  {isCalendarOpen && (
+    <Box sx={filterCalander}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateCalendar
+          value={selectedDate}
+          onChange={handleDateChange}
+          views={['year', 'month', 'day']} // Show all three views
+        />
+      </LocalizationProvider>
+    </Box>
+  )}
+</Box> */}
+
+<FormControl variant="outlined" fullWidth onClick={toggleCalendar}>
+  <OutlinedInput
+    /* value={newTask.dueDate} */
+    value={isCalendarOpen ? '' : dayjs(selectedDate).format('YYYY-MM-DD')} // Display date if open, else empty string
+    placeholder="Due Date"
+    endAdornment={<CalanderIcon cursor="pointer" fontSize="var(--icon-fontSize-md)" />}
+  />
+  {isCalendarOpen && (
+    <Box sx={filterCalander}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateCalendar
+          value={selectedDate}
+          onChange={handleDateChange}   
+          views={['year', 'month', 'day']} // Show all three views
+        />
+      </LocalizationProvider>
+    </Box>
+  )}
+</FormControl>
+
+
+
+
           </Grid>
       </Grid>
       
       <Grid item xs={12}  >
       <Grid container spacing={2} alignItems="center">
             
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
     
 
 
         <Typography variant='subtitle3'>Assigned To</Typography>
         <FormControl  fullWidth> 
-<<<<<<< HEAD
         <Select
           labelId="demo-multiple-name-label"
           id="demo-multiple-name"
@@ -398,80 +300,6 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
         )}
         </Select>
       </FormControl>
-=======
-      <Typography variant='subtitle3'>Assigned To</Typography>
-      <FormControl fullWidth>
-      {/* <Select
-            labelId="demo-multiple-select-label"
-            id="demo-multiple-select"
-            multiple
-            value={newTask.usersIds}
-            //onChange={handleMultiSelectChange}
-                       
-            label="Assigned To"
-          >
-      
-              {users && Array.isArray(users) ? ( // Check if users is an array and defined
-                  Object.entries(users).map(([key, value]) => (
-                    <MenuItem key={value._id} value={value._id}>
-                      {value.email}  
-                    </MenuItem>
-                    ))
-            ) : (
-              // Display a message while users are loading or unavailable
-              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                {users === undefined ? 'Loading users...' : 'No users available'}
-              </Typography>
-            )}   */} 
-        
-        <Select
-                   labelId="demo-multiple-select-label"
-                    id="demo-multiple-select"
-                   value={newTask.usersIds}
-                    onChange={ handleMultiSelectChange}
-                  label="Select"
-                >
-                    {users && Array.isArray(users) ? ( // Check if users is an array and defined
-                  Object.entries(users).map(([key, value]) => (
-                    <MenuItem key={value._id} value={value._id}>
-                      {value.email}  
-                    </MenuItem>
-                    ))
-            ) : (
-              // Display a message while users are loading or unavailable
-              <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                {users === undefined ? 'Loading users...' : 'No users available'}
-              </Typography>
-            )}
-          </Select>
-              </FormControl>
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-        <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          multiple
-          fullWidth
-          value={usersIds}
-          onChange={handleMultiSelectChange}
-          input={<OutlinedInput label="Name" />}
-          MenuProps={MenuProps}
-        >
-           {users && Array.isArray(users) ? ( // Check if users is an array and defined
-            Object.entries(users).map(([key, value]) => (
-              <MenuItem key={value._id} value={value._id}>
-                {value.email}  
-              </MenuItem>
-              ))
-        ) : (
-          // Display a message while users are loading or unavailable
-          <Typography variant="body2" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-            {users === undefined ? 'Loading targets...' : 'No targets available'}
-          </Typography>
-        )}
-        </Select>
-      </FormControl>
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
          </Grid>
       </Grid>
 
@@ -507,9 +335,17 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({open,handleCancelTask, onCre
                   background: 'var(--Green-green-500, #16B364)',
                 }}
               >
-                <Typography variant="subtitle3" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
-                  Confirm
-                </Typography>
+              
+
+            {isLoading ? (
+              <CircularProgress color="inherit"   />
+            ) : (
+              <Typography variant="subtitle3" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
+                Confirm
+              </Typography>
+            )}
+
+
               </Button>
             </Grid>
           </Grid> 

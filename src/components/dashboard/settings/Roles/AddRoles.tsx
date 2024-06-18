@@ -66,6 +66,7 @@ const NewRole: React.FC<NewRoleProps> = ({ open,handleCancelRole, users,newRole,
    
 
   const handleCreateRole =  async() => {
+    console.log("handle create role")
     const selectedPermissions = Object.entries(permissions)
     .filter(([key, value]) => value) 
     .map(([key]) => key);  
