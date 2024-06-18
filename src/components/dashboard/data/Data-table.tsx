@@ -161,7 +161,7 @@ export function DataTable({
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="bodyB3">{dayjs(row.date).format('MMM D, YYYY')}</Typography>
+                      <Typography variant="bodyB3">{dayjs(row.date?.toString()).format('MMM D, YYYY')}</Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="bodyP3">{row.location}</Typography>

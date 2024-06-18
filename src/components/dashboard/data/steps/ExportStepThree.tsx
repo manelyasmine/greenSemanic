@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { dataApis } from '@/lib/data/dataApis';
 import { FilterEmptyRow, getEmission, isEmpty, isEmptyArray } from '@/lib/helper';
-import { setData } from '@/lib/store/reducer/useFile';
+import { clearSelectedRow, setData } from '@/lib/store/reducer/useFile';
 import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 
 import { DataTable } from '../Data-table';
@@ -22,10 +22,10 @@ export default function ExportStepThree() {
         // Process the file content here
         let lines = fileContent.split('\n');
         const newRows = [{}];
-        lines?.slice(1).map((line, index) => {
+        lines?.slice(1).map((line, index:number) => {
           const rowArray = line.split(',');
           if (!isEmptyArray(rowArray)) {
-            console.log('year'+ parseInt(rowArray[columnMapped['Date']]) )
+            console.log('year' + parseInt(rowArray[columnMapped['Date']]));
             //console.log('result emissio find=====<' +getEmission(dataDB , rowArray[columnMapped['Date']] , rowArray[columnMapped['Category']], rowArray[columnMapped['Location']] ))
             newRows.push({
               id: index,
@@ -60,9 +60,30 @@ export default function ExportStepThree() {
   }, [file]);
   const { selectedRow } = useSelector((state: any) => state.file);
   const handleDelete = () => {
+    console.log('rpw'+ JSON.stringify(rows))
     const indexToRemove = rows.indexOf(selectedRow);
     const newData = rows.filter((_: any, i: any) => i !== indexToRemove);
     setRows(newData);
+    dispatch(clearSelectedRow());
+    return 'success';
+  };
+  const handleUpdate = (DataToUpdate : any) => {
+    console.log('handle update'+ JSON.stringify(DataToUpdate))
+    console.log('rpw'+ JSON.stringify(rows))
+    const indexToUpdate = rows.indexOf(DataToUpdate);
+    const newRows = rows.map((row) => {
+      console.log(indexToUpdate)
+      if (row.id === DataToUpdate.id) {
+        console.log('here found' + JSON.stringify(DataToUpdate));
+        return DataToUpdate;
+      }else{
+
+        return row;
+      }
+
+    });
+    setRows(newRows);
+    dispatch(clearSelectedRow());
     return 'success';
   };
   return (
@@ -89,7 +110,14 @@ export default function ExportStepThree() {
       </Grid>
 
       <Grid item xs={8}>
-        <DataTable page={1} rows={rows} rowsPerPage={4} importFunc={true} handleDelete={handleDelete} />
+        <DataTable
+          page={1}
+          rows={rows}
+          rowsPerPage={4}
+          importFunc={true}
+          handleDelete={handleDelete}
+          handleUpdate={handleUpdate}
+        />
       </Grid>
     </Grid>
   );

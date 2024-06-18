@@ -105,7 +105,7 @@ const CreateUpdateButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, o
               {/* <Typography variant="subtitle2">Date</Typography> */}
               <DemoItem label="Date">
                 <MobileDatePicker
-                  defaultValue={dayjs(dataToSend?.date)}
+                  defaultValue={dayjs(dataToSend?.date.toString())}
                   onChange={(value) => handleChange('date', value)}
                 />
               </DemoItem>
