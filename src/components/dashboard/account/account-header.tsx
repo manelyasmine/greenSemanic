@@ -1,9 +1,6 @@
-'use client';
-
-import React from 'react';
+"use client";
+import React, { useState } from 'react';
 import { CameraIcon, DZIcon } from '@/icons';
-// import { styled } from '@mui/system';
-// import { styled } from '@mui/material/styles';
 import styled from '@emotion/styled';
 import { Avatar, Box, IconButton as MuiIconButton, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
@@ -13,7 +10,7 @@ import { IconButton } from '@/components/commun/Button/IconButton';
 
 const CoverImage = styled(Box)({
   height: '200px',
-  backgroundImage: 'url(https://source.unsplash.com/random)', // Replace with your image URL
+  backgroundImage: 'url(https://source.unsplash.com/random)', // Replace with placeholder or selected image
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   position: 'relative',
@@ -44,23 +41,78 @@ const iconButtonStyle = {
 interface ProfileHeaderProps {
   sx?: any;
 }
+
 const ProfileHeader = ({ sx }: ProfileHeaderProps) => {
   const { user } = useSelector((state: any) => state.user);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageProfil, setSelectedImageProfil] = useState(null); 
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) =>setSelectedImage(e.target.result); // Update image preview with base64 URL
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
+  const handleProfilImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) =>setSelectedImageProfil(e.target.result); // Update image preview with base64 URL
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
+
+
+
+  const handleClickCoverImage = () => {
+    const fileInput = document.getElementById('cover-image-upload');
+    if (fileInput) {
+      fileInput.click(); // Simulate a click event on the file input
+    }
+  };
+
+  const handleClickProfilImage = () => {
+    const fileInput = document.getElementById('profil-image-upload');
+    if (fileInput) {
+      fileInput.click(); // Simulate a click event on the file input
+    }
+  };
+
   return (
     <Box sx={sx}>
-      <CoverImage>
+      <CoverImage   style={{ backgroundImage: `url(${selectedImage || 'https://source.unsplash.com/random'})` }}>
+        
+      <input
+          accept="image/*"
+          id="cover-image-upload"
+          type="file"
+          onChange={handleImageChange}
+           hidden
+        />
         <Button
           variant="contained"
           btnType="primary"
+          onClick={handleClickCoverImage}
           startIcon={<CameraIcon />}
           sx={{ position: 'absolute', top: '10px', right: '10px' }}
         >
           Change Cover
         </Button>
+       
+        
       </CoverImage>
       <Box sx={{ display: 'flex' }}>
-        <ProfilePicture alt="Souhila Aouad" src="https://source.unsplash.com/random/100x100" />
-        <IconButton btnType="primary" size="small" sx={iconButtonStyle}>
+      <ProfilePicture alt="Souhila Aouad" style={{ backgroundImage: `url(${selectedImageProfil || 'https://source.unsplash.com/random'})` }} onClick={handleClickProfilImage} />
+        <input
+          accept="image/*"
+          id="profil-image-upload"
+          type="file"
+          onChange={handleProfilImageChange}
+          hidden
+          style={{ position: 'absolute', top: 0, left: 0, opacity: 0, width: '100%', height: '100%' }} // Position and style the input
+        />
+        <IconButton onClick={handleClickProfilImage} btnType="primary" size="small" sx={iconButtonStyle} >
           <CameraIcon />
         </IconButton>
 

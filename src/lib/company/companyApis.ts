@@ -40,7 +40,9 @@ class CompanyApis {
     try {
       const res = await this.apiCompany.get('/', { withCredentials: true });
 
-      return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
+    console.log("get compa apissssss",res.data)
+
+      return { res: res.data };
     } catch (e) {
       return { error: 'backend error' };
     }

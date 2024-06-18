@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { CalanderIcon, FilterIcon } from '@/icons';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack';
 import { palette } from '@/styles/theme/colors';
 import { MuiButton } from '@/styles/theme/components/button';
 import { boxFilterDropDown, Filter, outlinedInput,filterCalander } from '@/styles/theme/Filter';
-
+import { CalanderIcon, FilterIcon } from '@/icons';
 import { Button } from '../Button';
 import { CustomersFilters } from './customers-filters';
 import FilterData from './FilterData';
@@ -74,9 +74,33 @@ const FilterBox = ({ children, onClose }) => {
   );
 };
 
+interface FilterColumnsProps {
+  onFilterByDate: (date: any) => void;
+  onFilterBySearch:(search:any)=>void;
+}
 
-const FilterColumns = () => {
-  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+const FilterColumns = ({ onFilterByDate,onFilterBySearch }: FilterColumnsProps) => {
+
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<any>(null);
+  const [search, setSearch] = useState('');
+
+  const toggleCalendar = () => { setIsCalendarOpen(!isCalendarOpen); };
+  const handleDateChange = (date: any) => {
+  
+    setSelectedDate(date);
+    onFilterByDate(date);  // Pass the date to the prop function
+    setIsCalendarOpen(false);
+   
+  };
+
+  const handleSearchChange = (event) => { 
+    onFilterBySearch(event.target.value)
+    setSearch(event.target.value);
+  };
+
+ /*  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState(columns[0].field);
   const [operator, setOperator] = useState<Operator>('equals');
@@ -84,6 +108,7 @@ const FilterColumns = () => {
   const [filteredData, setFilteredData] = useState(data);
   const calendarRef = useRef<HTMLDivElement>(null);
 
+  const [selectedDate, setSelectedDate] = useState(null);
   const handleColumnChange = (event: React.ChangeEvent<HTMLSelectElement>) => setSelectedColumn(event.target.value);
   const handleOperatorChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     setOperator(event.target.value as Operator);
@@ -113,16 +138,23 @@ const FilterColumns = () => {
   const toggleCalendar = () => {
     console.log('toggle calendar');
     setIsCalendarOpen(!isCalendarOpen);
+    setSelectedDate(date);
+    onFilterByDate(date);
   };
   const closeFilterDropdown = () => {
     setIsFilterDropdownOpen(false);
-  };
+  }; */
+
+  
+
+
   return (
     <Box sx={{ backgroundColor: palette.common.white, position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px', borderRadius: '12px' }}>
     <Box sx={{ display: "flex", alignItems: 'flex-start', justifyContent: 'space-between', flexDirection: "row" }}>
       <OutlinedInput
         defaultValue=""
         placeholder="Search for anything..."
+        onChange={handleSearchChange}
         startAdornment={
           <InputAdornment position="start">
             <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
@@ -131,38 +163,44 @@ const FilterColumns = () => {
         sx={outlinedInput}
       />
       <Box ref={calendarRef} sx={{  display: 'flex',
-  padding: 'var(--12, 12px) 16px',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  alignSelf: 'stretch',
-  gap: '8px',}}>
+          padding: 'var(--12, 12px) 16px',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          alignSelf: 'stretch',
+          gap: '8px',}}>
         <Button
           btnType="secondaryGray"
           sx={{ ...MuiButton.styleOverrides.sizeSmall,  }}
           startIcon={<CalanderIcon />}
+          id="filter-date"
+          selected={selectedDate}
           onClick={toggleCalendar}
         >
           Select Date
         </Button>
         {isCalendarOpen && (
-          <Box sx={filterCalander}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar />
-            </LocalizationProvider>
-          </Box>
-        )}
+            <Box sx={filterCalander}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateCalendar
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  views={['year', 'month', 'day']} // Show all three views
+                />
+              </LocalizationProvider>
+            </Box>
+          )}
         <Button
           btnType="secondaryGray"
           sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}
           startIcon={<FilterIcon />}
-          onClick={toggleFilterDropdown}
+          //onClick={toggleFilterDropdown}
         >
           Filters
         </Button>
       </Box>
     </Box>
   
-    {isFilterDropdownOpen && (
+{/*     {isFilterDropdownOpen && (
       <Box sx={{ position: 'absolute', top: '40px', right: '16px', zIndex: 1000 }}>
         <Box sx={{ border: '1px solid green', borderRadius: '8px', backgroundColor: 'white', padding: '8px' }}>
         <FilterBox onClose={closeFilterDropdown}>
@@ -180,7 +218,7 @@ const FilterColumns = () => {
           </FilterBox>
         </Box>
       </Box>
-    )}
+    )} */}
   </Box>
   
   

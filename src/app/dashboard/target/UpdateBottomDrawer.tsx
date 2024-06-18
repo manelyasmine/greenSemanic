@@ -30,6 +30,7 @@ interface BottomDrawerProps {
 
 const UpdateBottomDrawer: React.FC<BottomDrawerProps> = ({ open, onClose, onUpdateTarget  , target}) => {
   //const { target } = useSelector((state: any) => state.target);
+  console.log("bottom target")
   const [updatedTarget, setupdatedTarget] = useState<Target>({...target , baseToTargetYear:target.baseYear+'-'+target.targetYear});
   const dispatch = useDispatch();
   const [error, setError] = useState(false);

@@ -44,21 +44,11 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
     setAnchorEl(event.currentTarget);
   };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
  
-=======
-  const [user, setUser] = React.useState<User>({});
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
- 
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
   const handleClose = () => {
     setAnchorEl(null);
     setIsUpdate(false)
-<<<<<<< HEAD
-<<<<<<< HEAD
     setIsAssign(false);
   };
   
@@ -80,34 +70,6 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
       dispatch(setTasks(newTasks));
       setIsUpdate(false)
 
-=======
-=======
-    setIsAssign(false);
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
-  };
-  
- 
-  const handleModify = React.useCallback(async (data:  Task): Promise<void> => {
-
-    const { error, res } = await taskApis.updateTask(data);
-    if (error) {
-      return;
-    } else { 
-
-      const newTasks =  targets.map((tar : Task) => {
-        if (tar.id === data.id) {
-          return data;
-        }
-        return tar;
-      });
-      //setIsDeleteOpen(false);
-      dispatch(setTasks(newTasks));
-      setIsUpdate(false)
-<<<<<<< HEAD
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
     }
     handleClose();
   }, []);
@@ -169,40 +131,6 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
   }, []);
 
   
-<<<<<<< HEAD
-
- const handleTargets= React.useCallback(async (): Promise<void> => {
-    handleClose();
-    try {
-      const { res } = await targetApis.getTargets();
-      dispatch(setTargets(res));
-       
-      
-    } catch (error) {
-      console.error('Error fetching users:', error); 
-    }
- 
-     
-}, [dispatch]);  
-
- 
-const handleUsers= React.useCallback(async (): Promise<void> => {
-  handleClose();
-  try {
-    const { res } = await userApis.getUsers();
-    dispatch(setUsers(res));
-    console.log("useeeeeeeeee",Object.keys(res),Object.keys(users))
-      
-    
-  } catch (error) {
-    console.error('Error fetching users:', error); 
-  }
- 
-    
-      }, 
-[dispatch]);      
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
  const handleTargets= React.useCallback(async (): Promise<void> => {
     handleClose();
@@ -245,25 +173,9 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
         MenuListProps={{ 'aria-labelledby': 'dropdown-button' }}
       >
         <Box sx={DropDOwn}>
-<<<<<<< HEAD
-<<<<<<< HEAD
           <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}> <ListItemIcon>  <ModifyIcon />  </ListItemIcon> <ListItemText primary="Modify" /></MenuItem>  
             <Divider variant="middle" />  
           <MenuItem onClick={() => {setIsDeleteOpen(!isDeleteOpen);  }}sx={itemMenu}> <ListItemIcon>  <DeleteIcon />    </ListItemIcon>  <ListItemText primary="Delete" /></MenuItem>
-=======
-          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}>
-            <ListItemIcon>
-              {' '}
-              <ModifyIcon />{' '}
-            </ListItemIcon>
-            <ListItemText primary="Modify" />
-          </MenuItem>
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-          <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsUpdate(!isUpdate)}} sx={itemMenu}> <ListItemIcon>  <ModifyIcon />  </ListItemIcon> <ListItemText primary="Modify" /></MenuItem>  
-            <Divider variant="middle" />  
-          <MenuItem onClick={() => {setIsDeleteOpen(!isDeleteOpen);  }}sx={itemMenu}> <ListItemIcon>  <DeleteIcon />    </ListItemIcon>  <ListItemText primary="Delete" /></MenuItem>
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
           <Divider variant="middle" />
           <MenuItem onClick={() => {handleUsers() ,handleTargets(),setIsAssign(!isAssign)}} sx={itemMenu}>   <ListItemIcon>  <AssignIcon />   </ListItemIcon><ListItemText primary="Assign" /> </MenuItem>
         </Box>
@@ -281,10 +193,6 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
           handleDelete={handleDelete} 
           primaryColor={{ backgroundColor: palette.danger[500] }}
         />} 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
       {(isUpdate  ) &&(
        <UpdateBottomDrawerTask 
        open={isUpdate  } 
@@ -300,7 +208,6 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
        
        />)
       }
-<<<<<<< HEAD
 
 {( isAssign) &&(
        <UpdateBottomDrawerTask 
@@ -318,29 +225,6 @@ const handleUsers= React.useCallback(async (): Promise<void> => {
        
        />)
       }
-=======
-
-       <UpdateBottomDrawerTask open={isUpdate} handleCancelTask={ handleClose } onUpdateTask={handleModify } task ={task} users={users} targets={targets} />
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-
-{( isAssign) &&(
-       <UpdateBottomDrawerTask 
-       open={isAssign} 
-       handleCancelTask={ handleClose } 
-       onUpdateTask={handleAssign } 
-       task ={task} 
-       users={users} 
-       targets={targets} 
-       isAssign={isAssign}
-
-       headerName="Assign Task"
-       titleName="Assign a Task"
-       subtitleName="assign a task to further streamline your carbon emission management process."
-       
-       />)
-      }
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
      </div>
   );
 };

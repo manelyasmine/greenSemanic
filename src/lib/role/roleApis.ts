@@ -46,10 +46,11 @@ class RoleApis {
 
  /*  */
 
-/*   async updateTarget(target: NewTargetParams): Promise<{ res?: any; error?: string }> {
+   async updateRole(role: Role): Promise<{ res?: any; error?: string }> {
     // Make API request
+    console.log("update from back==>",role)
     try {
-      const res = await this.apiTarget.put('/',target,{ withCredentials: true });
+      const res = await this.apiRole.put('/',role,{ withCredentials: true });
 
       return {  };
     } catch (e) {
@@ -57,12 +58,12 @@ class RoleApis {
     }
 
     return {};
-  } */
+  } 
 
- /*  async deleteTarget(id: string): Promise<{ res?: any; error?: string }> {
+/*   async deleteRole(id: string,data:User): Promise<{ res?: any; error?: string }> {
     // Make API request
     try {
-      const res = await this.apiTarget.delete('/' + id, { withCredentials: true });
+      const res = await this.apiRole.delete('/' + id,data, { withCredentials: true });
 
       return {};
     } catch (e) {
@@ -71,7 +72,25 @@ class RoleApis {
  
 
     return {};
-  } */
+  }  */
+
+
+    async deleteRole(id: string, data: User): Promise<{ res?: any; error?: string }> {
+      try {
+        const res = await this.apiRole.delete(`/${id}`, {
+          data, // Add data to request body
+          headers: { 'Role-ID': id }, // Add id to request headers
+          withCredentials: true,
+        });
+    
+        return { res };
+      } catch (e) {
+        return { error: 'backend error: ' + e };
+      }
+    }
+
+    
+    
 }
 
 export const roleApis = new RoleApis();

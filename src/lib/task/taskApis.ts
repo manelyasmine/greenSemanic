@@ -14,26 +14,12 @@ function generateToken(): string {
 }
 
 export interface NewTaskParams {
-<<<<<<< HEAD
-<<<<<<< HEAD
+ 
   taskName?: string;
   targetName?: string;
   dueDate?: string;
   usersIds?: string[];
-  createdBy?:string;
-=======
-  name?: string;
-  target?: string;
-  dueDate?: Date | null;
-  usersIds?: string[];
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-  taskName?: string;
-  targetName?: string;
-  dueDate?: string;
-  usersIds?: string[];
-  createdBy?:string;
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
+  createdBy?:string; 
 }
 
 class TaskApis {
@@ -57,15 +43,11 @@ class TaskApis {
 
     return {};
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
+  
 async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
   // Make API request
   try {
     const res = await this.apiTask.patch('/',task,{ withCredentials: true });
-<<<<<<< HEAD
 
     return {  };
   } catch (e) {
@@ -81,9 +63,6 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
    
 
       return {res : {...response.data }}
-=======
-=======
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
 
     return {  };
   } catch (e) {
@@ -92,29 +71,27 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
 
   return {};
 }
-  async createTask(data: NewTaskParams): Promise<{res? :Task,  error?: string }> {
-    // Make API request
-    try { 
-      const response = await this.apiTask.post('/', data , { withCredentials: true });
-   
+  
+async getTasks(filters = {}): Promise<{ res?: any; error?: string }> {
+  // Build the query string based on filters object
+  const queryString = new URLSearchParams(filters);
+  console.log("querystring",queryString);
 
-<<<<<<< HEAD
-      return {res : {...response.data, id: response.data._id}}
->>>>>>> 1099567 (modify ui for add task,add modify drawer ,integration for some apis task)
-=======
-      return {res : {...response.data }}
->>>>>>> dac5812 (add assign task,add task ,add role,get all roles and start the update roles)
-    } catch (e) {
-      return { error: 'backend error' };
-    } 
+  // Make API request with optional filters
+  try {
+    const res = await this.apiTask.get('/?' + queryString.toString(), { withCredentials: true });
 
-    return {};
+    // Process and return tasks with optional ID mapping
+    return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
+  } catch (e) {
+    console.error('Error fetching tasks:', e); // Log specific error for debugging
+    return { error: 'An error occurred. Please try again later.' }; // More informative error message
   }
-
+}
  
 
 
-  async getTasks(): Promise<{ res?: any; error?: string }> {
+  /* async getTasks(): Promise<{ res?: any; error?: string }> {
     // Make API request
     try {
       const res = await this.apiTask.get('/', { withCredentials: true });
@@ -126,7 +103,7 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
 
 
     return {};
-  }
+  } */
 
   async getMyTasks(id:string): Promise<{ res?: any; error?: string }> {
     // Make API request
