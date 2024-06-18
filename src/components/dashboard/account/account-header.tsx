@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 
 import { Button } from '@/components/commun/Button';
 import { IconButton } from '@/components/commun/Button/IconButton';
+import { userApis } from '@/lib/user/userApis';
 
 const CoverImage = styled(Box)({
   height: '200px',
@@ -47,13 +48,73 @@ const ProfileHeader = ({ sx }: ProfileHeaderProps) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageProfil, setSelectedImageProfil] = useState(null); 
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+ /*  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) =>setSelectedImage(e.target.result); // Update image preview with base64 URL
       reader.readAsDataURL(event.target.files[0]);
     }
+  }; */
+
+/*   const handleImageChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
+   
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('userId', user.id);
+
+      const reader = new FileReader();
+      
+      formData.append('imageCover', event.target.files[0]);
+        
+    
+      try {
+
+      console.log("formdata==>",formData)
+        const {res, error} = await userApis.uploadCoverImage(formData);
+        const reader = new FileReader();
+        reader.onload = (e) =>setSelectedImage(e.target.result); // Update image preview with base64 URL
+        reader.readAsDataURL(event.target.files[0]);
+      
+        if (error) {
+          console.log("Update error:", error);
+          return; 
+        } else {
+          setSelectedImage(res.imageUrl);
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
   };
+   */
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('id',user.id);
+       formData.append('imageCover', file);
+  
+      // Use FileReader to set the preview
+      const reader = new FileReader();
+      reader.onload = (e) => setSelectedImage(e.target.result as string);
+      reader.readAsDataURL(file);
+  
+      try { 
+        const { res, error } = await userApis.uploadCoverImage(formData,user.id);
+        
+        if (error) {
+          console.log("Update error:", error);
+          return;
+        }
+        
+        setSelectedImage(res.imageUrl);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+  };
+  
 
   const handleProfilImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {

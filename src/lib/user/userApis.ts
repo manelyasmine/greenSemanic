@@ -57,6 +57,24 @@ class UserApis {
     return {};
   }
  
+  async uploadCoverImage(formData: FormData,id:string): Promise<{ success: boolean; error?: string }> {
+    try {
+      
+       console.log("formdata",formData)
+       const response = await this.apiUser.post('profile/cover/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'userId': id,
+        },
+      });
+      return { response };
+
+      
+    } catch (error) {
+      console.error('Backenddddd error:', error);
+      return { error: 'Backend error' };
+    }
+  }
 
   async updateUser(  data: User): Promise<{ res?: any; error?: string }> {
    
