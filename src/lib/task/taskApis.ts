@@ -66,7 +66,9 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
 
     return {  };
   } catch (e) {
-    return { error: 'backend error' };
+    const error = e.response ? e.response.data.error : 'Connexion Error' 
+    
+      return { error: error };
   }
 
   return {};
@@ -112,7 +114,9 @@ async getTasks(filters = {}): Promise<{ res?: any; error?: string }> {
 
       return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
     } catch (e) {
-      return { error: 'backend error' };
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+    
+      return { error: error };
     }
 
 
@@ -123,11 +127,13 @@ async getTasks(filters = {}): Promise<{ res?: any; error?: string }> {
 async deleteTask(id: string): Promise<{ res?: any; error?: string }> {
   // Make API request
   try {
-    const res = await this.apiTask.delete('/' + id, { withCredentials: true });
+    const res= await this.apiTask.delete('/' + id, { withCredentials: true });
 
-    return {};
+    return {res};
   } catch (e) {
-    return { error: 'backend error' + e };
+    const error = e.response ? e.response.data.error : 'Connexion Error' 
+    
+      return { error: error };
   }
  
   return {};

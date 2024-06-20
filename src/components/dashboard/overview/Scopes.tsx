@@ -12,9 +12,9 @@ import { PieChart } from '@mui/x-charts/PieChart';
 // ];
 
 interface ScopesProps {
-  scope1: number;
-  scope2: number;
-  scope3: number;
+  scope1?: number;
+  scope2?: number;
+  scope3?: number;
 }
 export default function Scopes({ scope1, scope2, scope3 }: ScopesProps) {
   // Define colors for each slice

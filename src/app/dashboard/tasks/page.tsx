@@ -5,64 +5,56 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import dayjs from 'dayjs'; 
-import BottomDrawer from './BottomDrawer';  
-import CustomTabs from '@/components/commun/Tabs/taskTabs'; 
-import { TasksTable } from '@/components/dashboard/tasks/tasks-table';
-import { MyTasksTable } from '@/components/dashboard/tasks/myTasks-table';
-import { taskApis } from '@/lib/task/taskApis';
-import { Task } from '@/types/task';
-import { setTasks } from '@/lib/store/reducer/useTask';
+import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-import { userApis } from '@/lib/user/userApis';
-import { User } from '@/types/user'; 
-import { setTargets } from '@/lib/store/reducer/useTarget';
- 
-import { targetApis } from '@/lib/target/targetApis';
 
+import { Task } from '@/types/task';
+import { User } from '@/types/user';
+import { setTargets } from '@/lib/store/reducer/useTarget';
+import { setTasks } from '@/lib/store/reducer/useTask';
+import { targetApis } from '@/lib/target/targetApis';
+import { taskApis } from '@/lib/task/taskApis';
+import { userApis } from '@/lib/user/userApis';
+import CustomTabs from '@/components/commun/Tabs/taskTabs';
+import { MyTasksTable } from '@/components/dashboard/tasks/myTasks-table';
+import { TasksTable } from '@/components/dashboard/tasks/tasks-table';
+
+import BottomDrawer from './BottomDrawer';
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 
 export default function Page(): React.JSX.Element {
-  
   const [selectedTab, setSelectedTab] = React.useState<string>('All Tasks');
   const [users, setUsers] = useState<User>({});
-  const [isNewTask,setIsNewTask]=useState(false); 
-  const { tasks } = useSelector((state: any) => state.task); 
+  const [isNewTask, setIsNewTask] = useState(false);
+  const { tasks } = useSelector((state: any) => state.task);
   const { targets } = useSelector((state: any) => state.target);
-  const { user } = useSelector((state: any) => state.user); 
+  const { user } = useSelector((state: any) => state.user);
   const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
-  const [search,setSearch]=useState('');
-  const [newTask, setNewTask] = useState<Task>({['createdBy']:user.id});
+  const [search, setSearch] = useState('');
+  const [newTask, setNewTask] = useState<Task>({ ['createdBy']: user.id });
   const rowsPerPage = 5;
   const page = 0;
   const dispatch = useDispatch();
-  
-  
+
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
 
- 
-const [errorAlert, setErrorAlert] = useState('');
-const handleCreateTask = React.useCallback(async (): Promise<void> => {
-   
-  setNewTask({ ...newTask, ['createdBy']: user.id });
- console.log("handle create task,=========",newTask,user.id)
-  const { res , error } = await taskApis.createTask(newTask);
-   if (error) {
-    setErrorAlert(error);
-    return
-  } 
-  dispatch(setTasks([...tasks , res]))
-  handleClose();
-}, [newTask]);
+  const [errorAlert, setErrorAlert] = useState('');
+  const handleCreateTask = React.useCallback(async (): Promise<void> => {
+    setNewTask({ ...newTask, ['createdBy']: user.id });
+    const { res, error } = await taskApis.createTask(newTask);
+    if (error) {
+      // setErrorAlert(error);
+      dispatch(setOpenToast({message : error, type:'error'}))
+      return;
+    }
+    dispatch(setTasks([...tasks, res]));
+    dispatch(setOpenToast({message : 'Task Added Successfully', type:'success'}))
+    handleClose();
+  }, [newTask]);
 
- 
- 
-
-
-
- 
-/* const getTasks = React.useCallback(async (): Promise<void> => {
+  /* const getTasks = React.useCallback(async (): Promise<void> => {
   console.log("search get tasks",search)
   try {
     const filters = {
@@ -106,50 +98,39 @@ useEffect(() => {
   getTasks();
 }, [getTasks]); */
 
-const handleTargets= React.useCallback(async (): Promise<void> => {
- 
-  
-  try {
-    const { res } = await targetApis.getTargets();
-    dispatch(setTargets(res));  
-    
-  } catch (error) {
-    console.error('Error fetching targets:', error); 
-  }
- 
-   
-      }, [dispatch]);  
+  const handleTargets = React.useCallback(async (): Promise<void> => {
+    try {
+      const { res } = await targetApis.getTargets();
+      dispatch(setTargets(res));
+    } catch (error) {
+      console.error('Error fetching targets:', error);
+    }
+  }, [dispatch]);
 
+  const handleUsers = React.useCallback(async (): Promise<void> => {
+    try {
+      const { res } = await userApis.getUsers();
 
-const handleUsers= React.useCallback(async (): Promise<void> => {
-  
-  try {
-    const { res } = await userApis.getUsers();
-    
-    //dispatch(setUsers(res));
-   setUsers(res) 
-   console.log("useeeeeeeeee",users)
-      
-    
-  } catch (error) {
-    console.error('Error fetching users:', error); 
-  }
- 
-    
-      }, 
-[dispatch]);   
+      //dispatch(setUsers(res));
+      setUsers(res);
+      console.log('useeeeeeeeee', users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  }, [dispatch]);
 
-useEffect(() => {
-  handleTargets();
-  handleUsers();
-}, [handleTargets,handleUsers]);
+  useEffect(() => {
+    handleTargets();
+    handleUsers();
+  }, [handleTargets, handleUsers]);
 
+  const handleFilterBySearch = (data) => {
+    setSearch(data);
+  };
 
-const handleFilterBySearch=(data)=>{
-  setSearch(data)
-}
-
-const handleClose=()=>{setIsNewTask(false)}
+  const handleClose = () => {
+    setIsNewTask(false);
+  };
   return (
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
@@ -178,33 +159,41 @@ const handleClose=()=>{setIsNewTask(false)}
               background: 'var(--Green-green-500, #16B364)',
             }}
             //onClick={()=>handleNewTask, setIsNewTask(!isNewTask)}
-            onClick={() => {handleUsers() , handleTargets(),setIsNewTask(!isNewTask)}}
+            onClick={() => {
+              handleUsers(), handleTargets(), setIsNewTask(!isNewTask);
+            }}
           >
             New Task
           </Button>
         </div>
-         
       </Stack>
-  
-           <BottomDrawer 
-            open={isNewTask} 
-            handleCancelTask={handleClose}  
-            newTask={newTask}
-            setNewTask={setNewTask}
-            onCreateTask={handleCreateTask}  
-            users={users} 
-            targets={targets}/>  
-     
- 
-      {selectedTab === 'All Tasks' && (
-       
 
-        <TasksTable count={paginatedTask.length} page={page} /* rows={tasks} */ rowsPerPage={rowsPerPage} selectedTab={"All Tasks"} />
+      <BottomDrawer
+        open={isNewTask}
+        handleCancelTask={handleClose}
+        newTask={newTask}
+        setNewTask={setNewTask}
+        onCreateTask={handleCreateTask}
+        users={users}
+        targets={targets}
+      />
+
+      {selectedTab === 'All Tasks' && (
+        <TasksTable
+          count={paginatedTask.length}
+          page={page}
+          /* rows={tasks} */ rowsPerPage={rowsPerPage}
+          selectedTab={'All Tasks'}
+        />
       )}
       {selectedTab !== 'All Tasks' && (
-        <MyTasksTable  count={paginatedTask.length}  page={page} /* rows={tasks} */ rowsPerPage={rowsPerPage} selectedTab={"My Tasks"}/>)
-      }  
-          
+        <MyTasksTable
+          count={paginatedTask.length}
+          page={page}
+          /* rows={tasks} */ rowsPerPage={rowsPerPage}
+          selectedTab={'My Tasks'}
+        />
+      )}
     </Stack>
   );
 }

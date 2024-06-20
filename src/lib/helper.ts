@@ -51,6 +51,21 @@ export function getCarbonEmissionByCategory(data: []) {
   return result;
 }
 
+
+export function getCarbonEmission(data: []) {
+
+  return data.map( item => {
+    return item.emission_tracker ;
+  });
+}
+
+export function getCarbonEmissionFromTarget(data: []) {
+
+  return data.map( item => {
+    console.log(item.emissionReduction)
+    return item.emissionReduction ;
+  });
+}
 export const isEmpty = (obj: any) => {
   return Object.keys(obj).length === 0 || Object.values(obj).every((value) => !value);
 };

@@ -1,6 +1,10 @@
 'use client';
 
-import React,{useState,useEffect,useCallback} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import UpdateBottomDrawerTask from '@/app/dashboard/tasks/UpdateBottomDrawer';
+import { AssignIcon, DashboardIcon, DeleteIcon, DotsHorizontal, ModifyIcon } from '@/icons';
+import { TroubleshootSharp } from '@mui/icons-material';
+import { IconButton, LinearProgress, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,52 +14,55 @@ import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead'; 
+import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
-
-import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
-import { AssignIcon, DashboardIcon, DeleteIcon, DotsHorizontal, ModifyIcon } from '@/icons';
-import { useSelection } from '@/hooks/use-selection'; 
-import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
-import FilterColumns from '../../commun/Filters/FilterColumns';
-import { Pagination,IconButton } from '@mui/material';
-import { Task } from '@/types/task';
-import { taskApis } from '@/lib/task/taskApis';
-import { setTasks } from '@/lib/store/reducer/useTask';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { Task } from '@/types/task';
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+import { setTasks } from '@/lib/store/reducer/useTask';
+import { taskApis } from '@/lib/task/taskApis';
+import usePagination from '@/hooks/use-pagination';
+import { useSelection } from '@/hooks/use-selection';
+import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
+import { Pagination } from '@/components/commun/Pagination/Pagination';
+import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 import { palette } from '@/styles/theme/colors';
-import UpdateBottomDrawerTask from "@/app/dashboard/tasks/UpdateBottomDrawer";
-import {   ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
-import { TroubleshootSharp } from '@mui/icons-material';
+
+import FilterColumns from '../../commun/Filters/FilterColumns';
+
 interface TasksTableProps {
   count?: number;
   page?: number;
-   
-  rowsPerPage?: number; 
-  search:any;
-  selectedTab:string;
+
+  rowsPerPage?: number;
+  search: any;
+  selectedTab: string;
 }
 
-export function TasksTable({ count = 100, rowsPerPage = 5, selectedTab = "All Tasks" }: TasksTableProps): React.JSX.Element {
+export function TasksTable({
+  count = 100,
+  rowsPerPage = 5,
+  selectedTab = 'All Tasks',
+}: TasksTableProps): React.JSX.Element {
   const dispatch = useDispatch();
 
-  const { tasks } = useSelector((state: any) => state.task); 
+  const { tasks } = useSelector((state: any) => state.task);
   const { targets } = useSelector((state: any) => state.target);
-  const { users } = useSelector((state: any) => state.user); 
+  const { users } = useSelector((state: any) => state.user);
   const [page, setPage] = useState(1);
-  const [selectedRow,setSelectedRow]=useState(null);
-  const [totalPages, setTotalPages] = useState(10);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-const [searchInput,setSearchInput]=useState('')
-const [searchDate,setSearchDate]=useState('')
-const [modify,setModify]=useState(false);
-const [isAssign,setIsAssign]=useState(false);
-const [isDeleteOpen,setIsDeleteOpen]=useState(false);
-
-console.log("targets",targets)
+  const [searchInput, setSearchInput] = useState('');
+  const [searchDate, setSearchDate] = useState('');
+  const [modify, setModify] = useState(false);
+  const [isAssign, setIsAssign] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const { dataDB } = useSelector((state: any) => state.file);
+  const paginatedRows = usePagination({ rows: tasks, page, pageSize: rowsPerPage });
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -63,55 +70,43 @@ console.log("targets",targets)
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, taskId: string) => {
     setAnchorEl(event.currentTarget);
     setSelectedTaskId(taskId);
-
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedTaskId(null);
   };
-  const handleClose=()=>{
+  const handleClose = () => {
     setAnchorEl(null);
     setSelectedTaskId(null);
     setModify(false);
     setIsAssign(false);
-
-  }
+  };
 
   const handleModify = (event: React.MouseEvent<HTMLElement>, task: Task) => {
     setAnchorEl(event.currentTarget);
     setSelectedTaskId(task?.id);
-    setModify(true); 
-   // const selectedTask = tasks.find((task) => task.id === taskId); // Find the selected task
- setSelectedRow(task) 
+    setModify(true);
+    // const selectedTask = tasks.find((task) => task.id === taskId); // Find the selected task
+    setSelectedRow(task);
 
-    console.log("hnale modify",task)
-    
     handleMenuClose();
   };
 
   const handleAssign = (event: React.MouseEvent<HTMLElement>, task: Task) => {
     setAnchorEl(event.currentTarget);
     setSelectedTaskId(task?.id);
-    setIsAssign(true); 
-   // const selectedTask = tasks.find((task) => task.id === taskId); // Find the selected task
- setSelectedRow(task) 
+    setIsAssign(true);
+    // const selectedTask = tasks.find((task) => task.id === taskId); // Find the selected task
+    setSelectedRow(task);
 
-    console.log("hnale modify",task)
-    
     handleMenuClose();
   };
 
-
-  
- 
   const handleDelete = (task: Task) => {
-   
     setSelectedTaskId(task?.id);
-    setIsDeleteOpen(true);  
-    setSelectedRow(task) 
-    console.log("handleDelete==>",task, selectedRow)
-     
+    setIsDeleteOpen(true);
+    setSelectedRow(task);
   };
 
   const getTasks = React.useCallback(async (): Promise<void> => {
@@ -148,65 +143,71 @@ console.log("targets",targets)
     setSearchInput(search);
   };
 
-  const handleUpdateTask=useCallback(async (data:  any): Promise<void> => {
-    console.log("update",data.usersIds)
-    const { error, res } = await taskApis.updateTask(data);
-    if (error) {
-      return;
-    } else { 
-
-      const newTasks =  targets.map((tar : Task) => {
-        if (tar.id === data.id) {
-          return data;
-        }
-        return tar;
-      });
-      //setIsDeleteOpen(false);
-      dispatch(setTasks(newTasks));
-     
-
-
-    }
-    handleClose();
-  }, []);
-  const handleAssignTask = React.useCallback(async (data:  any): Promise<void> => {
-    console.log("handle assign data===>",Object.keys(data))
+  const handleUpdateTask = useCallback(
+    async (data: any): Promise<void> => {
+      console.log('update=>>>>>', { data });
+      console.log('update=>>>>>tasks ', { tasks });
+      const { error, res } = await taskApis.updateTask(data);
+      if (error) {
+        return;
+      } else {
+        const targetUpdated = targets.find((target) => target._id === data.targetName);
+        //const userUpdated = users.map((user) => user._id === data.user);
+        const newTasks = tasks.map((tar: Task) => {
+          if (tar.id === data.id) {
+            return {
+              ...data,
+              targetName: targetUpdated.name,
+              usersIds :[ data.users]
+            };
+          }
+          return tar;
+        });
+        //setIsDeleteOpen(false);
+        console.log('update=>>>>>tasks ', { newTasks });
+        dispatch(setTasks(newTasks));
+      }
+      handleClose();
+    },
+    [tasks]
+  );
+  const handleAssignTask = React.useCallback(async (data: any): Promise<void> => {
     const { error, res } = await taskApis.assignTask(data);
     if (error) {
       return;
-    } else { 
-
-      const newTasks =  targets.map((tar : Task) => {
+    } else {
+      const newTasks = targets.map((tar: Task) => {
         if (tar.id === data.id) {
           return data;
         }
         return tar;
       });
-     
+
       dispatch(setTasks(newTasks));
-       
     }
     handleClose();
   }, []);
-  const handleDeleteTask = React.useCallback(async (data: string): Promise<void> => {
-    console.log("handle deelte task===>", data, selectedRow, selectedTaskId);
-    const { error, res } = await taskApis.deleteTask(selectedRow?.id);
-    if (error) {
-      return;
-    } else {
-      const indexToRemove = tasks.indexOf(selectedRow);
-      const newTasks = tasks.filter((_: any, i: any) => i !== indexToRemove);
-      setIsDeleteOpen(false);
-      // Update tasks in Redux store
-      dispatch(setTasks(newTasks));
-      // Clear selected row state
-      setSelectedRow(null);
-    }
-  
-    handleClose();
-  }, [dispatch, tasks, selectedRow]);
+  const handleDeleteTask = React.useCallback(
+    async (data: string): Promise<void> => {
+      const { error, res } = await taskApis.deleteTask(selectedRow?.id);
+      if (error) {
+        dispatch(setOpenToast({ message: error, type: 'error' }));
+        return;
+      } else {
+        const indexToRemove = tasks.indexOf(selectedRow);
+        const newTasks = tasks.filter((_: any, i: any) => i !== indexToRemove);
+        setIsDeleteOpen(false);
+        // Update tasks in Redux store
+        dispatch(setTasks(newTasks));
+        dispatch(setOpenToast({ message: 'Task Deleted Successfully', type: 'success' }));
+        // Clear selected row state
+        setSelectedRow(null);
+      }
 
-
+      handleClose();
+    },
+    [dispatch, tasks, selectedRow]
+  );
 
   return (
     <Card>
@@ -227,113 +228,130 @@ console.log("targets",targets)
             </TableRow>
           </TableHead>
           <TableBody>
-            {tasks.map((row) => (
+            {paginatedRows.map((row) => (
               <TableRow hover key={row.id}>
                 <TableCell padding="checkbox"></TableCell>
-                <TableCell><Typography variant="bodyB3">{row.taskName}</Typography></TableCell>
+                <TableCell>
+                  <Typography variant="bodyB3">{row.taskName}</Typography>
+                </TableCell>
                 <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
-<TableCell>
-  {Array.isArray(row.usersIds) ? (
-    row.usersIds.map((user, index) => (
-      <span key={index}>{user.username}</span>
-    ))
-  ) : (
-    <span></span>
-  )}
-</TableCell>
-<TableCell>70%</TableCell>
-<TableCell><Typography variant="bodyP3">{row.targetName}</Typography></TableCell>
-<TableCell>2020-2023</TableCell>
-<TableCell>
-  <Box display="flex" justifyContent="center" alignItems="center">
-    <IconButton onClick={(event) => handleMenuOpen(event, row.id)}>
-      <DotsHorizontal />
-    </IconButton>
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl) && selectedTaskId === row.id}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={(event) => handleModify(event, row)}>
-        <ModifyIcon fontSize="small" />
-        Modify
-      </MenuItem>
-      <MenuItem onClick={(event) => handleAssign(event, row)}>
-        <AssignIcon fontSize="small" />
-        Assign
-      </MenuItem>
-      <MenuItem onClick={()=>handleDelete(row)}>
-        <DeleteIcon fontSize="small" />
-        Delete
-      </MenuItem>
-      {isDeleteOpen && selectedRow && (
-        <DeleteConfirmation
-          open={isDeleteOpen}
-          setOpen={setIsDeleteOpen}
-          title="Do you want to delete this?"
-          subtitle="Are you sure you want to delete this file."
-          primary="Delete"
-          secondary="Cancel"
-          handleDelete={handleDeleteTask} 
-          primaryColor={{ backgroundColor: palette.danger[500] }}
-        />)}
-    </Menu>
+                <TableCell>
+                  {Array.isArray(row.usersIds) ? (
+                    row.usersIds.map((user, index) => <span key={index}>{user.username}</span>)
+                  ) : (
+                    <span></span>
+                  )}
+                </TableCell>
+                <TableCell>
+                  <Stack direction="row" spacing={3} width="100%">
+                    <Box width="50%" sx={{ alignContent: 'center' }}>
+                      <LinearProgress
+                        sx={{
+                          '& .MuiLinearProgress-bar': {
+                            backgroundColor: palette.success[500],
+                          },
+                          background: palette.primary[100],
+                          height: 8,
+                          borderRadius: 1,
+                        }}
+                        variant="determinate"
+                        value={50}
+                      />
+                    </Box>
+                    <Typography variant="body2" color={palette.primary[500]}>
+                      {50} %
+                    </Typography>
+                  </Stack>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="bodyP3">{row.targetName}</Typography>
+                </TableCell>
+                <TableCell>2020-2023</TableCell>
+                <TableCell>
+                  <Box display="flex" justifyContent="center" alignItems="center">
+                    <IconButton onClick={(event) => handleMenuOpen(event, row.id)}>
+                      <DotsHorizontal />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl) && selectedTaskId === row.id}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem onClick={(event) => handleModify(event, row)}>
+                        <ModifyIcon fontSize="small" />
+                        Modify
+                      </MenuItem>
+                      <MenuItem onClick={(event) => handleAssign(event, row)}>
+                        <AssignIcon fontSize="small" />
+                        Assign
+                      </MenuItem>
+                      <MenuItem onClick={() => handleDelete(row)}>
+                        <DeleteIcon fontSize="small" />
+                        Delete
+                      </MenuItem>
+                      {isDeleteOpen && selectedRow && (
+                        <DeleteConfirmation
+                          open={isDeleteOpen}
+                          setOpen={setIsDeleteOpen}
+                          title="Do you want to delete this?"
+                          subtitle="Are you sure you want to delete this file."
+                          primary="Delete"
+                          secondary="Cancel"
+                          handleDelete={handleDeleteTask}
+                          primaryColor={{ backgroundColor: palette.danger[500] }}
+                        />
+                      )}
+                    </Menu>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Box>
+      <Divider />
+      {modify && selectedRow && (
+        <UpdateBottomDrawerTask
+          open={modify}
+          handleCancelTask={handleClose}
+          onUpdateTask={handleUpdateTask}
+          task={selectedRow}
+          users={users}
+          targets={targets}
+          isAssign={false}
+          headerName="Edit Task"
+          titleName="Edit a Task"
+          subtitleName="Edit a task to further streamline your carbon emission management process."
+        />
+      )}
+      {isAssign && selectedRow && (
+        <UpdateBottomDrawerTask
+          open={isAssign}
+          handleCancelTask={handleClose}
+          onUpdateTask={handleAssignTask}
+          task={selectedRow}
+          users={users}
+          targets={targets}
+          isAssign={isAssign}
+          headerName="Assign Task"
+          titleName="Assign a Task"
+          subtitleName="Assign a task to further streamline your carbon emission management process."
+        />
+      )}
 
-  
-  </Box>
-</TableCell>
-</TableRow>
-))}
-</TableBody>
-</Table>
-</Box>
-<Divider />
-{modify && selectedRow && (
-       <UpdateBottomDrawerTask 
-       open={modify} 
-       handleCancelTask={ handleClose } 
-       onUpdateTask={handleUpdateTask } 
-       task={selectedRow}
-       users={users} 
-       targets={targets} 
-       isAssign={false}  
-
-       headerName="Edit Task"
-       titleName="Edit a Task"
-       subtitleName="Edit a task to further streamline your carbon emission management process."
-       
-       />)
-      }
-{isAssign && selectedRow && (
-       <UpdateBottomDrawerTask 
-       open={isAssign} 
-       handleCancelTask={ handleClose } 
-       onUpdateTask={handleAssignTask } 
-       task={selectedRow}
-       users={users} 
-       targets={targets} 
-       isAssign={isAssign}  
-
-       headerName="Assign Task"
-       titleName="Assign a Task"
-       subtitleName="Assign a task to further streamline your carbon emission management process."
-       
-       />)
-      }
-
-
-<Box display="flex" justifyContent="center">
-<Pagination
-count={count}
-page={page}
-onChange={handleChangePage}
-color="primary"
-size="medium"
-showFirstButton
-showLastButton
-shape="rounded"
-/>
-</Box>
-</Card>
-);
+      <Box display="flex" justifyContent="center">
+        <Pagination
+          paginatioType="gray"
+          // color='gray'
+          count={Math.ceil(tasks.length / rowsPerPage)} // Total number of pages
+          page={page}
+          onChange={handleChangePage}
+          size="small"
+          showFirstButton
+          showLastButton
+          shape="rounded"
+        />
+      </Box>
+    </Card>
+  );
 }

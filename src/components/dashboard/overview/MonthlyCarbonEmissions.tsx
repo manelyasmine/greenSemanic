@@ -8,19 +8,21 @@ import { palette } from '@/styles/theme/colors';
 
 export interface MonthlyCarbonEmissionsProps {
   sx?: any; // Define any custom styling props here
+  dataEmission: [];
+  dataEmissionTarget: []
 }
 
-export function MonthlyCarbonEmissions({ sx }: MonthlyCarbonEmissionsProps): React.JSX.Element {
+export function MonthlyCarbonEmissions({ sx, dataEmission,dataEmissionTarget }: MonthlyCarbonEmissionsProps): React.JSX.Element {
   const guestSeries = [
     {
       name: 'Carbon Emissions',
       type: 'area',
-      data: [50, 60, 70, 80, 19, 100, 15, 40, 55, 90, 100, 70, 26],
+      data: dataEmission ? dataEmission.slice(0, 12) : [50, 60, 70, 80, 19, 100, 15, 40, 55, 90, 100, 70, 26],
     },
     {
       name: 'Target Carbon Emissions',
       type: 'line',
-      data: [60, 50, 60, 100, 40, 70, 120, 70, 90, 87, 34, 80, 60],
+      data:dataEmissionTarget ? dataEmissionTarget :  [60, 50, 60, 100, 40, 70, 120, 70, 90, 87, 34, 80, 60],
       color: '#CCCCCC',
       lineStyle: {
         dashArray: 5,
