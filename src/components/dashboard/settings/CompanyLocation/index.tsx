@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DeleteIcon, ExportIcon, LocalizationHeadIcon, LocalizationIcon, ModifyIcon, PlusIcon } from '@/icons';
 import {
   Box,
@@ -18,50 +18,113 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { companyApis } from '@/lib/company/companyApis';
+import { addLocation, setLocations, updateLocation } from '@/lib/store/reducer/useCompany';
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
+import AddLocationModal from '@/components/commun/Modal/AddLocationModal';
+import DeleteModal from '@/components/commun/Modal/DeleteModal';
 import { palette } from '@/styles/theme/colors';
 import { MuiButton } from '@/styles/theme/components/button';
 import { boxFilterDropDown, Filter, outlinedInput } from '@/styles/theme/Filter';
 
 import LocationList from './LocationList';
 import MapLocation from './MapLocation';
+import UpdateLocationModal from '@/components/commun/Modal/UpdateLocationModal';
 
-const initlocations = [
-  {
-    id: 1,
-    head: 1,
-    name: 'Location 01',
-    location: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-  },
-  {
-    id: 2,
-    head: 0,
-    name: 'Location 01',
-    location: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-  },
-  {
-    id: 3,
-    head: 0,
-    name: 'Location 01',
-    location: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
-  },
-];
+// const initlocations = [
+//   {
+//     id: 1,
+//     head: 1,
+//     name: 'Location 01',
+//     location: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
+//   },
+//   {
+//     id: 2,
+//     head: 0,
+//     name: 'Location 01',
+//     location: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
+//   },
+//   {
+//     id: 3,
+//     head: 0,
+//     name: 'Location 01',
+//     location: '1901 Thornridge Cir. Shiloh, Hawaii 81063',
+//   },
+// ];
 
 const CompanyLocation: React.FC = () => {
-  const [locations, setLocations] = React.useState<string[]>([]);
+  // const [locations, setLocations] = React.useState<string[]>([]);
   const [search, setSearch] = React.useState<string>('');
-  const [isOpen, setIsOpen] = React.useState<string>('');
-  const addLocation = () => {
-    // Implement location adding logic
-    /*  const newLocation = prompt("Enter a new location:");
-    if (newLocation) {
-      setLocations([...locations, newLocation]);
-    } */
-    setIsOpen(true);
-  };
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpenDelete, setIsOpenDelete] = React.useState(false);
+  const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
 
-  const filteredLocations = locations.filter((location) => location.toLowerCase().includes(search.toLowerCase()));
+  const { company, locations } = useSelector((state: any) => state.company);
+
+  const dispatch = useDispatch();
+
+  const getLocations = React.useCallback(async (): Promise<void> => {
+    const { error, res } = await companyApis.getLocations(company._id);
+    if (error) {
+      return;
+    }
+    dispatch(setLocations(res));
+  }, []);
+
+  // const filteredLocations = locations.filter((location) => location.toLowerCase().includes(search.toLowerCase()));
+  useEffect(() => {
+    getLocations();
+  }, [getLocations]);
+
+  const createLocation = React.useCallback(async (location: any): Promise<void> => {
+    const { error, res } = await companyApis.addLocation(company._id, location);
+    if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
+      return;
+    }
+    dispatch(setOpenToast({ message: 'Location Added Successfully', type: 'success' }));
+    setIsOpen(false);
+    dispatch(addLocation(location));
+  }, []);
+
+  const handleDelete = React.useCallback(
+    async (location): Promise<void> => {
+      const { error, res } = await companyApis.deleteLocation(company._id, location._id);
+      if (error) {
+        dispatch(setOpenToast({ message: error, type: 'error' }));
+        return;
+      }
+      dispatch(setOpenToast({ message: 'Location Deleted Successfully', type: 'success' }));
+      const indexToRemove = locations.indexOf(location);
+      console.log(locations);
+      console.log({ locations });
+      console.log(indexToRemove);
+      const newLocation = locations.filter((_: any, i: any) => i !== indexToRemove);
+      console.log({ newLocation });
+      dispatch(setLocations(newLocation));
+      setIsOpenDelete(false);
+      return;
+    },
+    [locations]
+  );
+
+  const handleUpdate = React.useCallback(
+    async (location): Promise<void> => {
+      const { error, res } = await companyApis.updateLocation(company._id, location);
+      if (error) {
+        dispatch(setOpenToast({ message: error, type: 'error' }));
+        return;
+      }
+      dispatch(setOpenToast({ message: 'Location Updated Successfully', type: 'success' }));
+      dispatch(updateLocation(location));
+      setIsOpenUpdate(false);
+      return;
+    },
+    [locations]
+  );
 
   return (
     <Grid container spacing={1}>
@@ -90,7 +153,7 @@ const CompanyLocation: React.FC = () => {
               justifyContent: 'flex-end',
               background: 'var(--Green-green-500, #16B364)',
             }}
-            onClick={addLocation}
+            onClick={() => setIsOpen(true)}
           >
             <Typography
               variant="h7"
@@ -100,17 +163,7 @@ const CompanyLocation: React.FC = () => {
             </Typography>
           </Button>
         </Box>
-        {isOpen && (
-          <DeleteConfirmation
-            open={isOpen}
-            setOpen={setIsOpen}
-            title="Do you want to add this location?"
-            subtitle="Are you sure you want to add location to company locations."
-            primary="Confirm"
-            secondary="Cancel"
-            primaryColor={{ backgroundColor: 'var(--Green-green-500, #16B364)' }}
-          />
-        )}
+        {isOpen && <AddLocationModal open={isOpen} onClose={() => setIsOpen(false)} handleCreate={createLocation} />}
         <OutlinedInput
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -129,7 +182,7 @@ const CompanyLocation: React.FC = () => {
           }}
         />
         <List>
-          {initlocations.map((location) => (
+          {locations.map((location, index) => (
             <ListItem
               key={location.id}
               sx={{
@@ -140,34 +193,51 @@ const CompanyLocation: React.FC = () => {
               }}
             >
               <ListItemText
-                primary={location.name}
+                primary={'Locations ' + (index + 1)}
                 primaryTypographyProps={{ variant: 'bodyB2', color: 'var(--Green-green-700, #087443)' }}
               />
               {location.head == 1 ? (
                 <ListItemIcon>
                   <LocalizationHeadIcon />
                   <ListItemText
-                    secondary={location.location}
+                    secondary={location.address}
                     secondaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-600, #14A35B)' }}
                   />
                 </ListItemIcon>
               ) : (
                 <ListItemIcon>
-                  <LocalizationIcon />
-                  <ListItemText
-                    secondary={location.location}
-                    primaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-600, #14A35B)' }}
-                    secondaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-600, #14A35B)' }}
-                  />
+                  <Stack direction={'row'} alignItems={'center'}>
+                    <LocalizationIcon />
+                    <ListItemText
+                      secondary={location.postalCode + ' ' + location.address}
+                      primaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-600, #14A35B)' }}
+                      secondaryTypographyProps={{ variant: 'bodyP3', color: 'var(--Green-green-600, #14A35B)' }}
+                    />
+                  </Stack>
                 </ListItemIcon>
               )}
+              {isOpenUpdate && (
+                <UpdateLocationModal open={isOpenUpdate} onClose={() => setIsOpenUpdate(false)} handleUpdate={handleUpdate} locationToUpdate={location} />
+              )}
+
+              {isOpenDelete && (
+                <DeleteModal
+                  open={isOpenDelete}
+                  onClose={() => setIsOpenDelete(false)}
+                  handleDelete={() => handleDelete(location)}
+                  title={'Do you want to delete this?'}
+                  subtitle={undefined}
+                />
+              )}
               <ListItemSecondaryAction sx={{ justifyContent: 'flex-end', display: 'flex' }}>
-                <Button aria-label="modify" sx={{ display: 'contents' }}>
-                  <ModifyIcon />
-                </Button>
-                <Button aria-label="delete" sx={{ display: 'contents' }}>
-                  <DeleteIcon />
-                </Button>
+                <Stack direction={'row'} spacing={2}>
+                  <Button aria-label="modify" sx={{ display: 'contents' }} onClick={() => setIsOpenUpdate(true)}>
+                    <ModifyIcon />
+                  </Button>
+                  <Button aria-label="delete" sx={{ display: 'contents' }} onClick={() => setIsOpenDelete(true)}>
+                    <DeleteIcon />
+                  </Button>
+                </Stack>
               </ListItemSecondaryAction>
             </ListItem>
           ))}

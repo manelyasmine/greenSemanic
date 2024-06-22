@@ -30,7 +30,8 @@ class CompanyApis {
 
       return {res : {...response.data, id: response.data._id}}
     } catch (e) {
-      return { error: 'backend error' };
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+      return { error: error};
     } 
 
     return {};
@@ -44,11 +45,67 @@ class CompanyApis {
 
       return { res: res.data };
     } catch (e) {
-      return { error: 'backend error' };
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+      return { error: error};
     }
  
 
     return {};
+  }
+
+  async getLocations(id ): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiCompany.get('/location/'+id, { withCredentials: true });
+
+
+      return { res: res.data.locations };
+    } catch (e) {
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+      return { error: error};
+    }
+ 
+
+  }
+  async addLocation(id , location): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiCompany.put('/location/'+id, location , { withCredentials: true });
+
+
+      return { res: res.data.newLocation};
+    } catch (e) {
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+      return { error: error};;
+    }
+  }
+
+  async deleteLocation(companyId , locationId): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiCompany.delete('/'+companyId+'/location/'+locationId , { withCredentials: true });
+
+    
+
+      return { res: res.data.newLocation};
+    } catch (e) {
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+      return { error: error};;
+    }
+  }
+
+  async updateLocation(companyId , location): Promise<{ res?: any; error?: string }> {
+    // Make API request
+    try {
+      const res = await this.apiCompany.put('/'+companyId+'/location/'+location._id , location , { withCredentials: true });
+
+    
+
+      return { res: res.data.newLocation};
+    } catch (e) {
+      const error = e.response ? e.response.data.error : 'Connexion Error' 
+      return { error: error};;
+    }
   }
 }
 
