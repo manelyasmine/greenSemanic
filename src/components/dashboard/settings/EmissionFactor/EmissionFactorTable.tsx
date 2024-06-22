@@ -15,48 +15,47 @@ import dayjs from 'dayjs';
 import { useSelection } from '@/hooks/use-selection'; 
 import Header from './Header';
 import { Pagination } from '@mui/material';
-import { Emission } from '@/types/emission';
-
-function noop(): void {
-  // do nothing
-}
-
  
-
+import { Emission } from '@/types/emission';
+import usePagination from '@/hooks/use-pagination';
 interface CustomersTableProps {
-  count?: number;
-  page?: number;
-  rows?: Emission[];
+   page?: number;
+  rows?: object[];
   rowsPerPage?: number;
+  onFilterBySearch:any;
+  
+  pages:number,
+  handleChangePage:any;
 }
 
-export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }: CustomersTableProps): React.JSX.Element {
-  const rowIds = React.useMemo(() => {
-    return rows.map((customer) => customer.id);
-  }, [rows]);
-
-  const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
-
-  const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
-  const selectedAll = rows.length > 0 && selected?.size === rows.length;
-
+export function EmissionFactorTable({   rows = [], rowsPerPage = 5,  onFilterBySearch,
+ 
+  pages,
+  handleChangePage, }: CustomersTableProps): React.JSX.Element {
   const [page, setPage] = useState(1); // Start on page 1
-  const [totalPages, setTotalPages] = useState(10); // Replace with actual total pages
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  console.log("rows from table",rows)
+  const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   
+  
+  const updateChangePage = (event: any, newPage: any) => {
+    console.log("update change data",newPage)
+    setPage(newPage);
+    handleChangePage(newPage);
+  };
+  const updateSearch=(search:string)=>{
+    console.log("search",search)
+    onFilterBySearch(search);
+  }
   return (
     <Card>
-       <Header/>
+       <Header   onFilterBySearch={updateSearch}/>
      <Divider />
     <Box sx={{ overflowX: 'auto' }}>
       <Table sx={{ minWidth: '800px' }}>
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
-              <Checkbox
+              {/* <Checkbox
                 checked={selectedAll}
                 indeterminate={selectedSome}
                 onChange={(event) => {
@@ -66,7 +65,7 @@ export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }:
                     deselectAll();
                   }
                 }}
-              />
+              /> */}
             </TableCell>
             <TableCell>Name</TableCell> 
               <TableCell>Category</TableCell>
@@ -77,13 +76,14 @@ export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }:
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => {
-            const isSelected = selected?.has(row.id);
+        {rows &&
+              rows.map((row) => {
+          //  const isSelected = selected?.has(row.id);
 
             return (
-              <TableRow hover key={row.id} selected={isSelected}>
+              <TableRow hover key={row.id} /* selected={isSelected} */>
                 <TableCell padding="checkbox">
-                  <Checkbox
+                {/*   <Checkbox
                     checked={isSelected}
                     onChange={(event) => {
                       if (event.target.checked) {
@@ -92,7 +92,7 @@ export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }:
                         deselectOne(row.id);
                       }
                     }}
-                  />
+                  /> */}
                 </TableCell>
                 <TableCell>
                    
@@ -129,16 +129,16 @@ export function EmissionFactorTable({ count = 100, rows = [], rowsPerPage = 5 }:
     <Divider />
     <Box style={{ display: 'flex', justifyContent: 'center' }}>
     <Pagination
-      count={count} // Total number of pages
-      page={4} // Current page
-      onChange={handleChangePage}  
-      color="primary" // Set color
-      size="medium"   
-      showFirstButton  
-      showLastButton 
-      shape="rounded"
-       
-    />
+          paginatioType="gray"
+          // color='gray'
+          count={pages} // Total number of pages
+          page={page}
+          onChange={updateChangePage}
+          size="small"
+          showFirstButton
+          showLastButton
+          shape="rounded"
+        />
     </Box>
   </Card>
   );

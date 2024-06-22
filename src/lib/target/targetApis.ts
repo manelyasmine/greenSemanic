@@ -54,14 +54,21 @@ class TargetApis {
     return {};
   }
 
-  async getTargets(): Promise<{ res?: any; error?: string }> {
+  async getTargets(filters = {}): Promise<{ res?: any;total?:any,totalPages?:any, error?: string }> {
     // Make API request
+    const queryString = new URLSearchParams(filters);
+    console.log("queryStringqueryString gettargetq",queryString)
     try {
-      const res = await this.apiTarget.get('/', { withCredentials: true });
-
-      return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
-    } catch (e) {
-      return { error: 'backend error' };
+      const res = await this.apiTarget.get('/?' + queryString.toString(), { withCredentials: true });
+      console.log("backend targets",res.data.total,res.data.totalPages,res.data.pageMin)
+      const total = res.data.total || 1;  
+      const totalPages=res.data.totalPages || 1;
+      return {
+        res: res.data.targets.map((e: any) => ({ ...e, id: e._id })), 
+         total,
+         totalPages
+      }; } catch (e) {
+      return { error: 'backend error'+e };
     }
 
     // // We do not handle the API, so we'll just generate a token and store it in localStorage.

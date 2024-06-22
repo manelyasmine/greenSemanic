@@ -32,6 +32,7 @@ import CheckIcon from './CheckIcon';
 import DownloadIcon from './DownloadIcon';
 import ShareIcon from './ShareIcon';
 import VectorICon from './VectorICon';
+import LogoLightIcon from './LogoLightIcon';
 export {
   ChartIcon,
   BackForwardIcon,
@@ -67,4 +68,5 @@ export {
   DownloadIcon,
   ShareIcon,
   VectorICon,
+  LogoLightIcon
 };

@@ -62,12 +62,21 @@ class DataApis {
     return {};
   }
 
-  async getData(): Promise<{ res?: any; error?: string }> {
-    // Make API request
+  async getData(filters:{}): Promise<{res?: any;total?:any,totalPages?:any, error?: string }> {
+    const queryString = new URLSearchParams(filters);
+    console.log("qyery",queryString)
     try {
-      const res = await this.apiData.get('/', { withCredentials: true });
-
-      return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
+    
+      const res = await this.apiData.get('/?' + queryString.toString(), { withCredentials: true });
+     
+      const total = res.data.total || 1;  
+      const totalPages=res.data.totalPages || 1;
+      console.log("getData from front ",res.data.dataemission)
+      return {
+        res: res.data.dataemission.map((e: any) => ({ ...e, id: e._id })), 
+         total,
+         totalPages
+      };
     } catch (e) {
       const error = e.response ? e.response.data.error : 'Connexion Error' 
       return { error: error};

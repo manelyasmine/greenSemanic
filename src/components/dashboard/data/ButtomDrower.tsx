@@ -151,7 +151,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
               )}
               {activeStep == 3 && (
                 <Button variant="contained" color="primary" onClick={handleUpload}>
-                  Send
+                  Confirm
                 </Button>
               )}
             </Grid>

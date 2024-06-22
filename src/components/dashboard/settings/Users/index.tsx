@@ -28,7 +28,39 @@ interface UsersProps {
 }
 
  
- 
+function convertToCSV(data) {
+  const csvRows = [];
+  
+  // Get headers
+  const headers = Object.keys(data[0]);
+  csvRows.push(headers.join(','));
+
+  // Loop through rows
+  for (const row of data) {
+    const values = headers.map(header => {
+      const escaped = ('' + row[header]).replace(/"/g, '\\"'); // Escape double quotes
+      return `"${escaped}"`;
+    });
+    csvRows.push(values.join(','));
+  }
+
+  return csvRows.join('\n');
+}
+
+function downloadCSV(data, filename = 'data.csv') {
+  const csv = convertToCSV(data);
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.setAttribute('hidden', '');
+  a.setAttribute('href', url);
+  a.setAttribute('download', filename);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+
 
 export   function Users() { 
   const [isNewUser,setIsNewUser]=useState(false)
@@ -49,6 +81,9 @@ const [value,setValue]=useState('');
     
     setNewUser('');
     handleClose();
+  };
+  const handleExportClick = () => {
+    downloadCSV(users, 'users.csv');
   };
  
 console.log("usersusersusersusers",users)
@@ -129,7 +164,7 @@ const handleClose=()=>{setIsNewUser(false);}
             justifyContent: 'flex-end',
             
         }}
-
+        onClick={handleExportClick}
       startIcon={<ExportIcon fontSize="var(--icon-fontSize-sm)" />}  
         >
     <Typography variant="h7" sx={{ color: "var(--Grey-grey-600, #606977)" }}>

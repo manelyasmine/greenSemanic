@@ -1,0 +1,218 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { CalanderIcon, FilterIcon } from '@/icons';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import InputAdornment from '@mui/material/InputAdornment';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MagnifyingGlass as MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
+import Stack from '@mui/material/Stack';
+import { palette } from '@/styles/theme/colors';
+import { MuiButton } from '@/styles/theme/components/button';
+import { boxFilterDropDown, Filter, outlinedInput,filterCalander } from '@/styles/theme/Filter';
+
+import { Button } from '../Button';
+import { CustomersFilters } from './customers-filters';
+import FilterData from './FilterData';
+import Filters from './Filters';
+
+interface DataItem {
+  id: number;
+  name: string;
+  age: number;
+  city: string;
+}
+
+type Operator = 'equals' | 'greaterThan' | 'lessThan'; // Add more operators as needed
+
+interface Column {
+  field: string;
+  headerName: string;
+  width: number;
+  filterable: boolean;
+  type?: 'string' | 'number'; // Optional type for data type handling
+}
+
+const data: DataItem[] = [
+  { id: 1, name: 'Alice', age: 30, city: 'New York' },
+  { id: 2, name: 'Bob', age: 25, city: 'Los Angeles' },
+  // ... more data
+];
+
+const columns: Column[] = [
+  { field: 'Tasks', headerName: 'Tasks', width: 150, filterable: true, type: 'string' },
+  { field: 'Due Date', headerName: 'Due Date', width: 110, filterable: true, type: 'Date' },
+  { field: 'Assigned Users', headerName: 'Assigned Users', width: 160, filterable: true, type: 'string' },
+
+  { field: 'Target Name', headerName: 'Target Name', width: 150, filterable: true, type: 'string' },
+];
+const FilterBox = ({ children, onClose }) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
+
+  return (
+    <Box
+      ref={ref}
+      sx={{ border: '1px solid green', borderRadius: '8px', backgroundColor: 'white', padding: '8px' }}
+    >
+      {children}
+    </Box>
+  );
+};
+
+
+interface CustomersTableProps {
+ 
+  onFilterByDate:()=>void;
+}
+
+
+const FilterColumns = (onFilterByDate) => {
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const toggleCalendar = () => { setIsCalendarOpen(!isCalendarOpen);};
+  const handleDateChange = (date) => {
+    console.log("handleDateChange",Object.keys(date),date)
+        setSelectedDate(date);
+        onFilterByDate(selectedDate);  
+  };
+    
+  
+ /*  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  
+  const [selectedColumn, setSelectedColumn] = useState(columns[0].field);
+  const [operator, setOperator] = useState<Operator>('equals');
+  const [filterValue, setFilterValue] = useState('');
+  const [filteredData, setFilteredData] = useState(data);
+
+
+  const handleColumnChange = (event: React.ChangeEvent<HTMLSelectElement>) => setSelectedColumn(event.target.value);
+  const handleOperatorChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setOperator(event.target.value as Operator);
+  const handleFilterValueChange = (event: React.ChangeEvent<HTMLInputElement>) => setFilterValue(event.target.value);
+
+  const applyFilter = () => {
+    setFilteredData(filterData(data.slice(), selectedColumn, operator, filterValue));
+    setIsFilterDropdownOpen(false); // Close dropdown after applying filter
+  };
+  const handleClickOutside = (event: MouseEvent<HTMLElement>) => {
+    if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+      setIsCalendarOpen(false);
+    }
+  };
+
+  */
+
+
+  /* useEffect(() => {
+    // Add event listener for outside clicks when calendar is open
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      // Remove event listener on cleanup
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isCalendarOpen]);
+
+  const toggleFilterDropdown = () => setIsFilterDropdownOpen(!isFilterDropdownOpen);
+
+ 
+  const closeFilterDropdown = () => {
+    setIsFilterDropdownOpen(false);
+  }; */
+  return (
+    <Box sx={{ backgroundColor: palette.common.white, position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px', borderRadius: '12px' }}>
+    <Box sx={{ display: "flex", alignItems: 'flex-start', justifyContent: 'space-between', flexDirection: "row" }}>
+      <OutlinedInput
+        defaultValue=""
+        placeholder="Search for anything..."
+        startAdornment={
+          <InputAdornment position="start">
+            <MagnifyingGlassIcon fontSize="var(--icon-fontSize-md)" />
+          </InputAdornment>
+        }
+        sx={outlinedInput}
+      />
+      <Box ref={calendarRef} sx={{  display: 'flex',
+        padding: 'var(--12, 12px) 16px',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        gap: '8px',}}>
+        <Button
+          btnType="secondaryGray"
+          sx={{ ...MuiButton.styleOverrides.sizeSmall,  }}
+          startIcon={<CalanderIcon />}
+          id="filter-date"
+         
+          onClick={toggleCalendar}
+        >
+          Select Date
+        </Button>
+        {isCalendarOpen && (
+          <Box sx={filterCalander}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateCalendar
+              value={selectedDate}
+              onChange={handleDateChange}
+              views={['year', 'month', 'day']} // Show all three views
+           />
+
+            </LocalizationProvider>
+          </Box>
+        )}
+      {/*   <Button
+          btnType="secondaryGray"
+          sx={{ p: MuiButton.styleOverrides['sizeSmall'], justifyContent: 'left' }}
+          startIcon={<FilterIcon />}
+          onClick={toggleFilterDropdown}
+        >
+          Filters
+        </Button> */}
+      </Box>
+    </Box>
+  
+  {/*   {isFilterDropdownOpen && (
+      <Box sx={{ position: 'absolute', top: '40px', right: '16px', zIndex: 1000 }}>
+        <Box sx={{ border: '1px solid green', borderRadius: '8px', backgroundColor: 'white', padding: '8px' }}>
+        <FilterBox onClose={closeFilterDropdown}>
+          <Filters
+            columns={columns}
+            selectedColumn={selectedColumn}
+            operator={operator}
+            filterValue={filterValue}
+            handleColumnChange={handleColumnChange}
+            handleOperatorChange={handleOperatorChange}
+            handleFilterValueChange={handleFilterValueChange}
+            applyFilter={applyFilter}
+            isOpen={isFilterDropdownOpen} // Pass the isOpen state
+          />
+          </FilterBox>
+        </Box>
+      </Box>
+    )} */}
+  </Box>
+  
+  
+  
+  
+  );
+};
+
+export default FilterColumns;

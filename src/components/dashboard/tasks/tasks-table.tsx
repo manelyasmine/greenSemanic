@@ -210,7 +210,7 @@ console.log("targets",targets)
 
   return (
     <Card>
-      <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={onFilterBySearch} />
+      <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={onFilterBySearch} isYear={false} isDate={true}/>
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>

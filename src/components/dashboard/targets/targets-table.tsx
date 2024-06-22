@@ -2,7 +2,8 @@
 
 import React, { useMemo, useState } from 'react';
 import { redirect, useRouter } from 'next/navigation';
-import { Pagination } from '@mui/material';
+
+import { Pagination } from '@/components/commun/Pagination/Pagination';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -17,12 +18,11 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
-
+import usePagination from '@/hooks/use-pagination';
 import { Target } from '@/types/target';
 import { setTarget } from '@/lib/store/reducer/useTarget';
 import { useSelection } from '@/hooks/use-selection';
-import Chip from '@/components/commun/chip/Chip';
-import ChipTrend from '@/components/commun/Chip/ChipTrend';
+import Chip from '@/components/commun/Chip/Chip'; 
 import DropdownTableCell from '@/components/DropDown/DropdownTableCellTarget';
 import { palette } from '@/styles/theme/colors';
 
@@ -46,14 +46,26 @@ interface TargetsTableProps {
   page?: number;
   rows?: Target[];
   rowsPerPage?: number;
+  onFilterBySearch:any;
+  onFilterByDate:any;
+  pages:number,
+  handleChangePage:any;
   
 }
 
-export function TargetsTable({ count = 100, rows = [], rowsPerPage = 5 }: TargetsTableProps): React.JSX.Element {
+export function TargetsTable({  
+  rows = [],
+  rowsPerPage = 5,
+  
+  onFilterBySearch,
+  onFilterByDate,
+  pages,
+  handleChangePage,
+ }: TargetsTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return Array.isArray(rows) && rows?.map((customer) => customer.id);
   }, [rows]);
-
+  const [page, setPage] = useState(1); 
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
 
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
@@ -61,13 +73,22 @@ export function TargetsTable({ count = 100, rows = [], rowsPerPage = 5 }: Target
 
   const dispatch = useDispatch();
 
+  const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   const router = useRouter();
-  const [page, setPage] = useState(1); // Start on page 1
+  
   const [pageSize, setPageSize] = useState(rowsPerPage);
 
-  const handleChangePage = (event: any, newPage: any) => {
+
+  const updateChangePage = (event: any, newPage: any) => {
+    console.log("update change data",newPage)
     setPage(newPage);
+    handleChangePage(newPage);
   };
+  const updateSearch=(search:string)=>{
+    console.log("search Data table",search)
+    onFilterBySearch(search);
+  }
+   
 
   const handleClickRow = (event: any, data: any) => {
     if (
@@ -80,16 +101,11 @@ export function TargetsTable({ count = 100, rows = [], rowsPerPage = 5 }: Target
     dispatch(setTarget(data));
     router.push('/dashboard/target/details');
   };
-  // Calculate the current page's rows
-  const paginatedRows = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    return Array.isArray(rows) && rows?.slice(start, end);
-  }, [rows, page, pageSize]);
+ 
 
   return (
     <Card>
-      <FilterColumns />
+      <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={true} isDate={false} isFullDate={false}/>
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
@@ -175,15 +191,14 @@ export function TargetsTable({ count = 100, rows = [], rowsPerPage = 5 }: Target
       </Box>
       <Divider />
       <Box style={{ display: 'flex', justifyContent: 'center' }}>
-        <Pagination
-          sx={{ marginY: 1 }}
-          count={Math.ceil(rows.length / pageSize)}
+      <Pagination
+          paginatioType="gray"
+          // color='gray'
+          //count={pages} // Total number of pages
+          count={Math.ceil(rows.length / rowsPerPage)}
           page={page}
-          // count={count} // Total number of pages
-          // page={4} // Current page
-          onChange={handleChangePage}
-          color="primary" // Set color
-          size="medium"
+          onChange={updateChangePage}
+          size="small"
           showFirstButton
           showLastButton
           shape="rounded"

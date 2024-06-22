@@ -28,11 +28,24 @@ export default function Page(): React.JSX.Element {
   const [target, setTarget] = React.useState<Target>({});
   const dispatch = useDispatch();
   const { targets } = useSelector((state: any) => state.target);
-  const page = 0;
+   
   const rowsPerPage = 3;
   const [isNewTask, setIsNewTask] = useState(false);
   const [paginatedTarget, setPaginatedTarget] = useState<Target[]>([]);
- 
+  const [searchInput,setSearchInput]=useState('')
+  const [searchDate,setSearchDate]=useState('')
+  const [rows, setRows] = useState([{}]);
+  const [page, setPage] = useState(1); // Start on page 1
+
+  const [pages,setPages]=useState(1);
+  const [totalRows,setTotalRows]=useState(1);
+const [searchBaseYear,setSearchBaseYear]=useState('');
+
+const [searchTargetYear,setSearchTargetYear]=useState('');
+  const handleChangePage = ( newPage ) => {
+    console.log("handle change page",page)
+    setPage(newPage); 
+  };
   const handleNewTask = () => {
     setIsNewTask(!isNewTask);
   };
@@ -41,18 +54,48 @@ export default function Page(): React.JSX.Element {
   };
 
   const getTargets = React.useCallback(async (): Promise<void> => {
-    const { error, res } = await targetApis.getTargets();
+    const filters = {
+      /*  dueDate:searchDate, */
+      start:searchBaseYear,
+      end:searchTargetYear,
+       page,  
+       limit: rowsPerPage,  
+       search:searchInput,
+     };
+     console.log("filllll",filters)
+    const { error, res,total,totalPages  } = await targetApis.getTargets(filters);
     if (error) {
       return;
     }
-    dispatch(setTargets(res));
-    setPaginatedTarget(applyPagination(res, page, rowsPerPage));
+    console.log("res",res,total,totalPages)
+    dispatch(setTargets(res)); 
     setTarget(res);
-  }, [page, rowsPerPage]);
+    setRows(res);  
+    setTotalRows(total);
+    setPages(totalPages);
+    
+  }, [dispatch, page, rowsPerPage,pages,totalRows, searchInput,searchBaseYear],searchTargetYear);
 
   useEffect(() => {
     getTargets();
   }, [getTargets]);
+
+  const onFilterByDate = (selectedDate) => {
+    console.log("target table on filter date ==>",selectedDate[0],selectedDate[1])
+    setSearchBaseYear(selectedDate[0])
+    setSearchTargetYear(selectedDate[1]);
+   /*  const selectedDateObj = new Date(selectedDate);
+    const selectedDateObjFormat=dayjs(selectedDate).format('YYYY-MM-D');
+    console.log("onfilterbydate====>",selectedDateObjFormat)
+    setSearchDate(selectedDateObjFormat);
+       */
+        
+      
+    };
+    const onFilterBySearch=(search)=>{ 
+      console.log("onFilterBySearch=>",search)
+      setSearchInput(search)
+    }
 
   //getTargets()
   return (
@@ -93,7 +136,18 @@ export default function Page(): React.JSX.Element {
       <BottomDrawer open={isNewTask} onClose={handleClose} onCreateTask={() => console.log('ergb')} />
 
       {selectedTab === 'Targets' && (
-        <TargetsTable count={paginatedTarget.length} page={page} rows={targets} rowsPerPage={rowsPerPage} />
+        <TargetsTable   page={page} rows={rows} rowsPerPage={rowsPerPage} 
+        
+      onFilterBySearch={onFilterBySearch} onFilterByDate={onFilterByDate} pages={pages} handleChangePage={handleChangePage}
+        />
+
+ 
+
+
+
+
+
+
       )}
       {selectedTab !== 'Targets' && targets.length > 0 && (
         <ActionsTable

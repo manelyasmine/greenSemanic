@@ -1,4 +1,6 @@
+import { SelectionBackground } from '@phosphor-icons/react/dist/ssr';
 import { palette } from './colors';
+import zIndex from '@mui/material/styles/zIndex';
 
 export const Filter = {
   p: 2,
@@ -34,7 +36,9 @@ export const filterCalander = {
   right: '16%', */
   position:'fixed',
   minWidth: '150px',
-  backgroundColor: palette.common.white,
+   backgroundColor: palette.common.white,
+  zIndex:20,
   boxShadow: 1,
   borderRadius: '4px',
+ 
 };

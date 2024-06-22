@@ -8,8 +8,8 @@ import { Box, SxProps } from '@mui/system';
 import { useSelector } from 'react-redux';
 
 import { Button } from '@/components/commun/Button';
-import Chip from '@/components/commun/chip/Chip';
-import ChipTrend from '@/components/commun/chip/ChipTrend';
+import Chip from '@/components/commun/Chip/Chip';
+import ChipTrend from '@/components/commun/Chip/ChipTrend';
 import EmissionByTypeItem from '@/components/special/ListItem/EmissionByTypeItem';
 import { palette } from '@/styles/theme/colors';
 import dayjs from 'dayjs';

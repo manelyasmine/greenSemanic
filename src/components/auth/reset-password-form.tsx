@@ -24,6 +24,8 @@ import { palette } from '@/styles/theme/colors';
 
 import { Button } from '../commun/Button';
 
+import {LogoLightIcon} from '@/icons';
+
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required' }).email(),
 });
@@ -64,7 +66,13 @@ export function ResetPasswordForm(): React.JSX.Element {
 
   return (
     <Stack spacing={4}>
+       <Stack spacing={1} sx={{display:'flex',flexDirection:"row",color:"#161616",padding:2}}>
+
+                
+        <LogoLightIcon/>
+        </Stack>
       <Stack spacing={1}>
+      
         <Typography style={{ fontSize: '32px', fontWeight: 700 }}>Forgot password</Typography>
         <Typography variant="body1" color={palette.gray[500]}>
           Enter your email to receive a link to reset your password

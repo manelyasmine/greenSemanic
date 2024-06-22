@@ -15,14 +15,14 @@ import { CarbonPerMonth } from '@/components/dashboard/overview/CarbonPerMonth';
 import { EmissionByType } from '@/components/dashboard/overview/EmissionByType';
 import { EmissionLocation } from '@/components/dashboard/overview/EmissionLocation';
 import { Footprints } from '@/components/dashboard/overview/Footprint';
-import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
+//import { LatestOrders } from '@/components/dashboard/overview/latest-orders';
 import { MonthlyCarbonEmissions } from '@/components/dashboard/overview/MonthlyCarbonEmissions';
 import { Reduction } from '@/components/dashboard/overview/Reduction';
 import { Tasks } from '@/components/dashboard/overview/Tasks';
 import { TotalProfit } from '@/components/dashboard/overview/total-profit';
 import { TotalCO2 } from '@/components/dashboard/overview/TotalCO2';
 import { TotalEmissions } from '@/components/dashboard/overview/TotalEmissions';
-
+import Scopes from "@/components/dashboard/overview/Scopes"
 // export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
 export default function Page(): React.JSX.Element {
@@ -80,53 +80,7 @@ export default function Page(): React.JSX.Element {
           <MonthlyCarbonEmissions sx={{ height: '100%' }} />
         </Grid>
         <Grid lg={4} md={12} xs={12}>
-          <LatestOrders
-            orders={[
-              {
-                id: 'ORD-007',
-                customer: { name: 'Ekaterina Tankova' },
-                amount: 30.5,
-                status: 'pending',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-006',
-                customer: { name: 'Cao Yu' },
-                amount: 25.1,
-                status: 'delivered',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-004',
-                customer: { name: 'Alexa Richardson' },
-                amount: 10.99,
-                status: 'refunded',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-003',
-                customer: { name: 'Anje Keizer' },
-                amount: 96.43,
-                status: 'pending',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-002',
-                customer: { name: 'Clarke Gillebert' },
-                amount: 32.54,
-                status: 'delivered',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-              {
-                id: 'ORD-001',
-                customer: { name: 'Adam Denisov' },
-                amount: 16.76,
-                status: 'delivered',
-                createdAt: dayjs().subtract(10, 'minutes').toDate(),
-              },
-            ]}
-            sx={{ height: '100%' }}
-          />
+         <Scopes />
         </Grid>
         <Grid lg={8} md={12} xs={12}>
           <EmissionLocation sx={{ height: '100%' }} />

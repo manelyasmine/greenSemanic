@@ -100,3 +100,6 @@ export const Pagination: React.FC<PaginationProps> = ({ children, paginatioType 
     </Stack>
   );
 };
+
+
+

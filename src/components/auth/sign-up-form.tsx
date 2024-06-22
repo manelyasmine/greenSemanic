@@ -22,7 +22,7 @@ import { Eye as EyeIcon } from '@phosphor-icons/react/dist/ssr/Eye';
 import { EyeSlash as EyeSlashIcon } from '@phosphor-icons/react/dist/ssr/EyeSlash';
 import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
-
+import {LogoLightIcon} from '@/icons';
 import { paths } from '@/paths';
 import { authClient } from '@/lib/auth/client';
 import { useUser } from '@/hooks/use-user';
@@ -98,6 +98,11 @@ export function SignUpForm(): React.JSX.Element {
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
+      <Stack spacing={1} sx={{display:'flex',flexDirection:"row",color:"#161616",padding:2}}>
+
+        
+<LogoLightIcon/>
+</Stack>
         <Typography variant="h4">Sign Up</Typography>
         <Typography color="text.secondary" variant="body2">
           Welcome! Let’s create your account.

@@ -50,8 +50,13 @@ interface DataTableProps {
   rowsPerPage?: number;
   importFunc?: boolean;
   handleDelete: any;
-  handleUpdate: any;
+  handleUpdate: any; 
+  onFilterBySearch:any;
+  onFilterByDate:any;
+  pages:number,
+  handleChangePage:any;
 }
+ 
 
 export function DataTable({
   rows = [],
@@ -59,6 +64,10 @@ export function DataTable({
   importFunc = false,
   handleDelete,
   handleUpdate,
+  onFilterBySearch,
+  onFilterByDate,
+  pages,
+  handleChangePage,
 }: DataTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((Reports) => Reports.id);
@@ -69,13 +78,20 @@ export function DataTable({
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
 
   const [page, setPage] = useState(1); // Start on page 1
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
-  };
+ 
   const [isDelModal, setIsDelModal] = useState(false);
   const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
+  
   const { selectedRow, dataDB } = useSelector((state: any) => state.file);
   const [openUpdate, setOpenUpdate] = useState(false);
+
+  const updateChangePage = (event: any, newPage: any) => {
+    console.log("update change data",newPage)
+    setPage(newPage);
+    handleChangePage(newPage);
+  };
+
+  
   const deleteRow = () => {
     const { error, result } = handleDelete();
     if (error) {
@@ -91,6 +107,10 @@ export function DataTable({
     }
     setOpenUpdate(false);
   };
+  const updateSearch=(search:string)=>{
+    console.log("search Data table",search)
+    onFilterBySearch(search);
+  }
   // const handleDelete = React.useCallback(async (): Promise<void> => {
   //   const { error, res } = await dataApis.deleteData(selectedRow._id);
   //   console.log('see'+selectedRow)
@@ -103,7 +123,7 @@ export function DataTable({
   //   dispatch(setDataDB(newData));
   //   setIsDelModal(false);
   // }, [selectedRow]);
-
+ 
   return (
     <Card>
       <Divider />
@@ -113,7 +133,7 @@ export function DataTable({
             <TableRow>
               <TableCell colSpan={12}>
                 <Card variant="outlined" sx={{ border: '0' }}>
-                  <CardHeader title={<FilterColumns />} />
+                  <CardHeader title={<FilterColumns  onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={false} isFullDate={true}/>} />
                 </Card>
               </TableCell>
             </TableRow>
@@ -164,7 +184,7 @@ export function DataTable({
                       <Typography variant="bodyB3">{dayjs(row.date?.toString()).format('MMM D, YYYY')}</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="bodyP3">{row.location}</Typography>
+                      <Typography variant="bodyP3">{row.ID}{row.location}</Typography>
                     </TableCell>
 
                     <TableCell>{row.category}</TableCell>
@@ -216,9 +236,10 @@ export function DataTable({
         <Pagination
           paginatioType="gray"
           // color='gray'
-          count={Math.ceil(rows.length / rowsPerPage)} // Total number of pages
+          //count={pages} // Total number of pages
+          count={Math.ceil(rows.length / rowsPerPage)}
           page={page}
-          onChange={handleChangePage}
+          onChange={updateChangePage}
           size="small"
           showFirstButton
           showLastButton

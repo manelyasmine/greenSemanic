@@ -15,43 +15,30 @@ import { Button } from '@/components/commun/Button';
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import ButtomDrower from '@/components/dashboard/data/ButtomDrower';
 import CreateUpdateButtomDrower from '@/components/dashboard/data/CreateUpdateButtomDrower';
-import { DataTable } from '@/components/dashboard/data/Data-table';
-import { CarbonEmissionsCategory } from '@/components/dashboard/overview/CarbonEmissionsCategory';
-import { MonthlyCarbonEmissions } from '@/components/dashboard/overview/MonthlyCarbonEmissions';
+import { DataTable } from '@/components/dashboard/data/Data-table'; 
 import Scopes from '@/components/dashboard/overview/Scopes';
 import { MuiButton } from '@/styles/theme/components/button';
-
-const reports = [
-  {
-    id: 'USR-010',
-    Date: '12/01/2022',
-    Location: 'Location 01',
-    Category: 'Transportation',
-    Qunatity: '500 milles',
-    EmissionFactor: '0.2 Kg CO2e/mile',
-    SourceType: 'Manual',
-    IntegrationSource: 'GreenAPI',
-  },
-  {
-    id: 'USR-010',
-    Date: '12/01/2022',
-    Location: 'Location 02',
-    Category: 'Building',
-    Qunatity: '500 milles',
-    EmissionFactor: '0.2 Kg CO2e/mile',
-    SourceType: 'Manual',
-    IntegrationSource: 'GreenAPI',
-  },
-] satisfies reports[];
-export default function Page(): React.JSX.Element {
-  const [selectedTab, setSelectedTab] = useState<string>('7 Days');
+ 
+export default function Page(): React.JSX.Element { 
   const dispatch = useDispatch();
-  const page = 0;
+  
   const rowsPerPage = 4;
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenCU, setIsOpenCU] = useState(false);
   const { selectedRow, dataDB } = useSelector((state: any) => state.file);
+  const [searchInput,setSearchInput]=useState('')
+  const [searchDate,setSearchDate]=useState('')
+  const [rows, setRows] = useState([{}]);
 
+  const [page, setPage] = useState(1); // Start on page 1
+
+  const [pages,setPages]=useState(1);
+  const [totalRows,setTotalRows]=useState(1);
+
+  const [dataEmission, setDataEmission] = useState<Data[]>([]);
+
+  const [startFullDate, setStartFullDate] = useState<Date | ''>('');
+  const [endFullDate, setEndFullDate] = useState<Date | ''>('');
   const handleModify = () => {};
 
   const handleImporter = () => {
@@ -59,14 +46,31 @@ export default function Page(): React.JSX.Element {
 
     console.log('handleImporter', isOpen);
   };
+  const handleChangePage = ( newPage ) => {
+    console.log("handle change page",page)
+    setPage(newPage); 
+  };
 
   const getData = React.useCallback(async (): Promise<void> => {
-    const { error, res } = await dataApis.getData();
+    console.log("searchInput",searchInput)
+    const filters = {
+      startFullDate:startFullDate,
+      endFullDate:endFullDate, 
+      page,  
+      limit: rowsPerPage,  
+      search:searchInput,
+    };
+    console.log("filters data",filters)
+    const { error, res,total,totalPages } = await dataApis.getData(filters);
     if (error) {
       return;
     }
     dispatch(setDataDB(res));
-  }, [page, rowsPerPage]);
+    setDataEmission(res);
+    setTotalRows(total);
+    setPages(totalPages);
+    setRows(res); 
+  }, [dispatch, page, rowsPerPage,pages,totalRows, searchInput,endFullDate,startFullDate]);
 
   useEffect(() => {
     getData();
@@ -115,6 +119,25 @@ export default function Page(): React.JSX.Element {
     },
     []
   );
+
+
+
+  const onFilterByDate = (selectedDate: Date) => {
+    console.log("OnfitlerBydate page date==>",selectedDate[0],selectedDate[1])
+    setStartFullDate(selectedDate[0]);
+    setEndFullDate(selectedDate[1])  
+      
+        
+      
+    };
+    const onFilterBySearch=(search)=>{ 
+      console.log("onFilterBySearch=>",search)
+      setSearchInput(search)
+    }
+
+
+
+
   return (
     <Box>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -166,7 +189,10 @@ export default function Page(): React.JSX.Element {
         </Grid>
       </Grid>
 
-      <DataTable handleDelete={handleDelete} handleUpdate={handleUpdate} page={page} rows={dataDB} rowsPerPage={rowsPerPage} />
+      <DataTable handleDelete={handleDelete} handleUpdate={handleUpdate} page={page} rows={rows} rowsPerPage={rowsPerPage}
+      
+      onFilterBySearch={onFilterBySearch} onFilterByDate={onFilterByDate} pages={pages} handleChangePage={handleChangePage}
+      />
       {isOpen && (
         <ButtomDrower
           open={isOpen}

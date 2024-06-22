@@ -24,14 +24,32 @@ class EmissionApis {
       'x-auth-secret': process.env.NEXTAUTH_SECRET || '',
     },
   });
- 
+ /* async getTasks(filters = {}): Promise<{ res?: any; error?: string }> {
+  // Build the query string based on filters object
+  const queryString = new URLSearchParams(filters);
+  console.log("querystring",queryString);
 
-  async getEmissions(): Promise<{ res?: any; error?: string }> {
+  // Make API request with optional filters
+  try {
+    const res = await this.apiTask.get('/?' + queryString.toString(), { withCredentials: true });
+ */
+
+  async getEmissions(filters = {}): Promise<{ res?: any;total?:any,totalPages?:any, error?: string }> {
     // Make API request
+    const queryString = new URLSearchParams(filters);
+    
     try {
-      const res = await this.apiEmission.get('/', { withCredentials: true });
-
-      return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
+      const res = await this.apiEmission.get('/?' + queryString.toString(), { withCredentials: true });
+    
+      const total = res.data.total || 1; // Handle potential missing total property
+      const totalPages=res.data.totalPages || 1;
+      console.log("backend===>",res.data.emissions,total,totalPages)
+      return {
+        res: res.data.emissions.map((e: any) => ({ ...e, id: e._id })), 
+         total,
+         totalPages
+      };
+      
     } catch (e) {
       return { error: 'backend error' };
     } 

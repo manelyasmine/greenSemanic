@@ -28,7 +28,7 @@ import { palette } from '@/styles/theme/colors';
 import { Button } from '../commun/Button';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/lib/store/reducer/userSlice';
-
+import {LogoLightIcon} from '@/icons';
 const schema = zod.object({
   email: zod.string().min(1, { message: 'Email is required' }).email(),
   password: zod.string().min(1, { message: 'Password is required' }),
@@ -80,7 +80,11 @@ export function SignInForm(): React.JSX.Element {
 
   return (
     <Stack spacing={4}>
-      <Box>Logo</Box>
+       <Stack spacing={1} sx={{display:'flex',flexDirection:"row",color:"#161616",padding:2}}>
+
+        
+       <LogoLightIcon />
+      </Stack>
       <Stack spacing={1}>
         <Typography variant="h4">Login</Typography>
         <Typography color="text.secondary" variant="body2">
