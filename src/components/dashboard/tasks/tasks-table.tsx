@@ -20,8 +20,7 @@ import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Task } from '@/types/task';
-import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+import { Task } from '@/types/task'; 
 import { setTasks } from '@/lib/store/reducer/useTask';
 import { taskApis } from '@/lib/task/taskApis';
 import usePagination from '@/hooks/use-pagination';
@@ -32,20 +31,27 @@ import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 import { palette } from '@/styles/theme/colors';
 
 import FilterColumns from '../../commun/Filters/FilterColumns';
-
-interface TasksTableProps {
-  count?: number;
-  page?: number;
-
-  rowsPerPage?: number;
-  search: any;
-  selectedTab: string;
-}
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+interface TasksTableProps { 
+    count?: number;
+    page?: number;
+    rows?: Task[];
+    rowsPerPage?: number;
+    onFilterBySearch:any;
+    onFilterByDate:any;
+    pages:number,
+    handleChangePage:any;
+    
+  }
 
 export function TasksTable({
-  count = 100,
+  rows = [],
   rowsPerPage = 5,
-  selectedTab = 'All Tasks',
+  
+  onFilterBySearch,
+  onFilterByDate,
+  pages,
+  handleChangePage,selectedTab="My Tasks"
 }: TasksTableProps): React.JSX.Element {
   const dispatch = useDispatch();
 
@@ -62,11 +68,19 @@ export function TasksTable({
   const [isAssign, setIsAssign] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const { dataDB } = useSelector((state: any) => state.file);
-  const paginatedRows = usePagination({ rows: tasks, page, pageSize: rowsPerPage });
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
 
+
+
+  const updateSearch=(search:string)=>{
+    console.log("search Data table",search)
+    onFilterBySearch(search);
+  }
+  const updateChangePage = (event: any, newPage: any) => {
+    console.log("update change data",newPage)
+    setPage(newPage);
+    handleChangePage(newPage);
+  };
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, taskId: string) => {
     setAnchorEl(event.currentTarget);
     setSelectedTaskId(taskId);
@@ -109,7 +123,7 @@ export function TasksTable({
     setSelectedRow(task);
   };
 
-  const getTasks = React.useCallback(async (): Promise<void> => {
+/*   const getTasks = React.useCallback(async (): Promise<void> => {
     try {
       const filters = {
         dueDate: searchDate,
@@ -123,7 +137,7 @@ export function TasksTable({
       if (error) {
         return;
       }
-
+          console.log("get tasks",Object.keys(tasks[0]))
       dispatch(setTasks(res));
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -132,16 +146,16 @@ export function TasksTable({
 
   useEffect(() => {
     getTasks();
-  }, [getTasks]);
+  }, [getTasks]); */
 
-  const onFilterByDate = (selectedDate: Date) => {
+/*   const onFilterByDate = (selectedDate: Date) => {
     const selectedDateObjFormat = dayjs(selectedDate).format('YYYY-MM-DD');
     setSearchDate(selectedDateObjFormat);
   };
 
   const onFilterBySearch = (search) => {
     setSearchInput(search);
-  };
+  }; */
 
   const handleUpdateTask = useCallback(
     async (data: any): Promise<void> => {
@@ -152,7 +166,6 @@ export function TasksTable({
         return;
       } else {
         const targetUpdated = targets.find((target) => target._id === data.targetName);
-        //const userUpdated = users.map((user) => user._id === data.user);
         const newTasks = tasks.map((tar: Task) => {
           if (tar.id === data.id) {
             return {
@@ -162,8 +175,7 @@ export function TasksTable({
             };
           }
           return tar;
-        });
-        //setIsDeleteOpen(false);
+        }); 
         console.log('update=>>>>>tasks ', { newTasks });
         dispatch(setTasks(newTasks));
       }
@@ -174,6 +186,7 @@ export function TasksTable({
   const handleAssignTask = React.useCallback(async (data: any): Promise<void> => {
     const { error, res } = await taskApis.assignTask(data);
     if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     } else {
       const newTasks = targets.map((tar: Task) => {
@@ -182,7 +195,7 @@ export function TasksTable({
         }
         return tar;
       });
-
+      dispatch(setOpenToast({ message: 'Task Assigned Successfully', type: 'success' }));
       dispatch(setTasks(newTasks));
     }
     handleClose();
@@ -211,7 +224,9 @@ export function TasksTable({
 
   return (
     <Card>
-      <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={onFilterBySearch} isYear={false} isDate={true}/>
+       <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={true} isFullDate={false}/>
+     
+ 
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
@@ -228,7 +243,7 @@ export function TasksTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map((row) => (
+            {rows && rows.map((row) => (
               <TableRow hover key={row.id}>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>
@@ -237,10 +252,10 @@ export function TasksTable({
                 <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
                 <TableCell>
                   {Array.isArray(row.usersIds) ? (
-                    row.usersIds.map((user, index) => <span key={index}>{user.username}</span>)
+                    row.usersIds?.map((user, index) => <span key={index}>{user.username}</span>)
                   ) : (
                     <span></span>
-                  )}
+                  )}  
                 </TableCell>
                 <TableCell>
                   <Stack direction="row" spacing={3} width="100%">
@@ -324,6 +339,8 @@ export function TasksTable({
           subtitleName="Edit a task to further streamline your carbon emission management process."
         />
       )}
+
+      
       {isAssign && selectedRow && (
         <UpdateBottomDrawerTask
           open={isAssign}
@@ -340,12 +357,12 @@ export function TasksTable({
       )}
 
       <Box display="flex" justifyContent="center">
-        <Pagination
+      <Pagination
           paginatioType="gray"
-          // color='gray'
-          count={Math.ceil(tasks.length / rowsPerPage)} // Total number of pages
+         
+          count={pages}
           page={page}
-          onChange={handleChangePage}
+          onChange={updateChangePage}
           size="small"
           showFirstButton
           showLastButton

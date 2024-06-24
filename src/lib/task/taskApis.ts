@@ -74,7 +74,7 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
   return {};
 }
   
-async getTasks(filters = {}): Promise<{ res?: any; error?: string }> {
+async getTasks(filters = {}): Promise<{ res?: any;total?:any,totalPages?:any, error?: string }> {
   // Build the query string based on filters object
   const queryString = new URLSearchParams(filters);
   console.log("querystring",queryString);
@@ -83,15 +83,27 @@ async getTasks(filters = {}): Promise<{ res?: any; error?: string }> {
   try {
     const res = await this.apiTask.get('/?' + queryString.toString(), { withCredentials: true });
 
-    // Process and return tasks with optional ID mapping
-    return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
+    const total = res.data.total || 1;  
+      const totalPages=res.data.totalPages || 1;
+      console.log("gggggggggggget tasssk",totalPages)
+      return {
+        res: res.data.tasks.map((e: any) => ({ ...e, id: e._id })), 
+         total,
+         totalPages
+      };
   } catch (e) {
     console.error('Error fetching tasks:', e); // Log specific error for debugging
     return { error: 'An error occurred. Please try again later.' }; // More informative error message
   }
 }
  
-
+/*   const total = res.data.total || 1;  
+      const totalPages=res.data.totalPages || 1;
+      return {
+        res: res.data.targets.map((e: any) => ({ ...e, id: e._id })), 
+         total,
+         totalPages
+      }; */
 
   /* async getTasks(): Promise<{ res?: any; error?: string }> {
     // Make API request

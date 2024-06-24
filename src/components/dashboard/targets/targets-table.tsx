@@ -75,9 +75,9 @@ export function TargetsTable({
 
   const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   const router = useRouter();
-  
+  console.log("pppppppppppppppp",paginatedRows)
   const [pageSize, setPageSize] = useState(rowsPerPage);
-
+console.log("pagineted and rows target",rows,paginatedRows,pages)
 
   const updateChangePage = (event: any, newPage: any) => {
     console.log("update change data",newPage)
@@ -133,8 +133,8 @@ export function TargetsTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows &&
-              paginatedRows.map((row, index) => {
+            {rows &&
+              rows.map((row, index) => {
                 const isSelected = selected?.has(row.id);
 
                 return (
@@ -169,7 +169,7 @@ export function TargetsTable({
                     </TableCell>
 
                     <TableCell>{row.emissionReduction}</TableCell>
-                    <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                    <TableCell>{row.baseYear }-{row.targetYear}</TableCell>
                     <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '2rem' }}>
                       <DropdownTableCell  target={row} />
                     </Box>
@@ -177,7 +177,7 @@ export function TargetsTable({
                 );
               })}
 
-            {!paginatedRows || paginatedRows.length == 0  && (
+            {!rows || rows.length == 0  && (
               <TableRow>
                 <TableCell colSpan={5} padding="checkbox">
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: '2rem' }}>
@@ -195,7 +195,7 @@ export function TargetsTable({
           paginatioType="gray"
           // color='gray'
           //count={pages} // Total number of pages
-          count={Math.ceil(rows.length / rowsPerPage)}
+          count={pages}
           page={page}
           onChange={updateChangePage}
           size="small"

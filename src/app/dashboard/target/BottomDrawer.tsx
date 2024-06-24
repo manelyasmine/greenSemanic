@@ -15,7 +15,7 @@ import ResponsiveDrawer from './ResponsiveDrawer';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTargets } from '@/lib/store/reducer/useTarget';
 import { Target } from '@/types/target';
-
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 interface BottomDrawerProps {
   open: boolean;
   onClose: () => void;
@@ -38,9 +38,12 @@ const BottomDrawer: React.FC<BottomDrawerProps> = ({ open, onClose, onCreateTask
     
     const { res , error } = await targetApis.createTarget(newTarget);
     if (error) {
-      setErrorAlert(error);
+     // setErrorAlert(error);
+
+dispatch(setOpenToast({ message: 'Something wrong '+error, type: 'error' }));
       return
     }
+    dispatch(setOpenToast({ message: 'Target Added Successfully', type: 'success' }));
     dispatch(setTargets([...targets , res]))
     onClose();
   }, [newTarget]);

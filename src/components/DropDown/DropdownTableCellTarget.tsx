@@ -13,7 +13,8 @@ import { targetApis } from '@/lib/target/targetApis';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { DropDOwn, itemMenu } from '@/styles/theme/DropDown';
 import UpdateBottomDrawer from '@/app/dashboard/target/UpdateBottomDrawer';
-
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+import { palette } from '@/styles/theme/colors';
 interface DropdownProps { 
   target: Target;
 }
@@ -41,6 +42,7 @@ const DropdownTarget: React.FC<DropdownProps> = ({ target }) => {
 
     const { error, res } = await targetApis.updateTarget(data);
     if (error) {
+      dispatch(setOpenToast({ message: 'Something wrong'+error, type: 'error' }));
       return;
     } else {
 
@@ -51,6 +53,7 @@ const DropdownTarget: React.FC<DropdownProps> = ({ target }) => {
         return tar;
       });
       //setIsDeleteOpen(false);
+      dispatch(setOpenToast({ message: 'Target updated Successfully', type: 'success' }));
       dispatch(setTargets(newTargets));
       setIsUpdate(false)
     }
@@ -61,11 +64,14 @@ const DropdownTarget: React.FC<DropdownProps> = ({ target }) => {
 
     const { error, res } = await targetApis.deleteTarget(target.id);
     if (error) {
+      dispatch(setOpenToast({ message: 'something wrong'+error, type: 'error' }));
       return;
     } else {
       const indexToRemove = targets.indexOf(target);
       const newTargets = targets.filter((_: any, i: any) => i !== indexToRemove);
       setIsDeleteOpen(false);
+
+      dispatch(setOpenToast({ message: 'Target deleted Successfully', type: 'success' }));
       dispatch(setTargets(newTargets));
     }
 
@@ -121,6 +127,19 @@ const DropdownTarget: React.FC<DropdownProps> = ({ target }) => {
         </Box>
       </Menu>
       <DeleteConfirmation open={isDeleteOpen} setOpen={setIsDeleteOpen} handleDelete={handleDelete} />
+
+      <DeleteConfirmation
+          open={isDeleteOpen}
+          setOpen={setIsDeleteOpen}
+          handleDelete={handleDelete}
+          title="Do you want to delete this?"
+          subtitle="Are you sure you want to delete this Target."
+          primary="Delete"
+          secondary="Cancel"
+          primaryColor={{ backgroundColor: palette.danger[500] }}
+        />
+
+
       <UpdateBottomDrawer open={isUpdate} onClose={() => setIsUpdate(!isUpdate)} onUpdateTarget={handleModify } target ={target} />
     </div>
   );

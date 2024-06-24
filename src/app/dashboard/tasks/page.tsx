@@ -5,9 +5,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Plus as PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
-import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Task } from '@/types/task';
 import { User } from '@/types/user';
 import { setTargets } from '@/lib/store/reducer/useTarget';
@@ -18,10 +16,9 @@ import { userApis } from '@/lib/user/userApis';
 import CustomTabs from '@/components/commun/Tabs/taskTabs';
 import { MyTasksTable } from '@/components/dashboard/tasks/myTasks-table';
 import { TasksTable } from '@/components/dashboard/tasks/tasks-table';
-
 import BottomDrawer from './BottomDrawer';
 import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
-
+import dayjs from 'dayjs';
 export default function Page(): React.JSX.Element {
   const [selectedTab, setSelectedTab] = React.useState<string>('All Tasks');
   const [users, setUsers] = useState<User>({});
@@ -29,18 +26,23 @@ export default function Page(): React.JSX.Element {
   const { tasks } = useSelector((state: any) => state.task);
   const { targets } = useSelector((state: any) => state.target);
   const { user } = useSelector((state: any) => state.user);
-  const [paginatedTask, setPaginatedTasks] = useState<Task[]>([]);
   const [search, setSearch] = useState('');
+  const [searchInput,setSearchInput]=useState('')
+const [searchDate,setSearchDate]=useState('')
   const [newTask, setNewTask] = useState<Task>({ ['createdBy']: user.id });
-  const rowsPerPage = 5;
-  const page = 0;
+  const rowsPerPage = 8;
+  
+  const [pages,setPages]=useState(1);
   const dispatch = useDispatch();
+  const [rows, setRows] = useState([{}]);
+  const [page, setPage] = useState(1); // Start on page 1
 
+  const [totalRows,setTotalRows]=useState(1);
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
+ 
 
-  const [errorAlert, setErrorAlert] = useState('');
   const handleCreateTask = React.useCallback(async (): Promise<void> => {
     setNewTask({ ...newTask, ['createdBy']: user.id });
     const { res, error } = await taskApis.createTask(newTask);
@@ -54,50 +56,58 @@ export default function Page(): React.JSX.Element {
     handleClose();
   }, [newTask]);
 
-  /* const getTasks = React.useCallback(async (): Promise<void> => {
-  console.log("search get tasks",search)
-  try {
-    const filters = {
-      dueDate: '2022-11-3', // Filter by due date
-      page: 1, // Optional pagination (assuming your API supports it)
-      limit: 15, // Optional limit (assuming your API supports it)
-      search:search,
-    };
-     
-    const { error, res } = await taskApis.getTasks(filters);
-     
-    
-    if (error) {
-      return;
-    }
-    
-    let filteredTasks: Task[];
-    console.log("filteredTasksfilteredTasks==>",res[0].usersIds)
-    if (selectedTab === 'All Tasks') {
-      filteredTasks = res;
+  const getTasks = React.useCallback(async (): Promise<void> => {
+    console.log("get tasks mytasks")
+ try {
+  const filters = {
+    dueDate:searchDate,
+    page,  
+    limit: rowsPerPage,   
+    search:searchInput,
+  };
+  const { error, res,total,totalPages } = await taskApis.getTasks(filters);
+  
+  console.log("length filtered filteredTasks",res)
+  if (error) {
+    dispatch(setOpenToast({ message: 'something wrong'+error, type: 'error' }));
 
-      console.log("filteredTasks all tasks",res)
-    } else {
-      //filteredTasks = res.filter((task: Task) =>  task.usersIds['_id'].includes(user.id)); 
-       filteredTasks=res.filter((task: Task) => 
-        task.usersIds.some((userObj: any) => userObj._id === user.id)
-      );
-      
-      console.log("filteredTasks myyyyy tasks",filteredTasks)
-    }
-
-    dispatch(setTasks(filteredTasks));
-    setPaginatedTasks(applyPagination(filteredTasks, page, rowsPerPage));
-    setTasks(filteredTasks);
-  } catch (error) {
-    console.error('Error fetching tasks:', error);
+    return;
   }
-}, [selectedTab, user.id, page, rowsPerPage, dispatch]);
+  if(selectedTab=="All Tasks"){
+    dispatch(setTasks(res)); 
+    setTasks(res);
+    setRows(res);  
+    setTotalRows(total);
+    setPages(totalPages);
+  }else{
+    let filteredTasks: Task[];
+    filteredTasks=res.filter((task: Task) => 
+      task?.usersIds?.some((userObj: any) => userObj._id === user.id)
+    );
+    dispatch(setTasks(filteredTasks)); 
+    setTasks(filteredTasks);
+    setRows(filteredTasks);  
+    setTotalRows(total);
+    setPages(totalPages);
+  }
+
+    
+  
+
+
+
+
+} catch (error) {
+  console.error('Error fetching tasks:', error);
+}
+}, [selectedTab,page, pages,totalRows,rowsPerPage, dispatch,searchInput,searchDate]);
+
 
 useEffect(() => {
-  getTasks();
-}, [getTasks]); */
+getTasks();
+}, [getTasks]); 
 
+ 
   const handleTargets = React.useCallback(async (): Promise<void> => {
     try {
       const { res } = await targetApis.getTargets();
@@ -128,6 +138,23 @@ useEffect(() => {
     setSearch(data);
   };
 
+  const onFilterByDate = (selectedDate) => {
+    const selectedDateObj = new Date(selectedDate);
+    const selectedDateObjFormat=dayjs(selectedDate).format('YYYY-MM-DD');
+    console.log("onfilterbydate====>",selectedDateObjFormat)
+    setSearchDate(selectedDateObjFormat);
+        
+        
+      
+    };
+    const onFilterBySearch=(search)=>{ 
+      console.log("onFilterBySearch=>",search)
+      setSearchInput(search)
+    }
+    const handleChangePage = ( newPage ) => {
+      console.log("handle change page",page)
+      setPage(newPage); 
+    };
   const handleClose = () => {
     setIsNewTask(false);
   };
@@ -178,19 +205,32 @@ useEffect(() => {
         targets={targets}
       />
 
+      {/*  <TargetsTable     
+        
+       
+        /> */}
+
       {selectedTab === 'All Tasks' && (
         <TasksTable
-          count={paginatedTask.length}
+        onFilterBySearch={onFilterBySearch}
+        onFilterByDate={onFilterByDate}
+        handleChangePage={handleChangePage}
+        pages={pages} 
           page={page}
-          /* rows={tasks} */ rowsPerPage={rowsPerPage}
+          rows={rows}  
+          rowsPerPage={rowsPerPage} 
           selectedTab={'All Tasks'}
         />
       )}
       {selectedTab !== 'All Tasks' && (
         <MyTasksTable
-          count={paginatedTask.length}
+        onFilterBySearch={onFilterBySearch}
+        onFilterByDate={onFilterByDate}
+        handleChangePage={handleChangePage}
+        pages={pages} 
           page={page}
-          /* rows={tasks} */ rowsPerPage={rowsPerPage}
+          rows={rows}  
+          rowsPerPage={rowsPerPage}  
           selectedTab={'My Tasks'}
         />
       )}
@@ -198,6 +238,4 @@ useEffect(() => {
   );
 }
 
-function applyPagination(rows: any[], page: number, rowsPerPage: number): Task[] {
-  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-}
+ 

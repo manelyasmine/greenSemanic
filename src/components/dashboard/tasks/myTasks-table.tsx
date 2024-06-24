@@ -14,37 +14,45 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
-
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+ 
+import usePagination from '@/hooks/use-pagination';
+import { Pagination } from '@/components/commun/Pagination/Pagination';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { AssignIcon, DashboardIcon, DeleteIcon, DotsHorizontal, ModifyIcon } from '@/icons';
 import { useSelection } from '@/hooks/use-selection'; 
 import DropdownTableCell from '@/components/DropDown/DropdownTableCell';
 import FilterColumns from '../../commun/Filters/FilterColumns';
-import { Pagination,IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { Task } from '@/types/task';
 import { taskApis } from '@/lib/task/taskApis';
 import { setTasks } from '@/lib/store/reducer/useTask';
 import { useDispatch, useSelector } from 'react-redux';
 import { palette } from '@/styles/theme/colors';
 import UpdateBottomDrawerTask from "@/app/dashboard/tasks/UpdateBottomDrawer";
-import {   ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import {   ListItemIcon, ListItemText, Menu, MenuItem , LinearProgress} from '@mui/material';
 import { TroubleshootSharp } from '@mui/icons-material';
-interface CustomersTableProps {
+interface TaskMeTableProps {
   count?: number;
   page?: number;
   rows?: Task[];
   rowsPerPage?: number;
-  selectedDate:Date;
-  selectedTab:string;
+  onFilterBySearch:any;
+  onFilterByDate:any;
+  pages:number,
+  handleChangePage:any;
   
 }
 
 export function MyTasksTable({
-  count = 0,
-   
-   
-  rowsPerPage = 0,selectedTab="My Tasks"
-}: CustomersTableProps): React.JSX.Element {
+  rows = [],
+  rowsPerPage = 5,
+  
+  onFilterBySearch,
+  onFilterByDate,
+  pages,
+  handleChangePage,selectedTab="My Tasks"
+}: TaskMeTableProps): React.JSX.Element {
   
  
   
@@ -62,61 +70,23 @@ const [searchDate,setSearchDate]=useState('')
 const [modify,setModify]=useState(false);
 const [isAssign,setIsAssign]=useState(false);
 const [isDeleteOpen,setIsDeleteOpen]=useState(false);
-   const { tasks } = useSelector((state: any) => state.task);
+const { tasks } = useSelector((state: any) => state.task);
+const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
+  console.log("ppppppppppp",rows)
 
- 
-  const handleChangePage = (event, newPage) => {
+
+
+const updateChangePage = (event: any, newPage: any) => {
+    console.log("update change data",newPage)
     setPage(newPage);
+    handleChangePage(newPage);
   };
 
-    const getTasks = React.useCallback(async (): Promise<void> => {
-      console.log("get tasks mytasks")
-   try {
-    const filters = {
-      dueDate:searchDate,
-      page: 1,  
-      limit: 15,  
-      search:searchInput,
-    };
-    const { error, res } = await taskApis.getTasks(filters);
-    
-    console.log("length filtered filteredTasks",res)
-    if (error) {
-      return;
-    }
-    
-    let filteredTasks: Task[];
-      filteredTasks=res.filter((task: Task) => 
-        task?.usersIds.some((userObj: any) => userObj._id === user.id)
-      );
-      
-    console.log("length filtered filteredTasks",filteredTasks,user.id)
-    dispatch(setTasks(filteredTasks));
-    //setPaginatedTasks(applyPagination(filteredTasks, page, rowsPerPage));
-    setTasks(filteredTasks);
-  } catch (error) {
-    console.error('Error fetching tasks:', error);
-  }
-}, [selectedTab,page, rowsPerPage, dispatch,searchInput,searchDate]);
  
-
-useEffect(() => {
-  getTasks();
-}, [getTasks]);  
-
-const onFilterByDate = (selectedDate: Date) => {
-  const selectedDateObj = new Date(selectedDate);
-  const selectedDateObjFormat=dayjs(selectedDate).format('YYYY-MM-D');
-  console.log("onfilterbydate====>",selectedDateObjFormat)
-  setSearchDate(selectedDateObjFormat);
-    
-      
-    
-  };
-  const onFilterBySearch=(search)=>{ 
-    console.log("onFilterBySearch=>",search)
-    setSearchInput(search)
-  }
+const updateSearch=(search:string)=>{
+  console.log("search Data table",search)
+  onFilterBySearch(search);
+}
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, taskId: string) => {
     setAnchorEl(event.currentTarget);
     setSelectedTaskId(taskId);
@@ -140,7 +110,7 @@ const onFilterByDate = (selectedDate: Date) => {
     setSelectedTaskId(task?.id);
     setModify(true); 
    // const selectedTask = tasks.find((task) => task.id === taskId); // Find the selected task
- setSelectedRow(task) 
+    setSelectedRow(task) 
 
     console.log("hnale modify",task)
     
@@ -152,7 +122,7 @@ const onFilterByDate = (selectedDate: Date) => {
     setSelectedTaskId(task?.id);
     setIsAssign(true); 
    // const selectedTask = tasks.find((task) => task.id === taskId); // Find the selected task
- setSelectedRow(task) 
+    setSelectedRow(task) ;
 
     console.log("hnale modify",task)
     
@@ -174,6 +144,7 @@ const onFilterByDate = (selectedDate: Date) => {
     console.log("update",data.usersIds)
     const { error, res } = await taskApis.updateTask(data);
     if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     } else { 
 
@@ -184,6 +155,7 @@ const onFilterByDate = (selectedDate: Date) => {
         return tar;
       });
       //setIsDeleteOpen(false);
+      dispatch(setOpenToast({ message: 'Task Updated Successfully', type: 'success' }));
       dispatch(setTasks(newTasks));
      
 
@@ -195,6 +167,7 @@ const onFilterByDate = (selectedDate: Date) => {
     console.log("handle assign data===>",Object.keys(data))
     const { error, res } = await taskApis.assignTask(data);
     if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     } else { 
 
@@ -204,7 +177,7 @@ const onFilterByDate = (selectedDate: Date) => {
         }
         return tar;
       });
-     
+      dispatch(setOpenToast({ message: 'Task Assigned Successfully', type: 'success' }));
       dispatch(setTasks(newTasks));
        
     }
@@ -214,6 +187,7 @@ const onFilterByDate = (selectedDate: Date) => {
     console.log("handle deelte task===>", data, selectedRow, selectedTaskId);
     const { error, res } = await taskApis.deleteTask(selectedRow?.id);
     if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     } else {
       const indexToRemove = tasks.indexOf(selectedRow);
@@ -222,6 +196,8 @@ const onFilterByDate = (selectedDate: Date) => {
       // Update tasks in Redux store
       dispatch(setTasks(newTasks));
       // Clear selected row state
+
+      dispatch(setOpenToast({ message: 'Task Deleted Successfully', type: 'success' }));
       setSelectedRow(null);
     }
   
@@ -235,7 +211,8 @@ const onFilterByDate = (selectedDate: Date) => {
     <Card>
      {/*  <FilterColumns onFilterByDate={onFilterByDate}/> */}
     
-     <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={onFilterBySearch}/>
+     <FilterColumns onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={true} isFullDate={false}/>
+      
 
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
@@ -263,7 +240,8 @@ const onFilterByDate = (selectedDate: Date) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tasks.map((row) => {
+          {rows &&
+              rows.map((row, index) => {
               /* const isSelected = selected?.has(row.id); */
 
               return (
@@ -286,7 +264,29 @@ const onFilterByDate = (selectedDate: Date) => {
                   </TableCell>
 
                   <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
-                  <TableCell>20%</TableCell>
+                  <TableCell>
+
+                  <Stack direction="row" spacing={3} width="100%">
+                    <Box width="50%" sx={{ alignContent: 'center' }}>
+                      <LinearProgress
+                        sx={{
+                          '& .MuiLinearProgress-bar': {
+                            backgroundColor: palette.success[500],
+                          },
+                          background: palette.primary[100],
+                          height: 8,
+                          borderRadius: 1,
+                        }}
+                        variant="determinate"
+                        value={50}
+                      />
+                    </Box>
+                    <Typography variant="body2" color={palette.primary[500]}>
+                      {20} %
+                    </Typography>
+                  </Stack>
+
+                  </TableCell>
                   <TableCell>{row.status}</TableCell>
                   <TableCell>
                   <Box display="flex" justifyContent="center" alignItems="center">
@@ -365,17 +365,19 @@ const onFilterByDate = (selectedDate: Date) => {
        />)
       }
       <Divider />
+      <Box display="flex" justifyContent="center">
       <Pagination
-        count={count} // Total number of pages
-        page={4} // Current page
-        onChange={handleChangePage}  
-        color="primary" // Set color
-        size="medium"   
-        showFirstButton  
-        showLastButton 
-        shape="rounded"
+          paginatioType="gray"
          
-      />
+          count={pages}
+          page={page}
+          onChange={updateChangePage}
+          size="small"
+          showFirstButton
+          showLastButton
+          shape="rounded"
+        />
+      </Box>
     </Card>
   );
 }

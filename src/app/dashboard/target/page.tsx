@@ -12,12 +12,17 @@ import { Target } from '@/types/target';
 import { setTargets } from '@/lib/store/reducer/useTarget';
 import { targetApis } from '@/lib/target/targetApis';
 import CustomTabs from '@/components/commun/Tabs/taskTabs';
-import { ActionsTable } from '@/components/dashboard/targets/actions-table';
+import { MyTasksTable } from '@/components/dashboard/tasks/myTasks-table';
 import { TargetsTable } from '@/components/dashboard/targets/targets-table';
 
 import BottomDrawer from './BottomDrawer';
 
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
  
+import { setTasks } from '@/lib/store/reducer/useTask';
+import { Task } from '@/types/task';
+
+import { taskApis } from '@/lib/task/taskApis';
 
 export default function Page(): React.JSX.Element {
   const [selectedTab, setSelectedTab] = React.useState<string>('Targets');
@@ -28,13 +33,14 @@ export default function Page(): React.JSX.Element {
   const [target, setTarget] = React.useState<Target>({});
   const dispatch = useDispatch();
   const { targets } = useSelector((state: any) => state.target);
-   
-  const rowsPerPage = 3;
+  const { tasks } = useSelector((state: any) => state.task);
+  const rowsPerPage = 8;
   const [isNewTask, setIsNewTask] = useState(false);
   const [paginatedTarget, setPaginatedTarget] = useState<Target[]>([]);
   const [searchInput,setSearchInput]=useState('')
   const [searchDate,setSearchDate]=useState('')
   const [rows, setRows] = useState([{}]);
+  const [rowsTask, setRowsTask] = useState([{}]);
   const [page, setPage] = useState(1); // Start on page 1
 
   const [pages,setPages]=useState(1);
@@ -42,6 +48,7 @@ export default function Page(): React.JSX.Element {
 const [searchBaseYear,setSearchBaseYear]=useState('');
 
 const [searchTargetYear,setSearchTargetYear]=useState('');
+const { user } = useSelector((state: any) => state.user);
   const handleChangePage = ( newPage ) => {
     console.log("handle change page",page)
     setPage(newPage); 
@@ -53,7 +60,12 @@ const [searchTargetYear,setSearchTargetYear]=useState('');
     setIsNewTask(false);
   };
 
+  
+
+
+
   const getTargets = React.useCallback(async (): Promise<void> => {
+    if(selectedTab=="Targets"){
     const filters = {
       /*  dueDate:searchDate, */
       start:searchBaseYear,
@@ -70,14 +82,48 @@ const [searchTargetYear,setSearchTargetYear]=useState('');
     console.log("res",res,total,totalPages)
     dispatch(setTargets(res)); 
     setTarget(res);
-    setRows(res);  
+    setRowsTask(res);  
     setTotalRows(total);
     setPages(totalPages);
+  }else{
+    try {
+      const filters = {
+        dueDate:searchDate,
+        page,  
+        limit: rowsPerPage,   
+        search:searchInput,
+      };
+      const { error, res,total,totalPages } = await taskApis.getTasks(filters);
+       
+      if (error) {
+        dispatch(setOpenToast({ message: 'something wrong'+error, type: 'error' }));
     
-  }, [dispatch, page, rowsPerPage,pages,totalRows, searchInput,searchBaseYear],searchTargetYear);
+        return;
+      }
+      
+        let filteredTasks: Task[];
+        filteredTasks=res.filter((task: Task) => 
+          task?.usersIds?.some((userObj: any) => userObj._id === user.id)
+        );
+        console.log("fiiiilet",filteredTasks.length)
+        dispatch(setTasks(filteredTasks)); 
+        setTasks(filteredTasks);
+        setRows(filteredTasks);  
+        setTotalRows(total);
+        setPages(totalPages);
+     
+  }catch(error){
+   
+    dispatch(setOpenToast({ message: 'something wrong'+error, type: 'error' }));
+  }
+}
+
+ 
+  }, [dispatch, page, rowsPerPage,pages,totalRows, searchInput,searchBaseYear,searchTargetYear]);
 
   useEffect(() => {
     getTargets();
+    
   }, [getTargets]);
 
   const onFilterByDate = (selectedDate) => {
@@ -136,7 +182,7 @@ const [searchTargetYear,setSearchTargetYear]=useState('');
       <BottomDrawer open={isNewTask} onClose={handleClose} onCreateTask={() => console.log('ergb')} />
 
       {selectedTab === 'Targets' && (
-        <TargetsTable   page={page} rows={rows} rowsPerPage={rowsPerPage} 
+        <TargetsTable   page={page} rows={targets} rowsPerPage={rowsPerPage} 
         
       onFilterBySearch={onFilterBySearch} onFilterByDate={onFilterByDate} pages={pages} handleChangePage={handleChangePage}
         />
@@ -149,21 +195,27 @@ const [searchTargetYear,setSearchTargetYear]=useState('');
 
 
       )}
-      {selectedTab !== 'Targets' && targets.length > 0 && (
-        <ActionsTable
+      {selectedTab !== 'Targets' && rows.length > 0 && (
+      /*   <ActionsTable
           count={paginatedTarget.length}
           page={page}
           rows={targets}
           rowsPerPage={rowsPerPage}
+        /> */
+
+        <MyTasksTable
+        onFilterBySearch={onFilterBySearch}
+        onFilterByDate={onFilterByDate}
+        handleChangePage={handleChangePage}
+        pages={pages} 
+          page={page}
+          rows={tasks}  
+          rowsPerPage={rowsPerPage}  
+          selectedTab={'Action'}
         />
       )}
     </Stack>
   );
 }
 
-// function applyPagination(rows: Customer[], page: number, rowsPerPage: number): Customer[] {
-//   return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-// }
-function applyPagination(rows: any[], page: number, rowsPerPage: number): Target[] {
-  return rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-}
+ 

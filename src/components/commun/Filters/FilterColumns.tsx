@@ -13,6 +13,7 @@ import { outlinedInput, filterCalander } from '@/styles/theme/Filter';
 import { CalanderIcon, FilterIcon } from '@/icons';
 import { Button } from '../Button';
 import dayjs from 'dayjs';
+import { start } from 'repl';
 
 interface FilterColumnsProps {
   onFilterByDate: (date: any) => void;
@@ -31,7 +32,8 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
   const [endYear, setEndYear] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [formattedSelectedDate, setFormattedSelectedDate] = useState('');
-
+    const [endDate,setEndDate]= useState<Date | null>(null);
+    const [startDate,setStartDate]= useState<Date | null>(null);
 
   const [startFullDate, setStartFullDate] = useState<Date | null>(null);
   const [endFullDate, setEndFullDate] = useState<Date | null>(null);
@@ -51,6 +53,12 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
      
    
   setIsSelectingStartYear(false);
+}
+
+if(isDate){
+
+  console.log("isdate",isDate,date);
+  setStartDate(dayjs(date).format('YYYY-MM-DD'));
 }
   };
 
@@ -85,6 +93,7 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
           const dateRange = [startYear, endYear];
           onFilterByDate(dateRange);
           const formattedDate = `${(startYear)} - ${(endYear)}`;
+          console.log("use effect date r ange",startYear,endYear)
           setFormattedSelectedDate(formattedDate);
         }
         if (isFullDate && startFullDate && endFullDate){
@@ -93,6 +102,14 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
           const formattedDate = `${(startFullDate)} - ${(endFullDate)}`;
           setFormattedSelectedDate(formattedDate);
         }
+
+        if (isDate && startDate){ 
+          setFormattedSelectedDate(`${(startDate)}`);
+          onFilterByDate(startDate);
+          
+        }
+
+
       }
     };
 
@@ -100,7 +117,7 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [startYear, endYear, onFilterByDate,startFullDate,endFullDate]);
+  }, [startYear, endYear, onFilterByDate,startFullDate,endFullDate,startDate]);
 
   return (
     <Box sx={{ backgroundColor: palette.common.white, position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px', borderRadius: '12px' }}>
@@ -130,9 +147,9 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
             sx={{ ...MuiButton.styleOverrides.sizeSmall }}
             startIcon={<CalanderIcon />}
             id="filter-date"
-            selected={startYear || endYear}
+            //selected={startDate || 'Select Date'}
             onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-          >
+          > 
             {formattedSelectedDate || 'Select Date'}
           </Button>
           {isCalendarOpen && (
@@ -141,7 +158,7 @@ const FilterColumns = ({ onFilterByDate, onFilterBySearch, isYear, isDate,isFull
                 {isDate && (
                   <DateCalendar
                     views={['year', 'month', 'day']}
-                    onChange={() => {}}
+                    onChange={handleStartYearChange}
                   />
                 )}
                 {isYear && (

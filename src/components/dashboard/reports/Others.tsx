@@ -13,7 +13,7 @@ import ExportStep1 from './ExportStep1';
 import ExportRapport from './ExportRapport';
 
 import { palette } from '@/styles/theme/colors';
-
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 interface OthersProps {
   target: Target;
@@ -49,8 +49,11 @@ const Others: React.FC<OthersProps> = ({ target }) => {
     const { error, res } = await targetApis.updateTarget(data);
     if (!error) {
       const newTargets = targets.map((tar: Target) => (tar.id === data.id ? data : tar));
+      dispatch(setOpenToast({ message: 'Target Added Successfully', type: 'success' }));
       dispatch(setTargets(newTargets));
       setIsUpdate(false);
+    }else{
+      dispatch(setOpenToast({ message: 'Something wrong'+error, type: 'error' }));
     }
     handleClose();
   }, [dispatch, targets]);

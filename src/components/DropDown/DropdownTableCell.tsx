@@ -24,6 +24,7 @@ import { User } from '@/types/user';
 import { Target } from '@/types/target';
 import { setTargets } from '@/lib/store/reducer/useTarget';
 import { targetApis } from '@/lib/target/targetApis';
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 interface DropdownTaskProps { 
   task: Task;
 }
@@ -79,6 +80,7 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
     console.log("handle assign data===>",data)
     const { error, res } = await taskApis.assignTask(data);
     if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     } else { 
 
@@ -88,7 +90,7 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
         }
         return tar;
       });
-     
+      dispatch(setOpenToast({ message: 'Task Assigned Successfully', type: 'success' }));
       dispatch(setTasks(newTasks));
       setIsAssign(false)
 
