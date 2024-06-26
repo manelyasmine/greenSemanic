@@ -24,6 +24,9 @@ import { setUsers } from '@/lib/store/reducer/userSlice';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
 import { palette } from '@/styles/theme/colors';
 import { useDispatch,useSelector } from 'react-redux';
+import { Pagination } from '@/components/commun/Pagination/Pagination';
+import usePagination from '@/hooks/use-pagination';
+
 import {
   Box,
   Button,
@@ -40,8 +43,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-
-import { Pagination } from '@mui/material';
+ 
 import {ModifyIcon,DeleteIcon} from "@/icons";
 import {User} from '@/types/user';
 import {Role} from '@/types/role';
@@ -56,11 +58,13 @@ function noop(): void {
 interface UsersTableProps {
   count?: number;
   page?: number;
+  pages:number,
   rows?: User[];
+  handleChangePage:any;
   rowsPerPage?: number;
 }
 
-export function UsersTable({ count = 100, rows = [], rowsPerPage = 5 }: UsersTableProps): React.JSX.Element {
+export function UsersTable({   rows = [], rowsPerPage = 5, handleChangePage,pages }: UsersTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => {
     return rows.map((user) => user.id);
   }, [rows]);
@@ -75,18 +79,21 @@ export function UsersTable({ count = 100, rows = [], rowsPerPage = 5 }: UsersTab
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
   const [open,setIsOpen]=useState(false);
- 
+  const [page, setPage] = useState(1);
   const [newUser, setNewUser] = useState<User>({}); 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
+
   
   const handleDelete= (user:User) => {
   
     setIsDelete(!isDelete);setUserToDelete(user);
   };
  
-  
+  const updateChangePage = (event: any, newPage: any) => {
+    console.log("update change data",newPage)
+    setPage(newPage);
+    handleChangePage(newPage);
+  };
 
   const handleDeleteUser = useCallback(async (): Promise<void> => {
     if (!userToDelete) return;
@@ -197,7 +204,7 @@ const handleClose=()=>{setIsOpen(false);}
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => {
+            {paginatedRows && paginatedRows.map((row) => {
               const isSelected = selected?.has(row.id);
 
               return (
@@ -217,7 +224,7 @@ const handleClose=()=>{setIsOpen(false);}
                   <TableCell>
                   <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
                       <Avatar src={row.avatar} />
-                      <Typography variant="bodyB3" sx={{olor:"var(--Grey-grey-600, #606977)"}}>{row.name}{row._id} </Typography>
+                      <Typography variant="bodyB3" sx={{olor:"var(--Grey-grey-600, #606977)"}}>{row.username} </Typography>
                     </Stack>
                   </TableCell>
                   <TableCell>
@@ -304,19 +311,23 @@ open={open} handleCancelUser={handleClose} userUpdate={newUser} roles={roles} he
 
       </Box>
       <Divider />
+      
       <Box style={{ display: 'flex', justifyContent: 'center' }}>
       <Pagination
-        count={count} // Total number of pages
-        page={4} // Current page
-        onChange={handleChangePage}  
-        color="primary" // Set color
-        size="medium"   
-        showFirstButton  
-        showLastButton 
-        shape="rounded"
-         
-      />
+          paginatioType="gray"
+          // color='gray'
+          //count={pages} // Total number of pages
+          count={pages}
+          page={page}
+          onChange={updateChangePage}
+          size="small"
+          showFirstButton
+          showLastButton
+          shape="rounded"
+        />
       </Box>
+
+
     </Card>
   );
 }
