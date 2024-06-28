@@ -51,19 +51,16 @@ export function getCarbonEmissionByCategory(data: []) {
   return result;
 }
 
-
 export function getCarbonEmission(data: []) {
-
-  return data.map( item => {
-    return item.emission_tracker ;
+  return data.map((item) => {
+    return item.emission_tracker;
   });
 }
 
 export function getCarbonEmissionFromTarget(data: []) {
-
-  return data.map( item => {
-    console.log(item.emissionReduction)
-    return item.emissionReduction ;
+  return data.map((item) => {
+    console.log(item.emissionReduction);
+    return item.emissionReduction;
   });
 }
 export const isEmpty = (obj: any) => {
@@ -98,6 +95,12 @@ export const HasAllKeys = (obj: object, keys: string[]) => {
   return true;
 };
 
+export const genImageUrl = (url: string) => {
+  const blob = new Blob([url], { type: 'image/jpeg' });
+  console.log({ blob });
+  const imageUrl = URL.createObjectURL(blob);
+  return imageUrl;
+};
 export const calculateDATA = (data: Data[], date, category, location) => {
   const result = data.find((element) => {
     if (
@@ -119,9 +122,9 @@ export const calculateDATA = (data: Data[], date, category, location) => {
         scope3: result.scope3,
       }
     : {
-      emission_tracker: 0,
-      scope1:0,
-      scope2:0,
-      scope3: 0,
-    };
+        emission_tracker: 0,
+        scope1: 0,
+        scope2: 0,
+        scope3: 0,
+      };
 };

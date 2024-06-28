@@ -20,17 +20,18 @@ const persistConfig = {
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, userReducer);
+const prUser = persistReducer(persistConfig, userReducer);
+const prCompany = persistReducer(persistConfig, companyReducer);
 
 
 
 const rootReducer = combineReducers({
-  user: persistedReducer,
+  user: prUser,
   target: targetReducer,
   task: taskReducer,
   users:usersReducer,
  
-  company:companyReducer,
+  company:prCompany,
   emission:emissionReducer,
   role:roleReducer,
   file: fileReducer,

@@ -1,13 +1,15 @@
-"use client";
-import React, { useState } from 'react';
-import { CameraIcon, DZIcon } from '@/icons';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { CameraIcon } from '@/icons';
 import styled from '@emotion/styled';
 import { Avatar, Box, IconButton as MuiIconButton, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+import { userApis } from '@/lib/user/userApis';
 import { Button } from '@/components/commun/Button';
 import { IconButton } from '@/components/commun/Button/IconButton';
-import { userApis } from '@/lib/user/userApis';
 
 const CoverImage = styled(Box)({
   height: '200px',
@@ -22,8 +24,6 @@ const ProfilePicture = styled(Avatar)({
   width: '160px',
   height: '160px',
   border: '3px solid white',
-  //position: 'absolute',
-  // bottom: '-50px',
   top: '-50px',
   left: '20px',
 });
@@ -46,85 +46,39 @@ interface ProfileHeaderProps {
 const ProfileHeader = ({ sx }: ProfileHeaderProps) => {
   const { user } = useSelector((state: any) => state.user);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImageProfil, setSelectedImageProfil] = useState(null); 
+  const [selectedImageProfil, setSelectedImageProfil] = useState(null);
+  const dispatch = useDispatch();
 
- /*  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) =>setSelectedImage(e.target.result); // Update image preview with base64 URL
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  }; */
-
-/*   const handleImageChange = async(event: React.ChangeEvent<HTMLInputElement>) => {
-   
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+    console.log(event.target.files[0]);
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const formData = new FormData();
-      formData.append('userId', user.id);
+      formData.append('id', user.id);
+      formData.append('image', file);
 
-      const reader = new FileReader();
-      
-      formData.append('imageCover', event.target.files[0]);
-        
-    
-      try {
-
-      console.log("formdata==>",formData)
-        const {res, error} = await userApis.uploadCoverImage(formData);
-        const reader = new FileReader();
-        reader.onload = (e) =>setSelectedImage(e.target.result); // Update image preview with base64 URL
-        reader.readAsDataURL(event.target.files[0]);
-      
-        if (error) {
-          console.log("Update error:", error);
-          return; 
-        } else {
-          setSelectedImage(res.imageUrl);
-        }
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      }
-    }
-  };
-   */
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const formData = new FormData();
-      formData.append('id',user.id);
-       formData.append('imageCover', file);
-  
       // Use FileReader to set the preview
       const reader = new FileReader();
-      reader.onload = (e) => setSelectedImage(e.target.result as string);
+      reader.onload = (e) => {
+        type === 'COVER'
+          ? setSelectedImage(e.target.result as string)
+          : setSelectedImageProfil(e.target.result as string);
+      };
       reader.readAsDataURL(file);
-  
-      try { 
-        const { res, error } = await userApis.uploadCoverImage(formData,user.id);
-        
+
+      try {
+        const { res, error } = await userApis.uploadImage(formData, user.id, type);
+
         if (error) {
-          console.log("Update error:", error);
+          dispatch(setOpenToast({ message: error, type: 'error' }));
           return;
         }
-        
-        setSelectedImage(res.imageUrl);
+        dispatch(setOpenToast({ message: 'Image Added Successfully', type: 'success' }));
       } catch (error) {
-        console.error('Error uploading image:', error);
+        dispatch(setOpenToast({ message: 'Error uploading image', type: 'error' }));
       }
     }
   };
-  
-
-  const handleProfilImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) =>setSelectedImageProfil(e.target.result); // Update image preview with base64 URL
-      reader.readAsDataURL(event.target.files[0]);
-    }
-  };
-
-
 
   const handleClickCoverImage = () => {
     const fileInput = document.getElementById('cover-image-upload');
@@ -139,17 +93,45 @@ const ProfileHeader = ({ sx }: ProfileHeaderProps) => {
       fileInput.click(); // Simulate a click event on the file input
     }
   };
+  const getImage = React.useCallback(
+    async (type: string): Promise<void> => {
+      console.log('here upload');
+      const { res, error } = await userApis.getImage(user._id, type);
 
+      const blob = new Blob([res.data], { type: 'image/jpeg' });
+      const imageUrl = URL.createObjectURL(blob);
+      if (type === 'COVER') {
+        setSelectedImage(imageUrl);
+      } else {
+        setSelectedImageProfil(imageUrl)
+      }
+      if (error) {
+        dispatch(setOpenToast({ message: error, type: 'error' }));
+        return;
+      }
+
+    },
+    [user]
+  );
+
+  useEffect(() => {
+    // console.log(user.coverImage);
+    // setSelectedImage(user.coverImage);
+    const fetchImages = async () => {
+      await getImage('COVER');
+      await getImage('PROFILE');
+    };
+    fetchImages();
+  }, [user]);
   return (
     <Box sx={sx}>
-      <CoverImage   style={{ backgroundImage: `url(${selectedImage || 'https://source.unsplash.com/random'})` }}>
-        
-      <input
+      <CoverImage style={{ backgroundImage: `url(${selectedImage || 'https://source.unsplash.com/random'})` }}>
+        <input
           accept="image/*"
           id="cover-image-upload"
           type="file"
-          onChange={handleImageChange}
-           hidden
+          onChange={(e) => handleImageChange(e, 'COVER')}
+          hidden
         />
         <Button
           variant="contained"
@@ -160,20 +142,24 @@ const ProfileHeader = ({ sx }: ProfileHeaderProps) => {
         >
           Change Cover
         </Button>
-       
-        
       </CoverImage>
       <Box sx={{ display: 'flex' }}>
-      <ProfilePicture alt="Souhila Aouad" style={{ backgroundImage: `url(${selectedImageProfil || 'https://source.unsplash.com/random'})` }} onClick={handleClickProfilImage} />
+        <ProfilePicture
+          src={selectedImageProfil || ''}
+          alt={user.username}
+          //style={{ backgroundImage: `url(${selectedImageProfil || 'https://source.unsplash.com/random'})` }}
+          onClick={handleClickProfilImage}
+        />
         <input
           accept="image/*"
           id="profil-image-upload"
           type="file"
-          onChange={handleProfilImageChange}
+          // onChange={handleProfilImageChange}
+          onChange={(e) => handleImageChange(e, 'PROFILE')}
           hidden
           style={{ position: 'absolute', top: 0, left: 0, opacity: 0, width: '100%', height: '100%' }} // Position and style the input
         />
-        <IconButton onClick={handleClickProfilImage} btnType="primary" size="small" sx={iconButtonStyle} >
+        <IconButton onClick={handleClickProfilImage} btnType="primary" size="small" sx={iconButtonStyle}>
           <CameraIcon />
         </IconButton>
 

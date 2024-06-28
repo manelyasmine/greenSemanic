@@ -23,6 +23,7 @@ import { UserPopover } from './user-popover';
 import { useDispatch, useSelector } from 'react-redux';
 import Toast from '@/components/commun/Toast/Toast';
 import { setCloseToast } from '@/lib/store/reducer/useGlobalActions';
+import { userApis } from '@/lib/user/userApis';
 
 export function MainNav(): React.JSX.Element {
   const [openNav, setOpenNav] = React.useState<boolean>(false);
@@ -31,7 +32,28 @@ export function MainNav(): React.JSX.Element {
   const userPopover = usePopover<HTMLDivElement>();
   const { isOpenToast, message, type } = useSelector((state: any) => state.globalActions);
   const dispatch = useDispatch();
+  const { user } = useSelector((state: any) => state.user);
+  const [profileImage, setProfileImage] = React.useState(null);
 
+  const getImage = React.useCallback(async (type : string): Promise<void> => {
+    console.log('here upload');
+    const { res, error } = await userApis.getImage(user._id , type);
+    
+    const blob = new Blob([res.data], { type: 'image/jpeg' });
+    console.log({blob})
+    const imageUrl = URL.createObjectURL(blob);
+    setProfileImage(imageUrl)
+    if (error) {
+      // dispatch(setOpenToast({message : error, type:'error'}))
+      return;
+    }
+    // dispatch(setOpenToast({message : 'Data Added Successfully', type:'success'}))
+    // onClose();
+  }, [user]);
+
+  React.useEffect (() => { 
+    getImage('PROFILE')
+  }, [user])
   return (
     <React.Fragment>
       <Box
@@ -93,7 +115,7 @@ export function MainNav(): React.JSX.Element {
             <Avatar
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
-              src="/assets/avatar.png"
+              src={profileImage || "/assets/avatar.png"}
               sx={{ cursor: 'pointer' }}
             />
           </Stack>

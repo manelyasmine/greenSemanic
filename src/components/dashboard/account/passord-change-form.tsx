@@ -25,6 +25,7 @@ import { authClient } from '@/lib/auth/client';
 import { setUser } from '@/lib/store/reducer/userSlice';
 import { Alert } from '@/components/commun/Alerts/Alert';
 import { Button } from '@/components/commun/Button';
+import { userApis } from '@/lib/user/userApis';
 
 const states = [
   { value: 'alabama', label: 'Alabama' },
@@ -62,7 +63,7 @@ export function PasswordChangesForm(): React.JSX.Element {
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
-      const { error } = await authClient.updateUserInfo(values);
+      const { error, res } = await userApis.updateCurrentUser(values);
 
       if (error) {
         setError('root', { type: 'server', message: error });
@@ -72,7 +73,8 @@ export function PasswordChangesForm(): React.JSX.Element {
       } else {
         setType('success');
         setMessage('Infromation saved successfully!');
-        dispatch(setUser(await authClient.getUser()));
+        dispatch(setUser(res))
+        // dispatch(setUser(await authClient.getUser()));
       }
     },
     [setError]
