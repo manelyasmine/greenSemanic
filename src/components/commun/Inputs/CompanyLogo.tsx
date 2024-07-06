@@ -44,11 +44,11 @@ export const CompanyLogo = () => {
   const dispatch = useDispatch();
   const { company } = useSelector((state: any) => state.company);
 
-  React.useEffect(() => {
+  /* React.useEffect(() => {
     getImage();
-  }, [company]);
+  }, [company]); */
 
-  const getImage = React.useCallback(async (): Promise<void> => {
+/*   const getImage = React.useCallback(async (): Promise<void> => {
     const { res, error } = await companyApis.getImage(company._id);
 
     const blob = new Blob([res.data], { type: 'image/jpeg' });
@@ -58,7 +58,7 @@ export const CompanyLogo = () => {
       dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     }
-  }, [company]);
+  }, [company]); */
 
   const handleClickImage = () => {
     const fileInput = document.getElementById('company-image-upload');
@@ -129,7 +129,7 @@ export const CompanyLogo = () => {
        
         <ProfilePicture
           src={image || ''}
-          alt={company.name}
+          /* alt={company.name} */
           //style={{ backgroundImage: `url(${selectedImageProfil || 'https://source.unsplash.com/random'})` }}
           // onClick={handleClickProfilImage}
         />

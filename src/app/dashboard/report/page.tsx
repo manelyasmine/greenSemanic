@@ -1,6 +1,6 @@
 'use client';
 
-import  React , {useState} from 'react';
+import  React , {useState,useEffect} from 'react';
 import { Box, Typography,Button ,Divider} from '@mui/material';
 import { MuiButton } from '@/styles/theme/components/button';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -14,6 +14,11 @@ import ButtomDrower from '@/components/dashboard/reports/ButtomDrower';
 import { useDispatch, useSelector } from 'react-redux';
 import { ReportsTable } from '@/components/dashboard/reports/reports-table';
 import dayjs from 'dayjs';
+
+import { setDataDB } from '@/lib/store/reducer/useFile';
+
+import { dataApis } from '@/lib/data/dataApis';
+import {getCategory } from '@/lib/helper';
 const reports = [
   {
     id: 'USR-010',
@@ -42,6 +47,8 @@ export default function Page(): React.JSX.Element {
   const { targets } = useSelector((state: any) => state.target);
   const [target, setTarget] = React.useState<Target>({});
   const [paginatedTarget, setPaginatedTarget] = useState<Target[]>([]);
+  
+  const dispatch = useDispatch();
   // Function to handle tab changes
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
@@ -79,6 +86,25 @@ export default function Page(): React.JSX.Element {
   
     return csvRows.join('\n');
   }
+
+  const getData = React.useCallback(async (): Promise<void> => {
+    const { error, res } = await dataApis.getData();
+    if (error) {
+      return;
+    }
+ 
+    dispatch(setDataDB(res));
+     
+  
+   
+ 
+     
+  }, [ ]);
+
+  useEffect(() => {
+    
+    getData();
+  }, [getData]);
   return (
     <Box  >
     <Grid container justifyContent="space-between" spacing={2}>
@@ -122,6 +148,7 @@ export default function Page(): React.JSX.Element {
             setIsOpen(!isOpen);
             
           }}
+          
           /* onNext={handleNext}  */
         />
       )}

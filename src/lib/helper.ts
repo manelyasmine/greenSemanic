@@ -25,7 +25,7 @@ export function getEmissionsByLocation(
           dayjs(item.Date).format('YYYY-MM-DD') > formattedThreshold &&
           dayjs(item.Date).format('YYYY-MM-DD') <= dayjs(today).format('YYYY-MM-DD')
       );
-      console.log("filteredData",formattedThreshold.length,filteredData)
+      //console.log("filteredData",formattedThreshold.length,filteredData)
       break;
 
     case '30days':
@@ -60,7 +60,7 @@ export function getEmissionsByLocation(
       const itemDate = dayjs(item.Date).format('YYYY-MM-DD');
       return itemDate >= dayjs(startDate).format('YYYY-MM-DD') && itemDate <= dayjs(endDate).format('YYYY-MM-DD');
     });
-    console.log("start end emissionsByLocation",startDate,endDate,filteredData)
+    //console.log("start end emissionsByLocation",startDate,endDate,filteredData)
   } 
   const emissionsByLocation = filteredData.reduce((acc, item) => {
     const emissionTrackerValid = item.emission_tracker !== '' && !isNaN(item.emission_tracker);
@@ -77,7 +77,7 @@ export function getEmissionsByLocation(
     }
     return acc;
   }, {});
-console.log("emissionsByLocation",emissionsByLocation)
+//console.log("emissionsByLocation",emissionsByLocation)
   // Convert object to array and sort by emission values in descending order
   const sortedLocations = Object.entries(emissionsByLocation)
     .map(([location, emissions]) => ({ location, emissions }))
@@ -123,7 +123,7 @@ export function getFootPrint(
           dayjs(item.Date).format('YYYY-MM-DD') > formattedThreshold &&
           dayjs(item.Date).format('YYYY-MM-DD') <= dayjs(today).format('YYYY-MM-DD')
       );
-      console.log("filteredData",formattedThreshold.length,filteredData)
+      //console.log("filteredData",formattedThreshold.length,filteredData)
       break;
 
     case '30days':
@@ -158,7 +158,7 @@ export function getFootPrint(
       const itemDate = dayjs(item.Date).format('YYYY-MM-DD');
       return itemDate >= dayjs(startDate).format('YYYY-MM-DD') && itemDate <= dayjs(endDate).format('YYYY-MM-DD');
     });
-    console.log("start end",startDate,endDate,filteredData)
+    //console.log("start end",startDate,endDate,filteredData)
   }
 
   const emissionsByCategory = filteredData.reduce((acc, item) => {
@@ -167,7 +167,7 @@ export function getFootPrint(
 
     if (emissionTrackerValid && quantityValid) {
       const emissions = item.quantity * item.emission_tracker;
-      console.log("emissions==>", emissions, item.quantity, item.emission_tracker, item.category);
+      //console.log("emissions==>", emissions, item.quantity, item.emission_tracker, item.category);
       
       if (acc[item.category]) {
         acc[item.category] += emissions;
@@ -185,7 +185,7 @@ export function getFootPrint(
     }))
     .filter(item => item.label !== undefined && !isNaN(item.value));
 
-  console.log("result==================>", result);
+  //console.log("result==================>", result);
   return result;
 }
 
@@ -201,11 +201,11 @@ export const filterByDate = (data: [],days: number) => {
     return itemDate >= new Date(threshold) && itemDate <= new Date(today);
   });
   
-      console.log("fieltes by dat=>",filters)
+      //console.log("fieltes by dat=>",filters)
       return filters;
 }; 
 export function CalculateScopes(data: [], period: '7days' | '30days' | 'quarter' | '12months' | 'custom', startDate?: Date, endDate?: Date) {
-  console.log('CalculateScopes===>',period,startDate,endDate)
+  //console.log('CalculateScopes===>',period,startDate,endDate)
   let filteredData=[];
 
   // Filter data based on the period or custom dates
@@ -240,7 +240,7 @@ export function CalculateScopes(data: [], period: '7days' | '30days' | 'quarter'
           const itemDate = new Date(item.Date);
           return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
         })
-        console.log("filterTwoDates",filterTwoDates)
+        //console.log("filterTwoDates",filterTwoDates)
         filteredData=(filterTwoDates)
         break;
       } 
@@ -266,11 +266,10 @@ export function CalculateScopes(data: [], period: '7days' | '30days' | 'quarter'
   return { scope1, scope2, scope3, sum };
 }
 
-
 /* export function CalculateScopes(data: []) {
-  //data.map((ite) => console.log(ite.scope1))
+  //data.map((ite) => //console.log(ite.scope1))
   let scope1 = data.reduce((accumulateur, element) => accumulateur + (element.scope1 ?? 0), 0);
-  console.log('scope 1' + scope1);
+  //console.log('scope 1' + scope1);
   let scope2 = data.reduce((accumulateur, element) => accumulateur + (element.scope2 ?? 0), 0);
   let scope3 = data.reduce((accumulateur, element) => accumulateur + (element.scope3 ?? 0), 0);
   const sum = parseInt(scope1 + scope2 + scope3);
@@ -352,7 +351,7 @@ export function getCarbonEmissionByCategory(data: [], searchScope:string,searchD
     label: category,
     value,
   }));
-  console.log("search carbon emission",result)
+  //console.log("search carbon emission",result)
   return result;
 } */
 
@@ -366,7 +365,7 @@ export function getCarbonEmissionByCategory(data: [], searchScope:string,searchD
   endDate?: Date
 
 ) {
-  console.log("getCarbonEmissionByCategory",searchScope,searchDays,startDate,endDate)
+  //console.log("getCarbonEmissionByCategory",searchScope,searchDays,startDate,endDate)
   const today = new Date();
   let filteredData=[];
   if(searchScope==="all"){
@@ -383,7 +382,7 @@ export function getCarbonEmissionByCategory(data: [], searchScope:string,searchD
              item[searchScope] >= maxScopeValue;
     });
   }    
-  console.log("filter by scope===>",filteredData)
+  //console.log("filter by scope===>",filteredData)
   const extractedData = filteredData.map((item) => ({
     category: item.category,
     emission_tracker: (item.emission_tracker && parseInt(item.emission_tracker)) ?? 0,
@@ -405,7 +404,7 @@ export function getCarbonEmissionByCategory(data: [], searchScope:string,searchD
     label: category,
     value,
   })); 
-  console.log("category=>",result)
+  //console.log("category=>",result)
 
   return result;
 }   */
@@ -517,7 +516,7 @@ export function getCarbonEmissionByCategory(data: [], searchScope:string,searchD
       });
       
     }
-      console.log("start end",startDate,endDate,filteredData)
+      //console.log("start end",startDate,endDate,filteredData)
     } 
     
      
@@ -538,13 +537,13 @@ export function getCarbonEmissionByCategory(data: [], searchScope:string,searchD
       return acc;
     }, {});
   
-    console.log("extractedDataextractedData",extractedData,summedData)
+    //console.log("extractedDataextractedData",extractedData,summedData)
     // Step 3: Transform the summed data into the desired format
     const result = Object.entries(summedData).map(([category, value]) => ({
       label: category,
       value,
     })); 
-    console.log("result==>",result)
+    //console.log("result==>",result)
     return result;
   }  
 //export function CalculateScopes(data: [], period: '7days' | '30days' | 'quarter' | '12months' | 'custom', startDate?: Date, endDate?: Date) {
@@ -587,13 +586,13 @@ export function getCarbonEmission(data: [],searchDays: '7days' | '30days' | 'qua
       const currentQuarter = Math.floor((today.getMonth() / 3));
       const quarterStart = new Date(today.getFullYear(), currentQuarter * 3, 1);
       const quarterEnd = new Date(quarterStart.getFullYear(), quarterStart.getMonth() + 3, 0);
-        console.log("quarter start and end",quarterStart,quarterEnd,currentQuarter)
+        //console.log("quarter start and end",quarterStart,quarterEnd,currentQuarter)
       // Filter data for the current quarter
       filteredData = data.filter((item) => {
         const itemDate = new Date(item.Date);
         return itemDate >= quarterStart && itemDate <= quarterEnd;
       });
-      console.log("filteredData qurater",filteredData)
+      //console.log("filteredData qurater",filteredData)
       return filteredData.map( item => {
         return item.emission_tracker ;
       }); 
@@ -613,9 +612,10 @@ export function getCarbonEmission(data: [],searchDays: '7days' | '30days' | 'qua
       const itemDate = new Date(item.Date);
       return itemDate >= new Date(startDate) && itemDate <= new Date(endDate);
     })
-    console.log("test",filterTwoDates.map( item => {
+    
+  /*   console.log("test",filterTwoDates.map( item => {
       return item.emission_tracker ;
-    }))
+    })) */
     return filterTwoDates.map( item => {
       return item.emission_tracker ;
     }); 
@@ -627,9 +627,9 @@ export function getCarbonEmission(data: [],searchDays: '7days' | '30days' | 'qua
 
 export function getCarbonEmissionFromTarget(data: []) {
 
-    console.log("getCarbonEmissionFromTarget",data)
+    //console.log("getCarbonEmissionFromTarget",data)
   return data.map( item => {
-    console.log(item.emissionReduction)
+    //console.log(item.emissionReduction)
     return item.emissionReduction ;
   });
 }
@@ -667,7 +667,7 @@ export const HasAllKeys = (obj: object, keys: string[]) => {
 
 export const genImageUrl = (url: string) => {
   const blob = new Blob([url], { type: 'image/jpeg' });
-  console.log({ blob });
+  //console.log({ blob });
   const imageUrl = URL.createObjectURL(blob);
   return imageUrl;
 };
@@ -683,7 +683,7 @@ export const calculateDATA = (data: Data[], date, category, location) => {
     }
     return false;
   });
-  // console.log('result==> '+ JSON.stringify(result.emission_tracker))
+  // //console.log('result==> '+ JSON.stringify(result.emission_tracker))
   return result
     ? {
         emission_tracker: result.emission_tracker,
@@ -720,7 +720,7 @@ export function getCarbonPerFilterCard(
           dayjs(item.Date).format('YYYY-MM-DD') > formattedThreshold &&
           dayjs(item.Date).format('YYYY-MM-DD') <= dayjs(today).format('YYYY-MM-DD')
       );
-      console.log("filteredData",formattedThreshold.length,filteredData)
+      //console.log("filteredData",formattedThreshold.length,filteredData)
       break;
 
     case '30days':
@@ -755,7 +755,7 @@ export function getCarbonPerFilterCard(
       const itemDate = dayjs(item.Date).format('YYYY-MM-DD');
       return itemDate >= dayjs(startDate).format('YYYY-MM-DD') && itemDate <= dayjs(endDate).format('YYYY-MM-DD');
     });
-    console.log("start end",startDate,endDate,filteredData)
+    //console.log("start end",startDate,endDate,filteredData)
   }
   // Calculate the total sum of valid emission_tracker values
   const validValues = filteredData
@@ -766,10 +766,10 @@ const totalSum = validValues.reduce((sum, item) => sum + item, 0); // Use reduce
 
   //reduce((accumulator, element) => accumulator + (element.scope1 ?? 0), 0);
 
-  console.log("totalSum",validValues,totalSum)
+  //console.log("totalSum",validValues,totalSum)
   // Calculate the average, handling the case where validValues length is 0
   const average = validValues.length > 0 ? totalSum / validValues.length : 0;
-  console.log("average",average,validValues.length,totalSum)
+  //console.log("average",average,validValues.length,totalSum)
   return average.toFixed(3);
 }
 
@@ -795,7 +795,7 @@ export function getEmissionPerFilterCard(
           dayjs(item.Date).format('YYYY-MM-DD') > formattedThreshold &&
           dayjs(item.Date).format('YYYY-MM-DD') <= dayjs(today).format('YYYY-MM-DD')
       );
-      console.log("filteredData",formattedThreshold.length,filteredData)
+      //console.log("filteredData",formattedThreshold.length,filteredData)
       break;
 
     case '30days':
@@ -830,7 +830,7 @@ export function getEmissionPerFilterCard(
       const itemDate = dayjs(item.Date).format('YYYY-MM-DD');
       return itemDate >= dayjs(startDate).format('YYYY-MM-DD') && itemDate <= dayjs(endDate).format('YYYY-MM-DD');
     });
-    console.log("start end",startDate,endDate,filteredData)
+    //console.log("start end",startDate,endDate,filteredData)
   }
   // Calculate the total sum of valid emission_tracker values
   const validValues = filteredData
@@ -841,10 +841,10 @@ const totalSum = validValues.reduce((sum, item) => sum + item, 0); // Use reduce
 
   //reduce((accumulator, element) => accumulator + (element.scope1 ?? 0), 0);
 
-  console.log("totalSum",validValues,totalSum)
+  //console.log("totalSum",validValues,totalSum)
   // Calculate the average, handling the case where validValues length is 0
   const average = validValues.length > 0 ? totalSum / validValues.length : 0;
-  console.log("average",average,validValues.length,totalSum)
+  //console.log("average",average,validValues.length,totalSum)
   return average.toFixed(3);
 }
 
@@ -869,7 +869,7 @@ export function getCarbonEmissionScopesChart(
           dayjs(item.Date).format('YYYY-MM-DD') > formattedThreshold &&
           dayjs(item.Date).format('YYYY-MM-DD') <= dayjs(today).format('YYYY-MM-DD')
       );
-      console.log("filteredData",formattedThreshold.length,filteredData)
+      //console.log("filteredData",formattedThreshold.length,filteredData)
       break;
 
     case '30days':
@@ -913,25 +913,198 @@ export function getCarbonEmissionScopesChart(
   const scope1Arr = filteredData.map((element) => element.scope1 ?? 0);
   const scope2Arr = filteredData.map((element) => element.scope2 ?? 0);
   const scope3Arr = filteredData.map((element) => element.scope3 ?? 0);
-
-  console.log("scope1Arr==>",scope1Arr,scope2Arr,scope3Arr)
+    const scope1Length=scope1Arr.length;
+    const scope2Length=scope2Arr.length;
+    const scope3Length=scope3Arr.length; 
  
- 
+ console.log("scopesss=>",scope1Arr,scope2Arr,scope3Arr)
 
 /* const totalSum1 = scope1Arr.reduce((sum, item) => sum + item, 0);
 const totalSum2 = scope2Arr.reduce((sum, item) => sum + item, 0);
 const totalSum3 = scope3Arr.reduce((sum, item) => sum + item, 0);  
 
-  console.log("totalSum",validValues,totalSum) 
+  ("totalSum",validValues,totalSum) 
   const average = validValues.length > 0 ? totalSum / validValues.length : 0;
-  console.log("average",average,validValues.length,totalSum)
+  //console.log("average",average,validValues.length,totalSum)
   return average.toFixed(3); */
 
 
 
 
-return  { scope1Arr,scope2Arr,scope3Arr } 
+return  { scope1Arr,scope2Arr,scope3Arr,scope1Length,scope2Length,scope3Length } 
  
   
 
 }
+
+
+export function getCategory(data:[]){
+
+  const extractedData = data.map((item) => ({
+    category: item.category,
+    emission_tracker: (item.emission_tracker && parseInt(item.emission_tracker)) ?? 0,
+    scope1:item.scope1,
+    scope2:item.scope2,
+    scope3:item.scope3,
+     
+  })); 
+  const summedData = extractedData.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = 0;
+    }
+    acc[item.category] += item.emission_tracker;
+    return acc;
+  }, {});
+
+  ////console.log("extractedDataextractedData",extractedData,summedData)
+  // Step 3: Transform the summed data into the desired format
+  const result = Object.entries(summedData).map(([category, value]) => ({
+    label: category,
+    value,
+  })); 
+
+  ////console.log("extractedDataextractedData",extractedData,summedData,result)
+  return result;
+}
+
+export function calculateAllScopes(myScope:[]) {
+  if (
+    typeof myScope.scope1 !== 'number' ||
+    typeof myScope.scope2 !== 'number' ||
+    typeof myScope.scope3 !== 'number'
+  ) {
+    throw new Error('All scope values must be numbers');
+  }
+
+  return (myScope.scope1 + myScope.scope2 + myScope.scope3) / 3;
+}
+
+ 
+
+ export function getCarbonEmissionScopesChartCustomized(
+  data: { Date: string; emission_tracker: number }[],
+  displayPer: 'year' | 'quarter' | 'month' | 'day',
+  typeReporting: 'custom' | 'currentYear' | 'previousYear' | 'currentQuarter' | 'previousQuarter' | 'allTime',
+  startDate?: Date,
+  endDate?: Date
+) {
+  const today = new Date();
+
+  let filteredData: { Date: string; emission_tracker: number }[] = [];
+
+  // Determine time period based on typeReporting
+  switch (typeReporting) {
+    case 'custom':
+      if (startDate && endDate) {
+        filteredData = data.filter((item) => {
+          const itemDate = dayjs(item.Date).format('YYYY-MM-DD');
+          return itemDate >= dayjs(startDate).format('YYYY-MM-DD') && itemDate <= dayjs(endDate).format('YYYY-MM-DD');
+        });
+      } else {
+        console.warn('Start and end dates are required for custom reporting.');
+      }
+      break;
+    case 'currentYear':
+      filteredData = data.filter((item) => dayjs(item.Date).year() === today.getFullYear());
+      break;
+    case 'previousYear':
+      filteredData = data.filter((item) => dayjs(item.Date).year() === today.getFullYear() - 1);
+      break;
+    case 'currentQuarter':
+      const currentQuarter = Math.ceil((today.getMonth() + 1) / 3);
+      filteredData = data.filter((item) => Math.ceil((dayjs(item.Date).month() + 1) / 3) === currentQuarter);
+      break;
+    case 'previousQuarter':
+      const previousQuarter = Math.ceil((today.getMonth() + 1) / 3) - 1;
+      filteredData = data.filter((item) => Math.ceil((dayjs(item.Date).month() + 1) / 3) === previousQuarter);
+      break;
+    case 'allTime':
+      filteredData = data.slice();
+      break;
+    default:
+      console.warn(`Invalid typeReporting value: ${typeReporting}`);
+  }
+
+  const scope1Arr = filteredData.map((element) => element.scope1 ?? 0);
+  const scope2Arr = filteredData.map((element) => element.scope2 ?? 0);
+  const scope3Arr = filteredData.map((element) => element.scope3 ?? 0);
+
+  const scope1Length = scope1Arr.length;
+  const scope2Length = scope2Arr.length;
+  const scope3Length = scope3Arr.length;
+
+  // Calculate sums or averages based on displayPer
+  if (typeReporting === 'allTime' ) {
+    const totalSum1 = scope1Arr.reduce((sum, item) => sum + item, 0);
+    const totalSum2 = scope2Arr.reduce((sum, item) => sum + item, 0);
+    const totalSum3 = scope3Arr.reduce((sum, item) => sum + item, 0);
+    return {
+      totalSum1,
+      totalSum2,
+      totalSum3,
+      scope1Arr,
+      scope2Arr,
+      scope3Arr,
+      scope1Length,
+      scope2Length,
+      scope3Length,
+      hasData: true,
+    };
+  } else {
+    console.log("displayPer==>",displayPer)
+    const groupedData = filteredData.reduce((acc, item) => {
+      const groupKey = displayPer === 'year' ? dayjs(item.Date).year().toString() : 
+      dayjs(item.Date).format(displayPer === 'quarter' ? 'Q-YYYY' : 'MMM-YYYY');
+      acc[groupKey] = acc[groupKey] || { scope1: 0, scope2: 0, scope3: 0, count: 0 };
+      acc[groupKey].scope1 += item.scope1 ?? 0;
+      acc[groupKey].scope2 += item.scope2 ?? 0;
+      acc[groupKey].scope3 += item.scope3 ?? 0;
+      acc[groupKey].count++;
+      return acc;
+    }, {});
+
+    const formattedGroupedData = Object.keys(groupedData).map((key) => ({
+      name: key,
+      data: [
+        groupedData[key].scope1,
+        groupedData[key].scope2,
+        groupedData[key].scope3,
+      ],
+    }));
+
+    return {
+      groupedData: formattedGroupedData,
+      scope1Arr,
+      scope2Arr,
+      scope3Arr,
+      scope1Length,
+      scope2Length,
+      scope3Length,
+      hasData: true,
+    };
+  }
+}
+
+
+export function calculateReduction( CarbonPerMonthCard,targets) {
+   console.log("calculateReduction",CarbonPerMonthCard,targets)
+   
+   const reductions = targets.map(target => target.emissionReduction || 0);
+
+   // Sum up all targetReductions
+   const totalReduction = reductions.reduce((acc, reduction) => acc + reduction, 0);
+ 
+   // Multiply total reduction by CarbonPerMonthCard
+   const reductionResult = totalReduction * CarbonPerMonthCard;
+ console.log("rrredddd",reductions,totalReduction,reductionResult)
+   return reductionResult/100;
+}
+ 
+export function calculateFirstTarget(CarbonPerMonthCard,target) {
+  
+ 
+ 
+  return target.emissionReduction*CarbonPerMonthCard/100;
+}
+
+ 

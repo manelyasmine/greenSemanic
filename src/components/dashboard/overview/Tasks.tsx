@@ -15,6 +15,7 @@ import { DeviceTablet as DeviceTabletIcon } from '@phosphor-icons/react/dist/ssr
 import { Phone as PhoneIcon } from '@phosphor-icons/react/dist/ssr/Phone';
 import type { ApexOptions } from 'apexcharts';
 
+import { setTarget } from '@/lib/store/reducer/useTarget';
 import { Button } from '@/components/commun/Button';
 import { Chart } from '@/components/core/chart';
 import { palette } from '@/styles/theme/colors';
@@ -22,6 +23,7 @@ import { palette } from '@/styles/theme/colors';
 import TaskItem from './TaskItem';
 import  { useEffect, useState } from 'react';
   
+import { redirect, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { Task } from '@/types/task';
 import { User } from '@/types/user';
@@ -49,7 +51,7 @@ export function Tasks({ sx }: TrafficProps): React.JSX.Element {
    
   const [newTask, setNewTask] = useState<Task>({ ['createdBy']: user.id });
   
-   
+  const router = useRouter();
   const dispatch = useDispatch();
    
 
@@ -72,10 +74,23 @@ export function Tasks({ sx }: TrafficProps): React.JSX.Element {
     try {
       const { res } = await targetApis.getTargets();
       dispatch(setTargets(res));
+      console.log("res target",res)
     } catch (error) {
       console.error('Error fetching targets:', error);
     }
   }, [dispatch]);
+
+  const handleClickRow = (event: any, data: any) => {
+    if (
+      !event.target.classList.contains('mui-wlbu0w-MuiTableCell-root') 
+    ) {
+      return;
+    }
+    //Row selected
+
+    dispatch(setTarget(data));
+    router.push('/dashboard/target/details');
+  };
 
   const handleUsers = React.useCallback(async (): Promise<void> => {
     console.log("handleUsers")
@@ -131,10 +146,10 @@ export function Tasks({ sx }: TrafficProps): React.JSX.Element {
       <CardContent>
         <Stack spacing={2}>
           <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
-          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
-          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
-          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
-          <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
+          {targets.map((task, index) => (
+            
+            <TaskItem key={index} dueDate={task.dueDate} target={task} targetName={`Reports - ${task.name} task`}  />
+          ))}
         </Stack>
       </CardContent>
     </Card>

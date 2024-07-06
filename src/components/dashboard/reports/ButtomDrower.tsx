@@ -47,7 +47,9 @@ import { TotalEmissions } from '../overview/TotalEmissions';
  
 import SwitchSteps from './SwitchSteps';
 import { setCloseToast, setOpenToast } from '@/lib/store/reducer/useGlobalActions';
-
+import html2canvas from "html2canvas"
+ 
+import jsPDF from 'jspdf';
 const steps = [
   { value: 'Configuration', label: 'Step 01' },
   { value: 'Preview', label: 'Step 02' },
@@ -56,11 +58,13 @@ const steps = [
 interface ExportStep1Props {
   open: boolean;
   onClose: () => void;
+  
+ 
 }
 
-const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
+const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
   const { data } = useSelector((state: any) => state.file);
- 
+ const [isExport,setIsExport]=useState('false')
   // const [openToast, setOpenToast] = React.useState(false);
 
   // const [type, setType] = useState<'success' | 'error'>('success');
@@ -68,20 +72,28 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
   const [activeStep, setActiveStep] = useState(0);
   const dispatch = useDispatch();
   const handleStep = () => {
+     
     setActiveStep(activeStep + 1);
   };
 
-  const handleUpload = React.useCallback(async (): Promise<void> => {
-    console.log('here upload');
-    const { res, error } = await dataApis.uploadData(data);
-    if (error) {
-      console.log('error');
-      dispatch(setOpenToast({message : error, type:'error'}))
-      return;
-    }
-    dispatch(setOpenToast({message : 'Data Added Successfully', type:'success'}))
-    onClose();
-  }, [data]);
+  const handleCreationReport=()=>{
+    console.log("udpate report step 1 ")
+  }
+  
+  const handleExportToPDF = () => {
+    const input = document.getElementById('export-content');
+console.log("iiiiii",input)
+    html2canvas(input as HTMLElement)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const width = pdf.internal.pageSize.getWidth();
+        const height = pdf.internal.pageSize.getHeight();
+        pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+        pdf.save('download.pdf');
+      });
+  };
+
 
   return (
     <Drawer anchor="bottom" open={open} onClose={onClose}>
@@ -118,7 +130,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
               alignSelf: 'stretch',
             }}
           >
-            <Stepper activeStep={activeStep} alternativeLabel>
+            <Stepper activeStep={activeStep}   alternativeLabel>
               {steps.map((step) => (
                 <Step key={step.value}>
                   <StepLabel sx={{ variabt: 'BodyB4', display: 'flex', flexDirection: 'row' }}>
@@ -129,7 +141,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
             </Stepper>
           </Grid>
           <Divider sx={{ backgroundColor: '#DBDBDB', height: '1px', width: '100%' }} />
-          <SwitchSteps currentStep={activeStep} />
+          <SwitchSteps currentStep={activeStep}   />
 
           <Divider sx={{ backgroundColor: '#DBDBDB', height: '1px', width: '100%' }} />
 
@@ -149,8 +161,8 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
                 </Button>
               )}
               {activeStep ==1 && (
-                <Button variant="contained" color="primary" onClick={handleUpload}>
-                  Confirm
+                <Button variant="contained" color="primary" onClick={handleExportToPDF}>
+                  Export
                 </Button>
               )}
             </Grid>

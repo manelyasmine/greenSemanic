@@ -14,8 +14,10 @@ export interface MonthlyCarbonEmissionsProps {
 
 export function MonthlyCarbonEmissions({ sx, dataEmission,dataEmissionTarget }: MonthlyCarbonEmissionsProps): React.JSX.Element {
  
- console.log("data MonthlyCarbonEmissions==>",dataEmission.length)
+ console.log("data MonthlyCarbonEmissions==>",dataEmission?.length)
  let categories = [];
+ if(!dataEmissionTarget){dataEmissionTarget=[]}
+ if(!dataEmission ){dataEmission=[]}else{
  //console.log("dataEmission.length",dataEmission.length)
  if (dataEmission.length === 7) {
    categories = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
@@ -29,6 +31,7 @@ export function MonthlyCarbonEmissions({ sx, dataEmission,dataEmissionTarget }: 
   
   categories = Array.from({ length: dataEmission.length }, (_, i) => `Day ${i + 1}`);
  }
+}
  const guestSeries = [
   {
     name: 'Carbon Emissions',

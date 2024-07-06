@@ -67,7 +67,7 @@ const CompanyLocation: React.FC = () => {
   const dispatch = useDispatch();
 
   const getLocations = React.useCallback(async (): Promise<void> => {
-    const { error, res } = await companyApis.getLocations(company._id);
+    const { error, res } = await companyApis.getLocations(company?._id);
     if (error) {
       return;
     }
@@ -80,7 +80,7 @@ const CompanyLocation: React.FC = () => {
   }, [getLocations]);
 
   const createLocation = React.useCallback(async (location: any): Promise<void> => {
-    const { error, res } = await companyApis.addLocation(company._id, location);
+    const { error, res } = await companyApis.addLocation(company?._id, location);
     if (error) {
       dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
@@ -92,7 +92,7 @@ const CompanyLocation: React.FC = () => {
 
   const handleDelete = React.useCallback(
     async (location): Promise<void> => {
-      const { error, res } = await companyApis.deleteLocation(company._id, location._id);
+      const { error, res } = await companyApis.deleteLocation(company?._id, location._id);
       if (error) {
         dispatch(setOpenToast({ message: error, type: 'error' }));
         return;
@@ -113,7 +113,7 @@ const CompanyLocation: React.FC = () => {
 
   const handleUpdate = React.useCallback(
     async (location): Promise<void> => {
-      const { error, res } = await companyApis.updateLocation(company._id, location);
+      const { error, res } = await companyApis.updateLocation(company?._id, location);
       if (error) {
         dispatch(setOpenToast({ message: error, type: 'error' }));
         return;

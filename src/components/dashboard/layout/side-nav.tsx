@@ -35,17 +35,17 @@ export function SideNav({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSide
   const pathname = usePathname();
   const [image, setImage] = React.useState<any>(null);
   const { company } = useSelector((state: any) => state.company);
-  const getImage = React.useCallback(async (): Promise<void> => {
-    const { res } = await companyApis.getImage(company._id);
+ /*  const getImage = React.useCallback(async (): Promise<void> => {
+    const { res } = await companyApis.getImage(company?._id);
 
     const blob = new Blob([res?.data], { type: 'image/jpeg' });
     const imageUrl = URL.createObjectURL(blob);
     setImage(imageUrl);
   }, [company]);
-
-  React.useEffect(() => {
+ */
+ /*  React.useEffect(() => {
     getImage();
-  }, [company]);
+  }, [company]); */
   return (
     <Box>
       {/* Sidebar */}
@@ -69,7 +69,7 @@ export function SideNav({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSide
           <Box component={RouterLink} href={paths.home} sx={{ display: 'inline-flex' }}>
             <ProfilePicture
               src={image || ''}
-              alt={company.name}
+              alt={company?.name}
              
             />
              {/* <Avatar

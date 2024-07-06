@@ -20,46 +20,9 @@ import { palette } from '@/styles/theme/colors';
 export interface SalesProps {
   chartSeries: { name: string; data: number[] }[];
   sx?: SxProps;
+  taille:number;
 }
-
-export function CarbonEmissionsScope({ chartSeries, sx,value }: SalesProps): React.JSX.Element {
-  const chartOptions = useChartOptions();
-
-  return (
-    <Card sx={sx}>
-      <CardHeader
-        action={
-          <Box display="flex" alignItems="flex-end">
-            <Typography
-              fontWeight={700}
-              sx={{
-                color: palette.common.black,
-                fontSize: '16px',
-              }}
-            >
-              {value}
-            </Typography>
-            <Typography variant="caption">tCO2e</Typography>
-          </Box>
-        }
-        title={
-          <Typography variant="h6" component="div">
-            Carbon Emissions by Scope
-          </Typography>
-        }
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      />
-      <CardContent>
-        <Chart height={350} options={chartOptions} series={chartSeries} type="bar" width="100%" />
-      </CardContent>
-      <Divider />
-    </Card>
-  );
-}
-
+let categories=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; // Initialize categories as empty array
 function useChartOptions(): ApexOptions {
   const theme = useTheme();
 
@@ -94,7 +57,7 @@ function useChartOptions(): ApexOptions {
     xaxis: {
       axisBorder: { color: theme.palette.divider, show: true },
       axisTicks: { color: theme.palette.divider, show: true },
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+       categories:categories,
       labels: { offsetY: 5, style: { colors: theme.palette.text.secondary } },
     },
     yaxis: {
@@ -108,4 +71,62 @@ function useChartOptions(): ApexOptions {
       },
     },
   };
+} 
+export function CarbonEmissionsScope({ chartSeries, sx,value,taille }: SalesProps): React.JSX.Element {
+ 
+//const length=chartSeries[0].data.scope3Length;
+
+const length=taille;
+  const chartOptions = useChartOptions();
+
+  
+      if ( length === 7) {
+        categories=(['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']);
+      } else if ( length === 30 || length === 31) {
+        categories=(Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`));
+      } else if ( length === 90) {
+        categories=(['Month 1', 'Month 2', 'Month 3']);
+      } else if (length === 365) {
+        console.log("by year so by month")
+        categories=(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
+      } else {
+        categories=(Array.from({ length: length }, (_, i) => `Day ${i + 1}`));
+       
+    }
+  
+  return (
+    <Card sx={sx}>
+      <CardHeader
+        action={
+          <Box display="flex" alignItems="flex-end">
+            <Typography
+              fontWeight={700}
+              sx={{
+                color: palette.common.black,
+                fontSize: '16px',
+              }}
+            >
+              {value}
+            </Typography>
+            <Typography variant="caption">tCO2e</Typography>
+          </Box>
+        }
+        title={
+          <Typography variant="h6" component="div">
+            Carbon Emissions by Scope
+          </Typography>
+        }
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      />
+      <CardContent>
+        <Chart height={350} options={chartOptions} series={chartSeries} type="bar" width="100%" />
+      </CardContent>
+      <Divider />
+    </Card>
+  );
 }
+console.log("categories",categories)
+

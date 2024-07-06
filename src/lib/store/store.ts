@@ -12,6 +12,7 @@ import emissionReducer from './reducer/useEmission';
 import roleReducer from './reducer/useRole';
 import globalActionsReducer from './reducer/useGlobalActions'
  
+import reportReducer from './reducer/useReport';
   
   
  
@@ -20,6 +21,7 @@ const persistConfig = {
   storage,
 };
 
+const persistedReducer = persistReducer(persistConfig, userReducer);
 const prUser = persistReducer(persistConfig, userReducer);
 const prCompany = persistReducer(persistConfig, companyReducer);
 
@@ -36,6 +38,7 @@ const rootReducer = combineReducers({
   role:roleReducer,
   file: fileReducer,
   globalActions: globalActionsReducer,
+  report:reportReducer,
   
  
 });
