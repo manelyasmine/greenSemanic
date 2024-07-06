@@ -122,6 +122,19 @@ export default function ExportStep1({onExport  }) {
 
    }
 
+   const handleCreateReport = React.useCallback(async (): Promise<void> => {
+    
+    const { res , error } = await targetApis.createTarget(newTarget);
+    if (error) {
+     // setErrorAlert(error);
+
+dispatch(setOpenToast({ message: 'Something wrong '+error, type: 'error' }));
+      return
+    }
+    dispatch(setOpenToast({ message: 'Target Added Successfully', type: 'success' }));
+    dispatch(setTargets([...targets , res]))
+    onClose();
+  }, [newTarget]);
    
 
   
