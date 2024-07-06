@@ -70,11 +70,10 @@ export default function ExportStepThree() {
               date: dayjs(rowArray[columnMapped['Date']]).format('YYYY-MM-DD'),
               location: rowArray[columnMapped['Location']],
               category: rowArray[columnMapped['Category']],
+              sub_category: rowArray[columnMapped['Sub Category']],
               quantity: rowArray[columnMapped['Quantity']],
-              //emission_tracker: getEmission(dataDB , rowArray[columnMapped['Date']] , rowArray[columnMapped['Category']], rowArray[columnMapped['Location']] )
-              //emission_tracker: rowArray[columnMapped['Emission Factor']],
+              unit:rowArray[columnMapped['Unit']],
             });
-            console.log("pppppppppppppppppp"+newRows)
           }
         });
        // console.log('newArray' + JSON.stringify(newRows));

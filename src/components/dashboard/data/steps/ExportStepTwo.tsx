@@ -11,7 +11,7 @@ import RowTable from '../RowTable';
 import { ContainKey, HasAllKeys } from '@/lib/helper';
 
 export default function ExportStepTwo() {
-  const reqFields = ['Date' , 'Location' ,'Category' , 'Quantity'  ]
+  const reqFields = ['Date' , 'Location' ,'Category' , 'Sub Category','Quantity'  , 'Unit'   ]
   const { columnMapped } = useSelector((state: any) => state.file);
 
   return (
