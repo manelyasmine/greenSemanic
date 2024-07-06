@@ -26,7 +26,7 @@ import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Data } from '@/types/data';
-import { category } from '@/types/forms';
+import { category , sub_category } from '@/types/forms';
 import { calculateDATA } from '@/lib/helper';
 import { Button } from '@/components/commun/Button';
 import { body, FooterBody, FooterBox, header, HeaderBody } from '@/styles/theme/Bottom-drawer';
@@ -136,6 +136,19 @@ const CreateUpdateButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, o
                 </Select>
               </FormControl>
 
+              <Typography variant="subtitle2">Sub category</Typography>
+              <FormControl fullWidth>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={dataToSend?.sub_category}
+                  onChange={(e) => handleChange('sub_category', e.target.value)}
+                  label="Select"
+                >
+                  {sub_category && sub_category.map((sub) => <MenuItem value={sub.value}>{sub.label}</MenuItem>)}
+                </Select>
+              </FormControl>
+
               <Typography variant="subtitle2">Quantity</Typography>
               <TextField
                 label="quantity"
@@ -150,6 +163,13 @@ const CreateUpdateButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose, o
                 disabled
                 value={dataToSend?.emission_tracker}
                 onChange={(e) => handleChange('emission_tracker', e.target.value)}
+                margin="normal"
+                fullWidth
+              />
+              <Typography variant="subtitle2">Unit</Typography>
+              <TextField
+                value={dataToSend?.unit}
+                onChange={(e) => handleChange('unit', e.target.value)}
                 margin="normal"
                 fullWidth
               />

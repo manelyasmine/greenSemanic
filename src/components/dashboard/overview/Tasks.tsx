@@ -146,7 +146,7 @@ export function Tasks({ sx }: TrafficProps): React.JSX.Element {
       <CardContent>
         <Stack spacing={2}>
           <TaskItem dueDate="18/02/2024" target="Reports - tagert01 task" />
-          {targets.map((task, index) => (
+          {targets?.map((task, index) => (
             
             <TaskItem key={index} dueDate={task.dueDate} target={task} targetName={`Reports - ${task.name} task`}  />
           ))}
