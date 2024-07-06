@@ -74,6 +74,7 @@ export default function Page(): React.JSX.Element {
 
   const [carbonEmissionsScopesChart, setCarbonEmissionsScopesChart] = React.useState([]); 
 
+  const [isOpen, setIsOpen] = useState(false);
   const [carbonScopesData1,setCarbonScopesData1]= React.useState([]); 
   const [carbonScopesData2,setCarbonScopesData2]= React.useState([]); 
   const [carbonScopesData3,setCarbonScopesData3]= React.useState([]); 
@@ -170,6 +171,7 @@ export default function Page(): React.JSX.Element {
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
+ 
   console.log("carbonScopesData1",carbonScopesData1)
   return (
    
@@ -185,11 +187,31 @@ export default function Page(): React.JSX.Element {
       >
         Dashboard
       </Typography> 
+      <Grid item xs={12} container justifyContent="flex-end">
+     
+          <Grid item>
+            <Button
+              btnType="Primary"
+              sx={{
+                ...MuiButton.styleOverrides.sizeSmall,
+                borderRadius: '6px',
+                background: 'var(--Green-green-500, #16B364)',
+              }}
+              startIcon={<ExportIcon fontSize="var(--icon-fontSize-sm)" />}
+              onClick={console.log()}
+            >
+              <Typography variant="h7" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
+                Export
+              </Typography>
+            </Button>
+          </Grid>
+        </Grid>
       
       <Grid container justifyContent="space-between" spacing={2} sx={{ paddingTop: '1rem' }}>
         <Grid item xs={8}>
           <CustomTabs value={selectedTab} handleChange={handleTabChange} />
         </Grid>
+
         <Grid item xs={4} container justifyContent="flex-end">
           <Grid item>
             <Button

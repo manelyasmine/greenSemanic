@@ -1089,7 +1089,7 @@ export function calculateAllScopes(myScope:[]) {
 export function calculateReduction( CarbonPerMonthCard,targets) {
    console.log("calculateReduction",CarbonPerMonthCard,targets)
    
-   const reductions = targets.map(target => target.emissionReduction || 0);
+   const reductions = targets?.map(target => target.emissionReduction || 0);
 
    // Sum up all targetReductions
    const totalReduction = reductions.reduce((acc, reduction) => acc + reduction, 0);
