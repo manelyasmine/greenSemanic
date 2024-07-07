@@ -1,218 +1,68 @@
 import React, { useState } from 'react';
-import { ShareIcon, VectorICon } from '@/icons';
-import { Label } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Box,
-  Divider,
-  Drawer,
-  FormControl,
-  Grid,
-  IconButton,
-  Input,
-  MenuItem,
-  Select,
-  Stack,
-  Step,
-  StepLabel,
-  Stepper,
-  TextField,
-  Typography,
-} from '@mui/material';
-import Card from '@mui/material/Card';
+import { Box, Divider, Drawer, Grid, IconButton, Step, StepLabel, Stepper, Typography } from '@mui/material';
 import Slide from '@mui/material/Slide';
-import { styled } from '@mui/material/styles';
-import { Paperclip, X } from '@phosphor-icons/react/dist/ssr';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Target } from '@/types/target';
-import { dataApis } from '@/lib/data/dataApis';
-import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
-import { Button } from '@/components/commun/Button';
-import Toast from '@/components/commun/Toast/Toast';
-import { body, FooterBody, FooterBox, header, HeaderBody } from '@/styles/theme/Bottom-drawer';
-import { palette } from '@/styles/theme/colors';
-import { MuiButton } from '@/styles/theme/components/button';
-import { Filter } from '@/styles/theme/Filter';
-
-import { CarbonEmissionsCategory } from '../overview/CarbonEmissionsCategory';
-import { CarbonEmissionsScope } from '../overview/CarbonEmissionsScope';
-import { CarbonPerMonth } from '../overview/CarbonPerMonth';
-import { LatestOrders } from '../overview/latest-orders';
-import { MonthlyCarbonEmissions } from '../overview/MonthlyCarbonEmissions';
-import { Reduction } from '../overview/Reduction';
-import Scopes from '../overview/Scopes';
-import { Tasks } from '../overview/Tasks';
-import { TotalEmissions } from '../overview/TotalEmissions';
- 
-import SwitchSteps from './SwitchSteps';
-import { setCloseToast, setOpenToast } from '@/lib/store/reducer/useGlobalActions';
-import html2canvas from "html2canvas"
- 
-import jsPDF from 'jspdf';
-
-import { setReport } from '@/lib/store/reducer/useReport';
- 
 import { reportApis } from '@/lib/report/reportApis';
+import { setCloseToast, setOpenToast } from '@/lib/store/reducer/useGlobalActions';
+import { setReport } from '@/lib/store/reducer/useReport';
+import { Button } from '@/components/commun/Button';
+import { FooterBody, FooterBox, header } from '@/styles/theme/Bottom-drawer';
 
-
+import SwitchSteps from './SwitchSteps';
 
 const steps = [
   { value: 'Configuration', label: 'Step 01' },
   { value: 'Preview', label: 'Step 02' },
- 
 ];
 interface ExportStep1Props {
   open: boolean;
   onClose: () => void;
-  
- 
 }
 
-const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
-  const { data } = useSelector((state: any) => state.file);
- const [isExport,setIsExport]=useState('false')
-  // const [openToast, setOpenToast] = React.useState(false);
-  const { report} = useSelector((state: any) => state.report);
-  // const [type, setType] = useState<'success' | 'error'>('success');
-  // const [message, setMessage] = useState('');
+const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose }) => {
+  const { report, reportToSend } = useSelector((state: any) => state.report);
   const [activeStep, setActiveStep] = useState(0);
   const dispatch = useDispatch();
   const handleStep = () => {
-     
     setActiveStep(activeStep + 1);
   };
 
- 
-  
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('id', report.id);
-      // Add other data if needed
-  
-      try {
-        const { res, error } = await reportApis.uploadImage(formData, report.id);
-  
-        if (error) {
-          dispatch(setOpenToast({ message: error, type: 'error' }));
-          return;
-        }
-        dispatch(setOpenToast({ message: 'Image Added Successfully', type: 'success' }));
-      } catch (error) {
-        dispatch(setOpenToast({ message: 'Error uploading image', type: 'error' }));
-      }
-    }
-  };
-  
-
   const handleCreateReport = React.useCallback(async (): Promise<void> => {
-    
-    
-    console.log("create report",report)
-    const { res , error } = await reportApis.createReport(report);
-   if (error) {
-   
-     dispatch(setOpenToast({ message: 'Something wrong '+error, type: 'error' }));
-     return
-   }
-   if(res){
     const input = document.getElementById('export-content');
-     
-        html2canvas(input as HTMLElement)
-          .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const width = pdf.internal.pageSize.getWidth();
-            const height = pdf.internal.pageSize.getHeight();
-            pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-            const base64Data = pdf.output('dataurlnewwindow'); 
-            pdf.save('download.pdf');
-          });
-   
-
-   }
-   console.log("report saved",res)
-   dispatch(setOpenToast({ message: 'Report Added Successfully', type: 'success' }));
-   dispatch(setReport([...report , res]))  
-  // onClose();
- }, [report]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /* 
-
-
-  */
-  
-/*   const handleExportToPDF = () => {
-    const input = document.getElementById('export-content');
-      console.log("iiiiii",input)
     html2canvas(input as HTMLElement)
-      .then((canvas) => {
+      .then(async (canvas) => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const width = pdf.internal.pageSize.getWidth();
         const height = pdf.internal.pageSize.getHeight();
         pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-        const base64Data = pdf.output('dataurlnewwindow'); 
+        const pdfBlob = pdf.output('blob');
+        const formData = new FormData();
+        formData.append('file', pdfBlob, 'report.pdf');
+        Object.keys(reportToSend).forEach((key) => {
+          formData.append(key, reportToSend[key]);
+        });
+        const { res, error } = await reportApis.createReport(formData);
         pdf.save('download.pdf');
-      });
-  };
-
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement> ) => {
-    handleCreateReport(); 
-    const input = document.getElementById('export-content');
-    console.log("iiiiii",input)
-        html2canvas(input as HTMLElement)
-          .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const width = pdf.internal.pageSize.getWidth();
-            const height = pdf.internal.pageSize.getHeight();
-            pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-            const base64Data = pdf.output('dataurlnewwindow'); 
-            pdf.save('download.pdf');
-          });
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      const formData = new FormData();
-      formData.append('id', report.id);
-      formData.append('image', pdf);
-
-      // Use FileReader to set the preview
-      const reader = new FileReader();
-      
-      reader.readAsDataURL(file);
-
-      try {
-        const { res, error } = await reportApis.uploadImage(formData, report.id);
-
         if (error) {
-          dispatch(setOpenToast({ message: error, type: 'error' }));
+          dispatch(setOpenToast({ message: 'Something wrong ' + error, type: 'error' }));
           return;
         }
-        dispatch(setOpenToast({ message: 'Image Added Successfully', type: 'success' }));
-      } catch (error) {
-        dispatch(setOpenToast({ message: 'Error uploading image', type: 'error' }));
-      }
-    }
-  }; */
+        if (res) {
+          dispatch(setOpenToast({ message: 'Report Added Successfully', type: 'success' }));
+          dispatch(setReport([...report, res]));
+          onClose();
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, [reportToSend]);
+
   return (
     <Drawer anchor="bottom" open={open} onClose={onClose}>
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
@@ -248,7 +98,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
               alignSelf: 'stretch',
             }}
           >
-            <Stepper activeStep={activeStep}   alternativeLabel>
+            <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map((step) => (
                 <Step key={step.value}>
                   <StepLabel sx={{ variabt: 'BodyB4', display: 'flex', flexDirection: 'row' }}>
@@ -259,7 +109,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
             </Stepper>
           </Grid>
           <Divider sx={{ backgroundColor: '#DBDBDB', height: '1px', width: '100%' }} />
-          <SwitchSteps currentStep={activeStep}   />
+          <SwitchSteps currentStep={activeStep} />
 
           <Divider sx={{ backgroundColor: '#DBDBDB', height: '1px', width: '100%' }} />
 
@@ -278,7 +128,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
                   Next
                 </Button>
               )}
-              {activeStep ==1 && (
+              {activeStep == 1 && (
                 <Button variant="contained" color="primary" onClick={handleCreateReport}>
                   Export
                 </Button>
@@ -287,7 +137,6 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
           </Grid>
         </Box>
       </Slide>
-     
     </Drawer>
   );
 };

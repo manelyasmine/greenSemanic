@@ -1,20 +1,13 @@
 import React,{useState,useEffect,useRef} from 'react';
-import { VectorICon } from '@/icons';
-import styled from '@emotion/styled';
 import { Box, Grid, Stack, Typography } from '@mui/material';
-import { Paperclip, X } from '@phosphor-icons/react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { clearFile, setFile } from '@/lib/store/reducer/useFile';
 import { Button } from '@/components/commun/Button';
-import { IconButton } from '@/components/commun/Button/IconButton';
-import { palette } from '@/styles/theme/colors';
 import { MuiButton } from '@/styles/theme/components/button';
 import { CarbonEmissionsCategory } from '../overview/CarbonEmissionsCategory';
-import { LatestOrders } from '../overview/latest-orders';
 import { MonthlyCarbonEmissions } from '../overview/MonthlyCarbonEmissions';
 import { CarbonEmissionsScope } from '../overview/CarbonEmissionsScopeReport';
-import { Tasks } from '../overview/Tasks';
  
 import { TotalScopes } from '../overview/TotalScopes';
 import { TotalEmissions } from '../overview/TotalEmissions';
@@ -23,33 +16,15 @@ import Scopes from '../overview/Scopes';
 import { ShareIcon } from '@/icons';
 import { CalanderIcon } from '@/icons';
 
-import { outlinedInput, filterCalander } from '@/styles/theme/Filter';
+import { filterCalander } from '@/styles/theme/Filter';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import FilterDateComponent from '@/components/commun/Date/CustomDate';
 import {getCarbonEmissionScopesChartCustomized,getEmissionPerFilterCard,calculateAllScopes, getCarbonPerFilterCard,getCarbonEmissionScopesChart,CalculateScopes, getCarbonEmission, getCarbonEmissionByCategory,getEmissionsByLocation, getCarbonEmissionFromTarget,getFootPrint } from '@/lib/helper';
 import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
-import html2canvas from "html2canvas"
- 
-import jsPDF from 'jspdf';
-import { setReport } from '@/lib/store/reducer/useReport';
-import { roleApis } from '@/lib/role/roleApis';
-import { reportApis } from '@/lib/report/reportApis';
 type ExportStep1Props = {
   handleSaveFile: () => void;
 };
