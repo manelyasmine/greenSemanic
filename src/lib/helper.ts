@@ -1071,7 +1071,7 @@ export function calculateAllScopes(myScope:[]) {
         groupedData[key].scope3,
       ],
     }));
-
+console.log("tttttttttttt",typeReporting,displayPer)
     return {
       groupedData: formattedGroupedData,
       scope1Arr,

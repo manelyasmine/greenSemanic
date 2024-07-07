@@ -79,6 +79,7 @@ export function ReportsTable({
     { field: 'source', headerName: 'source', width: 160, filterable: true, type: 'string' },
   ];
 
+  const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   const updateChangePage = (event: any, newPage: any) => {
     console.log('update change data', newPage);
     setPage(newPage);
@@ -129,7 +130,8 @@ export function ReportsTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows?.map((row) => {
+            {paginatedRows &&
+              paginatedRows.map((row) => {
               return (
                 <TableRow hover key={row.id}>
                   <TableCell padding="checkbox"></TableCell>
@@ -162,12 +164,22 @@ export function ReportsTable({
                 </TableRow>
               );
             })}
+               {!paginatedRows ||
+              (paginatedRows.length == 0 && (
+                <TableRow>
+                  <TableCell colSpan={10} padding="checkbox">
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: '2rem' }}>
+                      <img src={'/assets/empty.png'} width={200} height={200} alt="My Image" />
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Box>
       <Divider />
       <Box style={{ display: 'flex', justifyContent: 'center' }}>
-        <Pagination
+      <Pagination
           paginatioType="gray"
           // color='gray'
           //count={pages} // Total number of pages

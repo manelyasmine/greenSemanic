@@ -51,7 +51,7 @@ const typeOfReporting = [
 
 export default function ExportStepOne() {
   const { selectedRow, dataDB } = useSelector((state: any) => state.file);
-
+console.log("get datadb first step",dataDB)
   const { user } = useSelector((state: any) => state.user);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 

@@ -24,26 +24,32 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import FilterDateComponent from '@/components/commun/Date/CustomDate';
 import {getCarbonEmissionScopesChartCustomized,getEmissionPerFilterCard,calculateAllScopes, getCarbonPerFilterCard,getCarbonEmissionScopesChart,CalculateScopes, getCarbonEmission, getCarbonEmissionByCategory,getEmissionsByLocation, getCarbonEmissionFromTarget,getFootPrint } from '@/lib/helper';
 import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
-
+import { dataApis } from '@/lib/data/dataApis';
+import { setDataDB } from '@/lib/store/reducer/useFile';
 type ExportStep1Props = {
   handleSaveFile: () => void;
 };
-export default function ExportStep1({onExport  }) {
-  console.log("handle export step2")
+export default function ExportStep1() {
+ 
   const dispatch = useDispatch(); 
 
   const {  dataDB } = useSelector((state: any) => state.file);
+console.log("datadb====>",dataDB)
+  /* const { report} = useSelector((state: any) => state.report);
+   */
 
-  const { report} = useSelector((state: any) => state.report);
-
+  const { report, reportToSend } = useSelector((state: any) => state.report);
   const [CarbonPerMonthCard,setCarbonPerMonthCard]=React.useState(0);
 
   const [emissionPerMonthCard,setEmissionPerMonthCard]=React.useState(0);
 
   const [dataEmissionByCat , setDataEmissionByCat] = React.useState([]);
 
-  const [carbonEmissionsScopesChart, setCarbonEmissionsScopesChart] = React.useState([]); 
-  console.log("report step 2===>",report)
+  const [carbonEmissionsScopesChart, setCarbonEmissionsScopesChart] = React.useState([]);
+  
+  
+  const [data, setData] = React.useState([]); 
+  
   const [updatedTarget, setupdatedTarget] = useState<Target>();
   const handleFileChange = (event: any) => {
     const selectedFile = event.target.files[0];
@@ -59,23 +65,53 @@ export default function ExportStep1({onExport  }) {
   const calendarRef = useRef<HTMLDivElement>(null);
    const [error, setError] = useState(false);
 
-   useEffect(() => { 
-    
 
-      setCarbonPerMonthCard(getCarbonPerFilterCard(dataDB,"custom",report.startDate,report.endDate));
-     
-      setEmissionPerMonthCard(getEmissionPerFilterCard(dataDB,"custom",report.startDate,report.endDate));
-      setMyScope(CalculateScopes(dataDB,"custom",report.startDate,report.endDate));
-      
-      const allScopes=  calculateAllScopes(CalculateScopes(dataDB,"custom",report.startDate,report.endDate));
 
-      setTotalScopes(allScopes);
-      setDataEmission(getCarbonEmission(dataDB,"custom",report.startDate,report.endDate)) 
-      setDataEmissionByCat(getCarbonEmissionByCategory(dataDB,"all","custom",report.startDate,report.endDate))  
+
+
+   const getData = React.useCallback(async (): Promise<void> => {
+    const { error, res } = await dataApis.getData();
+    if (error) {
+      return;
+    }
   
-  setCarbonEmissionsScopesChart(getCarbonEmissionScopesChartCustomized(dataDB,report.displayPer,
-    report.typeReporting,report.startDate,report.endDate)) 
-  }, [ ]);
+    dispatch(setDataDB(res));
+    setData(res);
+const calcul_my_scope=CalculateScopes(res,"custom",reportToSend.startDate,reportToSend.endDate)
+
+const calcul_scopes=CalculateScopes(res,"custom",reportToSend.startDate,reportToSend.endDate)
+
+
+const allScopes=  calculateAllScopes(calcul_scopes)
+const scopeChart= getCarbonEmissionScopesChartCustomized(res,reportToSend.displayPer,reportToSend.typeReporting,reportToSend.startDate,reportToSend.endDate);
+ 
+const calcul_carbon_month=getCarbonPerFilterCard(res,"custom",reportToSend.startDate,reportToSend.endDate)
+
+const calcul_emission_month=getEmissionPerFilterCard(res,"custom",reportToSend.startDate,reportToSend.endDate);
+
+const calcul_data=getCarbonEmission(res,"custom",reportToSend.startDate,reportToSend.endDate);
+
+const calcul_cat=getCarbonEmissionByCategory(res,"all","custom",reportToSend.startDate,reportToSend.endDate)
+setDataEmissionByCat(calcul_cat)  
+setDataEmission(calcul_data) 
+setEmissionPerMonthCard(calcul_emission_month)
+
+setCarbonEmissionsScopesChart(scopeChart) 
+setMyScope(calcul_my_scope) 
+setTotalScopes(allScopes);
+setCarbonPerMonthCard(calcul_carbon_month)
+     
+  }, [reportToSend]);
+
+
+
+
+   useEffect(() => {
+   
+    getData();
+  }, [getData   ]);
+
+ 
 
 
 
@@ -176,7 +212,7 @@ export default function ExportStep1({onExport  }) {
                //selected={startYear || endYear}
                onClick={() => setIsCalendarOpen(!isCalendarOpen)}
              >
-               {report.startDate+'-'+report.endDate || 'Select Date'}
+               {reportToSend.startDate+'-'+reportToSend.endDate || 'Select Date'}
              </Button>
              {isCalendarOpen && (
              <Box sx={filterCalander}>
@@ -200,51 +236,52 @@ export default function ExportStep1({onExport  }) {
     <Grid container spacing={3} mt={3}  sx={{gap:"20px",paddingBottom:"32px"}} id="export-content" >
         <Grid lg={3.5} sm={6} xs={12}  sx={{paddingLeft:"32px"}}> 
 
-          <CarbonPerMonth diff={12} trend="up" sx={{ height: '100%' }} value={CarbonPerMonthCard} />
-        </Grid>
+         <CarbonPerMonth diff={12} trend="up" sx={{ height: '100%' }} value={CarbonPerMonthCard} />
+          </Grid>
         <Grid lg={3.5} sm={6} xs={12}>
           
         <TotalEmissions diff={0.9} trend="down" sx={{ height: '100%' }} value={emissionPerMonthCard} />
         </Grid>
         <Grid lg={3.5} sm={6} xs={12}>
-          <TotalScopes diff={1.4} trend="up" sx={{ height: '100%'  }} value={totalScopes} />
+         <TotalScopes diff={1.4} trend="up" sx={{ height: '100%'  }} value={totalScopes} />
+        
         </Grid>  
        </Grid> 
      
     <Grid container spacing={3} mt={3}  sx={{gap:"20px ",paddingBottom:"32px"}} >
         <Grid lg={7} xs={12}   sx={{paddingLeft:"32px"}}>
-        <CarbonEmissionsScope
+       <CarbonEmissionsScope
           sx={{ height: '100%' }} 
-          displayPer={report.displayPer}
-          typeReporting={report.typeReporting}
-          startDate={report.startDate}
-          endDate={report.endDate}
+          displayPer={reportToSend.displayPer}
+          typeReporting={reportToSend.typeReporting}
+          startDate={reportToSend.startDate}
+          endDate={reportToSend.endDate}
           data={dataDB}
-        />
+        />  
         </Grid>
         <Grid lg={4} xs={12}>
       
      
-<Scopes   scope1={myScope.scope1} scope2={myScope.scope2} scope3={myScope.scope3} />
+  <Scopes   scope1={myScope.scope1} scope2={myScope.scope2} scope3={myScope.scope3} /> 
     </Grid>
     </Grid>
 
     <Grid container spacing={3} mt={3}  sx={{gap:"20px ",paddingBottom:"32px"}} >
 
         <Grid lg={6} sm={6} xs={12}  sx={{paddingLeft:"32px"}}>
-        <MonthlyCarbonEmissions 
+         <MonthlyCarbonEmissions 
           dataEmission={dataEmission} 
           dataEmissionTarget={dataEmissionTarget}
           sx={{ height: '100%' }} 
-          /> 
+          />  
         </Grid>
         <Grid lg={5} md={6} xs={12}>
-        <CarbonEmissionsCategory id="carbonEmissionsCategory"
+         <CarbonEmissionsCategory id="carbonEmissionsCategory"
             data={dataEmissionByCat}
             sx={{ height: '100%' }}
             showScopesTabs={false}
              
-          />
+          />  
         </Grid>
         </Grid>
         </Grid>
