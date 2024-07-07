@@ -67,6 +67,8 @@ previous fiscal year
 all time */
 export default function ExportStepOne( ) {
   const { selectedRow, dataDB } = useSelector((state: any) => state.file);
+
+  const { user } = useSelector((state: any) => state.user);
  /*  const [updatedTarget, setupdatedTarget] = useState<Target>(() => {
     const baseToTargetYear = target?.baseYear && target?.targetYear ? target.baseYear + '-' + target.targetYear : null;
     return { ...(target || {}), baseToTargetYear };
@@ -112,7 +114,7 @@ console.log("dbbbb=>",dataDB.length)
       const formattedDate = `${(firstDate)} - ${(endDate)}`;
       setFormattedSelectedDate(formattedDate);
 
-      setupdatedTarget({ ...updatedTarget, 'startDate':firstDate,'endDate':endDate  });
+      setupdatedTarget({ ...updatedTarget, 'startDate':firstDate,'endDate':endDate,'createdBy':user._id  });
       dispatch(setReport(updatedTarget))
     
     }
@@ -193,7 +195,7 @@ console.log("dbbbb=>",dataDB.length)
           }}  */         
         >
            
-              
+               
               <Typography variant="subtitle2">File Name</Typography>
               <TextField
                 label="Categories"

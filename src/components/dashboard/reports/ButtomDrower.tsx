@@ -50,6 +50,13 @@ import { setCloseToast, setOpenToast } from '@/lib/store/reducer/useGlobalAction
 import html2canvas from "html2canvas"
  
 import jsPDF from 'jspdf';
+
+import { setReport } from '@/lib/store/reducer/useReport';
+ 
+import { reportApis } from '@/lib/report/reportApis';
+
+
+
 const steps = [
   { value: 'Configuration', label: 'Step 01' },
   { value: 'Preview', label: 'Step 02' },
@@ -66,7 +73,7 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
   const { data } = useSelector((state: any) => state.file);
  const [isExport,setIsExport]=useState('false')
   // const [openToast, setOpenToast] = React.useState(false);
-
+  const { report} = useSelector((state: any) => state.report);
   // const [type, setType] = useState<'success' | 'error'>('success');
   // const [message, setMessage] = useState('');
   const [activeStep, setActiveStep] = useState(0);
@@ -76,13 +83,86 @@ const ButtomDrower: React.FC<ExportStep1Props> = ({ open, onClose  }) => {
     setActiveStep(activeStep + 1);
   };
 
-  const handleCreationReport=()=>{
-    console.log("udpate report step 1 ")
-  }
+ 
   
-  const handleExportToPDF = () => {
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('id', report.id);
+      // Add other data if needed
+  
+      try {
+        const { res, error } = await reportApis.uploadImage(formData, report.id);
+  
+        if (error) {
+          dispatch(setOpenToast({ message: error, type: 'error' }));
+          return;
+        }
+        dispatch(setOpenToast({ message: 'Image Added Successfully', type: 'success' }));
+      } catch (error) {
+        dispatch(setOpenToast({ message: 'Error uploading image', type: 'error' }));
+      }
+    }
+  };
+  
+
+  const handleCreateReport = React.useCallback(async (): Promise<void> => {
+    
+    
+    console.log("create report",report)
+    const { res , error } = await reportApis.createReport(report);
+   if (error) {
+   
+     dispatch(setOpenToast({ message: 'Something wrong '+error, type: 'error' }));
+     return
+   }
+   if(res){
     const input = document.getElementById('export-content');
-console.log("iiiiii",input)
+     
+        html2canvas(input as HTMLElement)
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const width = pdf.internal.pageSize.getWidth();
+            const height = pdf.internal.pageSize.getHeight();
+            pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+            const base64Data = pdf.output('dataurlnewwindow'); 
+            pdf.save('download.pdf');
+          });
+   
+
+   }
+   console.log("report saved",res)
+   dispatch(setOpenToast({ message: 'Report Added Successfully', type: 'success' }));
+   dispatch(setReport([...report , res]))  
+  // onClose();
+ }, [report]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* 
+
+
+  */
+  
+/*   const handleExportToPDF = () => {
+    const input = document.getElementById('export-content');
+      console.log("iiiiii",input)
     html2canvas(input as HTMLElement)
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
@@ -90,11 +170,49 @@ console.log("iiiiii",input)
         const width = pdf.internal.pageSize.getWidth();
         const height = pdf.internal.pageSize.getHeight();
         pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+        const base64Data = pdf.output('dataurlnewwindow'); 
         pdf.save('download.pdf');
       });
   };
 
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement> ) => {
+    handleCreateReport(); 
+    const input = document.getElementById('export-content');
+    console.log("iiiiii",input)
+        html2canvas(input as HTMLElement)
+          .then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const width = pdf.internal.pageSize.getWidth();
+            const height = pdf.internal.pageSize.getHeight();
+            pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+            const base64Data = pdf.output('dataurlnewwindow'); 
+            pdf.save('download.pdf');
+          });
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('id', report.id);
+      formData.append('image', pdf);
 
+      // Use FileReader to set the preview
+      const reader = new FileReader();
+      
+      reader.readAsDataURL(file);
+
+      try {
+        const { res, error } = await reportApis.uploadImage(formData, report.id);
+
+        if (error) {
+          dispatch(setOpenToast({ message: error, type: 'error' }));
+          return;
+        }
+        dispatch(setOpenToast({ message: 'Image Added Successfully', type: 'success' }));
+      } catch (error) {
+        dispatch(setOpenToast({ message: 'Error uploading image', type: 'error' }));
+      }
+    }
+  }; */
   return (
     <Drawer anchor="bottom" open={open} onClose={onClose}>
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
@@ -161,7 +279,7 @@ console.log("iiiiii",input)
                 </Button>
               )}
               {activeStep ==1 && (
-                <Button variant="contained" color="primary" onClick={handleExportToPDF}>
+                <Button variant="contained" color="primary" onClick={handleCreateReport}>
                   Export
                 </Button>
               )}

@@ -31,6 +31,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import FilterDateComponent from '@/components/commun/Date/CustomDate';
 import {getCarbonEmissionScopesChartCustomized,getEmissionPerFilterCard,calculateAllScopes, getCarbonPerFilterCard,getCarbonEmissionScopesChart,CalculateScopes, getCarbonEmission, getCarbonEmissionByCategory,getEmissionsByLocation, getCarbonEmissionFromTarget,getFootPrint } from '@/lib/helper';
+import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -46,6 +47,9 @@ const VisuallyHiddenInput = styled('input')({
 import html2canvas from "html2canvas"
  
 import jsPDF from 'jspdf';
+import { setReport } from '@/lib/store/reducer/useReport';
+import { roleApis } from '@/lib/role/roleApis';
+import { reportApis } from '@/lib/report/reportApis';
 type ExportStep1Props = {
   handleSaveFile: () => void;
 };
@@ -122,19 +126,7 @@ export default function ExportStep1({onExport  }) {
 
    }
 
-   const handleCreateReport = React.useCallback(async (): Promise<void> => {
-    
-    const { res , error } = await targetApis.createTarget(newTarget);
-    if (error) {
-     // setErrorAlert(error);
 
-dispatch(setOpenToast({ message: 'Something wrong '+error, type: 'error' }));
-      return
-    }
-    dispatch(setOpenToast({ message: 'Target Added Successfully', type: 'success' }));
-    dispatch(setTargets([...targets , res]))
-    onClose();
-  }, [newTarget]);
    
 
   

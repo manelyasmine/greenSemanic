@@ -15,6 +15,7 @@ import ExportRapport from './ExportRapport';
 import { palette } from '@/styles/theme/colors';
 import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 import DeleteConfirmation from '@/components/commun/Alerts/DeleteConfirmation';
+import { reportApis } from '@/lib/report/reportApis';
 interface OthersProps {
   target: Target;
 }
@@ -24,9 +25,12 @@ const Others: React.FC<OthersProps> = ({ target }) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const { targets } = useSelector((state: any) => state.target);
+
+  const { user } = useSelector((state: any) => state.user); 
   const [activeStep, setActiveStep] = useState(0);
+console.log("otehrs",target)
 
-
+  const [roleToDelete,setRoleToDelete] = useState<Report | null>(null);
   const dispatch = useDispatch();
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,12 +42,31 @@ const Others: React.FC<OthersProps> = ({ target }) => {
 
 
   };
+   
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     console.log("nexttt",activeStep)
   };
   
+  const handleDeleteReport=React.useCallback(async (): Promise<void> => {
+     
+    console.log("handle delete role===>",target.id);
+
+    const { error } = await reportApis.deleteReport(target._id,user);
+    if (error) {
+      dispatch(setOpenToast({ message: error, type: 'error' }));
+      return;
+    }
+    dispatch(setOpenToast({ message: 'Data Added Successfully', type: 'success' }));
+    c/* onst newRoles = report.filter((role) => role._id !== roleToDelete._id);
+
+     dispatch(setReport(newRoles));
+    setIsDelete(false);
+    setReportToDelete(null);  */ 
+  }, [dispatch ]);
+
+
 
   const handleModify = React.useCallback(async (data: Target): Promise<void> => {
     const { error, res } = await targetApis.updateTarget(data);
@@ -112,10 +135,11 @@ const Others: React.FC<OthersProps> = ({ target }) => {
           <ListItemText primary="Delete" />
         </MenuItem>
       </Menu>
-      {isDeleteOpen &&
+      {isDeleteOpen &&  
         <DeleteConfirmation
           open={isDeleteOpen}
           setOpen={setIsDeleteOpen}
+          handleDelete={handleDeleteReport}
           title="Do you want to delete this?"
           subtitle="Are you sure you want to delete this file."
           primary="Delete"

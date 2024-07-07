@@ -19,6 +19,8 @@ import { setDataDB } from '@/lib/store/reducer/useFile';
 
 import { dataApis } from '@/lib/data/dataApis';
 import {getCategory } from '@/lib/helper';
+import { reportApis } from '@/lib/report/reportApis';
+import { setReport } from '@/lib/store/reducer/useReport';
 const reports = [
   {
     id: 'USR-010',
@@ -44,9 +46,9 @@ export default function Page(): React.JSX.Element {
   const rowsPerPage = 3;
   const [isOpen, setIsOpen] = useState(false);
 
-  const { targets } = useSelector((state: any) => state.target);
-  const [target, setTarget] = React.useState<Target>({});
-  const [paginatedTarget, setPaginatedTarget] = useState<Target[]>([]);
+  const { report } = useSelector((state: any) => state.report);
+  const [reports, setReports] = React.useState<Report>({});
+  const [paginatedTarget, setPaginatedTarget] = useState<Report[]>([]);
   
   const dispatch = useDispatch();
   // Function to handle tab changes
@@ -87,6 +89,19 @@ export default function Page(): React.JSX.Element {
     return csvRows.join('\n');
   }
 
+  const getReports = React.useCallback(async (): Promise<void> => {
+    console.log("get it")
+    const { error, res } = await reportApis.getReports();
+    console.log("res error",res,error)
+    if (error) {
+      return;
+    } 
+    dispatch(setReport(res));
+    setReports(res);   
+    console.log("get reports",res)
+  }, []);
+
+
   const getData = React.useCallback(async (): Promise<void> => {
     const { error, res } = await dataApis.getData();
     if (error) {
@@ -102,9 +117,9 @@ export default function Page(): React.JSX.Element {
   }, [ ]);
 
   useEffect(() => {
-    
-    getData();
-  }, [getData]);
+    console.log("getReports")
+    getReports();
+  }, [getReports]);
   return (
     <Box  >
     <Grid container justifyContent="space-between" spacing={2}>
@@ -139,8 +154,8 @@ export default function Page(): React.JSX.Element {
         </Grid>
       </Grid>
     </Grid>
-    <ReportsTable count={paginatedTarget.length} page={page} rows={reports} rowsPerPage={rowsPerPage} />
-     
+     <ReportsTable count={paginatedTarget.length} page={page} rows={report} rowsPerPage={rowsPerPage} />
+       
     {isOpen && (
         <ButtomDrower
           open={isOpen}

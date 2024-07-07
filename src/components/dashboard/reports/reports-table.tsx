@@ -67,16 +67,11 @@ export function ReportsTable({  rows = [],
   onFilterByFiltering,
   pages,
   handleChangePage,}: ReportsTableProps): React.JSX.Element {
-  const rowIds = React.useMemo(() => {
-    return rows.map((Reports) => Reports.id);
-  }, [rows]);
+  
   const classes = useStyles();
+ console.log("rows",rows)
 
-  const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
-
-  const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
-  const selectedAll = rows.length > 0 && selected?.size === rows.length;
-
+ 
   const [page, setPage] = useState(1); // Start on page 1
   const [totalPages, setTotalPages] = useState(10); // Replace with actual total pages
   const columns: Column[] = [
@@ -128,17 +123,7 @@ export function ReportsTable({  rows = [],
         </TableRow>
         <TableRow>
            <TableCell padding="checkbox">
-                <Checkbox
-                  checked={selectedAll}
-                  indeterminate={selectedSome}
-                  onChange={(event) => {
-                    if (event.target.checked) {
-                      selectAll();
-                    } else {
-                      deselectAll();
-                    }
-                  }}
-                />
+                
               </TableCell>
               <TableCell>Report Name</TableCell>
               <TableCell>Reporting Period</TableCell>
@@ -149,22 +134,12 @@ export function ReportsTable({  rows = [],
         </TableRow>
       </TableHead>
           <TableBody>
-            {rows.map((row) => {
-              const isSelected = selected?.has(row.id);
+            {rows?.map((row) => { 
 
               return (
-                <TableRow hover key={row.id} selected={isSelected}>
+                <TableRow hover key={row.id}  >
                   <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={(event) => {
-                        if (event.target.checked) {
-                          selectOne(row.id);
-                        } else {
-                          deselectOne(row.id);
-                        }
-                      }}
-                    />
+                   
                   </TableCell>
                   <TableCell>
                    
@@ -172,18 +147,18 @@ export function ReportsTable({  rows = [],
                    
                   </TableCell>
                   <TableCell>
-                  <Typography variant="bodyP3">{row.period}</Typography>
+                  <Typography variant="bodyP3">{row.startDate}{row.endDate}</Typography>
                     </TableCell>
                  
-                  <TableCell>{row.createdBy}</TableCell>
-                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>{row.createdBy}</TableCell> 
                    
-                  <TableCell>{row.status}</TableCell>
+                  <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
+                  <TableCell>{row.status}</TableCell> 
                   <Box  style={{ display: 'flex',
                    justifyContent: 'center',alignItems:"center",padding:"16px 24px"
                    ,borderBottom: '1px solid var(--Grey-25, #F4F5F6)',alignSelf:"stretch",
                     }}>
-                    <Others   />  
+                    <Others target={row}  />  
                   
                   </Box>
                  

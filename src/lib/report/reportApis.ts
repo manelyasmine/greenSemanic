@@ -10,7 +10,7 @@ import api from '../api';
 
 class ReportApis {
   private apiReport = axios.create({
-    baseURL: `${api}/role/`,
+    baseURL: `${api}/report/`,
     headers: {
       'Content-Type': 'application/json',
       'x-auth-secret': process.env.NEXTAUTH_SECRET || '',
@@ -18,9 +18,12 @@ class ReportApis {
   });
   async createReport(data: Report): Promise<{res? :Report,  error?: string }> {
     // Make API request
+    console.log("createReport front",data)
     try {
-      const response = await this.apiReport.post('/', data , { withCredentials: true });
-
+      const response = await this.apiReport.post('/', data , { withCredentials: true },
+        
+      );
+      console.log("response",response)
       return {res : {...response.data, id: response.data._id}}
     } catch (e) {
       return { error: 'backend error' };
@@ -29,10 +32,27 @@ class ReportApis {
 
     return {};
   }
-/*   async getRoles(): Promise<{ res?: any; error?: string }> {
+
+  async uploadImage(formData: FormData, id: string): Promise<{ success?: boolean; error?: string }> {
+    try {
+      console.log('formdata', { formData });
+      const data = {};
+      const response = await this.apiReport.post('/' + id + '/image', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return { response };
+    } catch (e) {
+      const error = e.response ? e.response.data.error : 'Connexion Error';
+      return { error: error };
+    }
+  }
+   async getReports(): Promise<{ res?: any; error?: string }> {
     // Make API request
     try {
-      const res = await this.apiRole.get('/', { withCredentials: true });
+      const res = await this.apiReport.get('/', { withCredentials: true });
 
       return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
     } catch (e) {
@@ -41,19 +61,17 @@ class ReportApis {
  
 
     return {};
-  } */
+  }  
 
 
  
 
  
- 
-
-  /*   async deleteRole(id: string, data: User): Promise<{ res?: any; error?: string }> {
+  async deleteReport(id: string, data: User): Promise<{ res?: any; error?: string }> {
       try {
-        const res = await this.apiRole.delete(`/${id}`, {
+        const res = await this.apiReport.delete(`/${id}`, {
           data, // Add data to request body
-          headers: { 'Role-ID': id }, // Add id to request headers
+          headers: { 'Report-ID': id }, // Add id to request headers
           withCredentials: true,
         });
     
@@ -61,7 +79,7 @@ class ReportApis {
       } catch (e) {
         return { error: 'backend error: ' + e };
       }
-    } */
+    }  
 
     
     
