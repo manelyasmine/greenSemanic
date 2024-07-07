@@ -1086,7 +1086,7 @@ export function calculateAllScopes(myScope:[]) {
 }
 
 
-export function calculateReduction( CarbonPerMonthCard,targets) {
+export function calculateReduction( CarbonPerMonthCard,targets:[]) {
    console.log("calculateReduction",CarbonPerMonthCard,targets)
    
    const reductions = targets?.map(target => target.emissionReduction || 0);
@@ -1108,3 +1108,114 @@ export function calculateFirstTarget(CarbonPerMonthCard,target) {
 }
 
  
+
+export function getCarbonEmissionScopesChartDashboard(
+  data: { Date: string; emission_tracker: number }[],
+ displayPer: '7days' | '30days' | 'quarter' | '12months' | 'custom',
+ startDate?: Date,
+ endDate?: Date
+) {
+ const today = new Date();
+ let filteredData= data ;
+
+ // Determine time period based on displayPer
+ switch (displayPer) {
+   case 'custom':
+     if (startDate && endDate) {
+       filteredData = data.filter((item) => {
+         const itemDate = dayjs(item.Date);
+         return itemDate.isAfter(startDate) && itemDate.isBefore(endDate);
+       });
+       console.log("custom",filteredData)
+     } else {
+       console.warn('Start and end dates are required for custom reporting.');
+     }
+     break;
+   case '7days':
+    filteredData = data.filter((item) => {
+      const itemDate = dayjs(item.Date);
+      return itemDate.isAfter(dayjs().subtract(7, 'days').startOf('day')) && itemDate.isBefore(dayjs().add(1, 'day'));
+    });
+    
+     break;
+   case '30days': 
+   filteredData = data.filter((item) => {
+    const itemDate = dayjs(item.Date);
+    return itemDate.isAfter(dayjs().subtract(30, 'days').startOf('day')) && itemDate.isBefore(dayjs().add(1, 'day'));
+  });
+   
+    break;
+   case 'quarter':
+     const currentQuarter = Math.ceil((today.getMonth() + 1) / 3);
+     filteredData = data.filter((item) => Math.ceil((dayjs(item.Date).month() + 1) / 3) === currentQuarter);
+     break;
+   case '12months':
+     filteredData = data.filter((item) => dayjs(item.Date).isAfter(dayjs().subtract(12, 'months')));
+     break;
+   default:
+     console.warn(`Invalid displayPer value: ${displayPer}`);
+ }
+
+ const scope1Arr = filteredData.map((element) => element.scope1 ?? 0);
+ const scope2Arr = filteredData.map((element) => element.scope2 ?? 0);
+ const scope3Arr = filteredData.map((element) => element.scope3 ?? 0);
+
+ const scope1Length = scope1Arr.length;
+ const scope2Length = scope2Arr.length;
+ const scope3Length = scope3Arr.length;
+
+ // Group data based on displayPer
+ const groupedData = filteredData.reduce((acc, item) => {
+   let groupKey: string;
+   switch (displayPer) {
+     case '7days':
+       
+     groupKey = dayjs(item.Date).format('YYYY-MM-DD');
+       break;
+     case '30days':
+      groupKey = dayjs(item.Date).startOf('week').format('YYYY-MM-DD');
+      break;
+     case 'quarter':
+      /*  groupKey = dayjs(item.Date).format('Q-YYYY'); */
+      const quarter = Math.ceil((dayjs(item.Date).month() + 1) / 3);
+      groupKey = `Q${quarter}-${dayjs(item.Date).format('YYYY')}`;
+     
+       break;
+     case '12months':
+      groupKey = dayjs(item.Date).format('YYYY-MM');
+       break;
+     case 'custom':
+       groupKey = dayjs(item.Date).startOf('week').format('YYYY-MM-DD');
+       break;
+     default:
+       groupKey = dayjs(item.Date).format('YYYY-MM-DD');
+   }
+
+   acc[groupKey] = acc[groupKey] || { scope1: 0, scope2: 0, scope3: 0, count: 0 };
+   acc[groupKey].scope1 += item.scope1 ?? 0;
+   acc[groupKey].scope2 += item.scope2 ?? 0;
+   acc[groupKey].scope3 += item.scope3 ?? 0;
+   acc[groupKey].count++;
+   return acc;
+ }, {} as Record<string, { scope1: number; scope2: number; scope3: number; count: number }>);
+
+ const formattedGroupedData = Object.keys(groupedData).map((key) => ({
+   name: key,
+   data: [
+     groupedData[key].scope1 / groupedData[key].count,
+     groupedData[key].scope2 / groupedData[key].count,
+     groupedData[key].scope3 / groupedData[key].count,
+   ],
+ }));
+
+ return {
+   groupedData: formattedGroupedData,
+   scope1Arr,
+   scope2Arr,
+   scope3Arr,
+   scope1Length,
+   scope2Length,
+   scope3Length,
+   hasData: !!filteredData.length,
+ };
+}

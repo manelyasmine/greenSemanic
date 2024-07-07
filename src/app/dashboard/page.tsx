@@ -12,7 +12,7 @@ import { MuiButton } from '@/styles/theme/components/button';
 import { config } from '@/config';
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import { CarbonEmissionsCategory } from '@/components/dashboard/overview/CarbonEmissionsCategory';
-import { CarbonEmissionsScope } from '@/components/dashboard/overview/CarbonEmissionsScopeReport';
+import { CarbonEmissionsScope } from '@/components/dashboard/overview/CarbonEmissionsScopesDashboard';
 import { CarbonPerMonth } from '@/components/dashboard/overview/CarbonPerMonth';
 import { EmissionByType } from '@/components/dashboard/overview/EmissionByType';
 import { EmissionLocation } from '@/components/dashboard/overview/EmissionLocation';
@@ -277,8 +277,8 @@ export default function Page(): React.JSX.Element {
 
           <CarbonEmissionsScope
           sx={{ height: '100%' }} 
-          displayPer={"month"}
-          typeReporting="custom"
+          displayPer={selectedTab}
+          /* typeReporting="custom" */
           startDate={startFullDate}
           endDate={endFullDate}
           data={dataDB}
