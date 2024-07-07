@@ -4,7 +4,7 @@ import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { useSelector } from 'react-redux';
 
-import { CalculateEmission, CalculateScopes, extractScops, getCarbonEmissionByCategory } from '@/lib/helper';
+import { CalculateEmission, CalculateScopesStepFour, extractScops, getCarbonEmissionByCategoryStepFour } from '@/lib/helper';
 import { Button } from '@/components/commun/Button';
 import CustomTabs from '@/components/commun/Tabs/tabs';
 import { MuiButton } from '@/styles/theme/components/button';
@@ -28,10 +28,10 @@ export default function ExportStepFour() {
   const [selectedTab, setSelectedTab] = React.useState<string>('7 Days');
   const { dataDB , data } = useSelector((state: any) => state.file);
   console.log("data from export step four==>",data)
-  const { scope1, scope2, scope3, sum } = CalculateScopes(data);
+  const { scope1, scope2, scope3, sum } = CalculateScopesStepFour(data);
   const { scope1Arr, scope2Arr, scope3Arr } = extractScops(data);
   const emissionFactor = CalculateEmission(data);
-  const dataEmissionByCat = getCarbonEmissionByCategory(data)
+  const dataEmissionByCat = getCarbonEmissionByCategoryStepFour(data)
   const calendarRef = useRef<HTMLDivElement>(null);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isSelectingStartYear, setIsSelectingStartYear] = useState(false);
@@ -242,13 +242,16 @@ const [startFullDate, setStartFullDate] = useState<Date | null>(null);
           <MonthlyCarbonEmissions sx={{ height: '100%' }} />
         </Grid>
         <Grid lg={5} md={12} xs={12}>
-          <CarbonEmissionsCategory
+        <CarbonEmissionsCategory
             data={dataEmissionByCat}
             sx={{ height: '100%' }}
             showScopesTabs={false}
             value={selectedTab}
             handleChange={handleTabChange}
           />
+
+         
+ 
         </Grid>
       </Grid>
       {/* </Box> */}

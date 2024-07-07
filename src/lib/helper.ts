@@ -266,7 +266,7 @@ export function CalculateScopes(data: [], period: '7days' | '30days' | 'quarter'
   return { scope1, scope2, scope3, sum };
 }
 
-/* export function CalculateScopes(data: []) {
+  export function CalculateScopesStepFour(data: []) {
   //data.map((ite) => //console.log(ite.scope1))
   let scope1 = data.reduce((accumulateur, element) => accumulateur + (element.scope1 ?? 0), 0);
   //console.log('scope 1' + scope1);
@@ -278,7 +278,7 @@ export function CalculateScopes(data: [], period: '7days' | '30days' | 'quarter'
   scope2 = scope2 * sumPr;
   scope3 = scope3 * sumPr;
   return { scope1, scope2, scope3, sum };
-} */
+}  
 
 export function CalculateEmission(data: []) {
   let totalEmission = data.reduce(
@@ -1218,4 +1218,28 @@ export function getCarbonEmissionScopesChartDashboard(
    scope3Length,
    hasData: !!filteredData.length,
  };
+}
+
+
+export function getCarbonEmissionByCategoryStepFour(data:[]){
+  const extractedData = data.map(item => ({
+      category: item.category,
+      emission_tracker: (item.emission_tracker && parseInt(item.emission_tracker )) ?? 0
+  }));
+
+  const summedData = extractedData.reduce((acc, item) => {
+      if (!acc[item.category]) {
+          acc[item.category] = 0;
+      }
+      acc[item.category] += item.emission_tracker;
+      return acc;
+  }, {});
+  
+  // Step 3: Transform the summed data into the desired format
+  const result = Object.entries(summedData).map(([category, value]) => ({
+      label: category,
+      value
+  }));
+  console.log("carbon emission by categorrrrrrrrrrrrrrr",result)
+  return result
 }

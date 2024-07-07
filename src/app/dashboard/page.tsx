@@ -119,7 +119,9 @@ export default function Page(): React.JSX.Element {
       setFootPrint(getFootPrint(res,"custom",startFullDate,endFullDate))
       setDataEmission(getCarbonEmission(res,"custom",startFullDate,endFullDate)) 
       setLocationData(getEmissionsByLocation(res,"custom",startFullDate,endFullDate)); 
+
       setDataEmissionByCat(getCarbonEmissionByCategory(res,"all","custom",startFullDate,endFullDate)) 
+    //  setDataEmissionByCat(getCarbonEmissionByCategory(res,"all","custom",startFullDate,endFullDate)) 
   //    setDataEmissionByCat(getCarbonEmissionByCategory(res,"all",,"custom",startFullDate,endFullDate))
    
   
@@ -319,6 +321,7 @@ export default function Page(): React.JSX.Element {
             showScopesTabs={false}
              
           />
+  
 
         </Grid>
       </Grid>
