@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  
-   
-  report: [], 
+  report: [],
+  reportToSend: null,
 };
 
 const reportSlice = createSlice({
@@ -11,22 +10,20 @@ const reportSlice = createSlice({
   initialState,
   reducers: {
     setReport(state, action) {
-      //console.log('action '+ JSON.stringify(action.payload))
       state.report = action.payload;
     },
-   
     clearReport(state) {
       state.report = [];
     },
-     
+    setReportToSend(state, action) {
+      state.reportToSend = action.payload;
+    },
+    clearReportToSent(state) {
+      state.reportToSend = null;
+    },
   },
 });
 
-export const {
-  setReport,
-  clearReport,
-    
- 
-} = reportSlice.actions;
+export const { setReport, clearReport, setReportToSend, clearReportToSent } = reportSlice.actions;
 
 export default reportSlice.reducer;
