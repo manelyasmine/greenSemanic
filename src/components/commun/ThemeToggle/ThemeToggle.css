@@ -1,3 +1,17 @@
+/* ThemeToggle.css */
+
+/* Light mode variables */
+.light-mode {
+  --bg: #ffffff; /* Light mode background */
+  --text: #000000; /* Light mode text color */
+}
+
+/* Dark mode variables */
+.dark-mode {
+  --bg: #1a1a1a; /* Dark mode background */
+  --text: #ffffff; /* Dark mode text color */
+}
+
 /* Default */
 .theme {
   display: flex;
@@ -11,7 +25,7 @@
 }
 
 .theme__fill {
-  background-color: var(--bg);
+  background-color: var(--bg); /* Use --bg variable */
   display: block;
   mix-blend-mode: difference;
   position: fixed;

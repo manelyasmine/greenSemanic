@@ -49,16 +49,23 @@ class ReportApis {
       return { error: error };
     }
   }
-  async getReports(): Promise<{ res?: any; error?: string }> {
-    // Make API request
+  async getReports(filters = {}): Promise<{ res?: any;total?:any,totalPages?:any, error?: string }> {
+   
+    const queryString = new URLSearchParams(filters); 
     try {
-      const res = await this.apiReport.get('/', { withCredentials: true });
+      const res = await this.apiReport.get('/?' + queryString.toString(), { withCredentials: true });
+      console.log("backend targets",res.data.total,res.data.totalPages,res.data.pageMin)
+      const total = res.data.total || 1;  
+      const totalPages=res.data.totalPages || 1;
+      return {
+        res: res.data.reportRoles.map((e: any) => ({ ...e, id: e._id })), 
+         total,
+         totalPages
+      }; } catch (e) {
+      return { error: 'backend error'+e };
+    } 
 
-      return { res: res.data.map((e: any) => ({ ...e, id: e._id })) };
-    } catch (e) {
-      const error = e.response ? e.response.data.error : 'Connexion Error';
-      return { error: error };
-    }
+    return {};
   }
 
   async deleteReport(id: string, data: User): Promise<{ res?: any; error?: string }> {

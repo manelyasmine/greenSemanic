@@ -15,27 +15,10 @@ import ButtomDrower from '@/components/dashboard/reports/ButtomDrower';
 import { ReportsTable } from '@/components/dashboard/reports/reports-table';
 import { MuiButton } from '@/styles/theme/components/button';
 
-const reports = [
-  {
-    id: 'USR-010',
-    name: 'Alcides Antonio',
-    period: '/assets/avatar-10.png',
-    status: 'progress',
-    createdBy: 'dddddd',
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-  {
-    id: 'USR-010',
-    name: 'Alcides Antonio',
-    period: '/assets/avatar-10.png',
-    status: 'progress',
-    createdBy: 'dddddd',
-    createdAt: dayjs().subtract(2, 'hours').toDate(),
-  },
-] satisfies reports[];
+ 
 export default function Page(): React.JSX.Element {
   const [selectedTab, setSelectedTab] = useState<string>('7 Days');
-  const page = 0;
+  
   const rowsPerPage = 3;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -43,11 +26,41 @@ export default function Page(): React.JSX.Element {
   const [reports, setReports] = React.useState<Report>({});
   const [paginatedTarget, setPaginatedTarget] = useState<Report[]>([]);
 
+  const [searchBaseYear,setSearchBaseYear]=useState('');
+  const [searchInput,setSearchInput]=useState('')
+  const [searchDate,setSearchDate]=useState('')
+  const [column,setColumn]=useState('');
+const [operator,setOperator]=useState('');
+const [value,setValue]=useState('');
+const [searchTargetYear,setSearchTargetYear]=useState('');
+const [page, setPage] = useState(1); // Start on page 1
+
+  const [pages,setPages]=useState(1);
   const dispatch = useDispatch();
   // Function to handle tab changes
   const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
     setSelectedTab(newValue);
   };
+  const onFilterByDate = (selectedDate) => {
+    console.log("target table on filter date ==>",selectedDate[0],selectedDate[1])
+    setSearchBaseYear(selectedDate[0])
+    setSearchTargetYear(selectedDate[1]);
+  
+        
+      
+    };
+    const onFilterBySearch=(search)=>{ 
+      console.log("onFilterBySearch=>",search)
+      setSearchInput(search)
+    }
+    const onFilterByFiltering=(selectedValue,operator,value)=>{
+      console.log("searching equal page task==>",selectedValue,operator,value)
+      setColumn(selectedValue);
+        setOperator(operator);
+        setValue(value)
+      
+    
+    }
   function downloadCSV(data, filename = 'data.csv') {
     const csv = convertToCSV(data);
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -60,6 +73,12 @@ export default function Page(): React.JSX.Element {
     a.click();
     document.body.removeChild(a);
   }
+
+  const handleChangePage = ( newPage ) => {
+    console.log("handle change page",page)
+    setPage(newPage); 
+  };
+
   const handleExportClick = () => {
     setIsOpen(!isOpen);
   };
@@ -83,16 +102,30 @@ export default function Page(): React.JSX.Element {
   }
 
   const getReports = React.useCallback(async (): Promise<void> => {
-    console.log('get it');
-    const { error, res } = await reportApis.getReports();
-    console.log('res error', res, error);
+    console.log("something change appel api ",searchInput)
+     const filters = { 
+      start:searchBaseYear,
+      end:searchTargetYear,
+       page,  
+       limit: rowsPerPage,  
+        search:searchInput,
+       column:'',
+        operator:'',
+        value:'', 
+     }; 
+   
+
+    const { error, res,total,totalPages } = await reportApis.getReports(filters);
+ 
     if (error) {
       return;
     }
     dispatch(setReport(res));
     setReports(res);
-    console.log('get reports', res);
-  }, []);
+    setPages(totalPages);
+    console.log("total pages",totalPages)
+   
+  }, [dispatch, page, rowsPerPage,pages, searchInput,searchBaseYear,searchTargetYear,column,operator,value]);
 
   const getData = React.useCallback(async (): Promise<void> => {
     const { error, res } = await dataApis.getData();
@@ -101,10 +134,9 @@ export default function Page(): React.JSX.Element {
     }
 
     dispatch(setDataDB(res));
-  }, []);
+  }, [ ]);
 
-  useEffect(() => {
-    console.log('getReports');
+  useEffect(() => { 
     getReports();
   }, [getReports]);
   return (
@@ -115,8 +147,7 @@ export default function Page(): React.JSX.Element {
             Reports
           </Typography>
           <Typography variant="bodyP2" color="var(--Grey-grey-400, #88909F)">
-            Ci-dessous se trouve une liste de tâches liées à vos émissions de carbone. Veuillez les passer en revue et
-            vous assurer qu'elles sont conformes à vos objectifs en matière de durabilité.
+          Below is a list of tasks related to your carbon emissions. Please review them and ensure they align with your sustainability goals.
           </Typography>
           <Divider sx={{ backgroundColor: '#EAECF0', height: '1px', width: '100%', marginTop: '24px' }} />
         </Grid>
@@ -140,7 +171,10 @@ export default function Page(): React.JSX.Element {
           </Grid>
         </Grid>
       </Grid>
-      <ReportsTable count={paginatedTarget.length} page={page} rows={report} rowsPerPage={rowsPerPage} />
+      <ReportsTable   page={page} rows={report} rowsPerPage={rowsPerPage}
+            onFilterBySearch={onFilterBySearch}  onFilterByFiltering={onFilterByFiltering} onFilterByDate={onFilterByDate} 
+            pages={pages} handleChangePage={handleChangePage}
+     />
 
       {isOpen && (
         <ButtomDrower

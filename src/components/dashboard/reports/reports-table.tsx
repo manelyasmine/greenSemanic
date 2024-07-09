@@ -24,7 +24,7 @@ import { palette } from '@/styles/theme/colors';
 
 import FilterColumns from '../../commun/Filters/FilterColumns';
 import Others from './Others';
-
+import api from '@/lib/api';
 const useStyles = makeStyles((theme) => ({
   cardHeader: {
     backgroundColor: palette.common.white,
@@ -57,12 +57,10 @@ interface ReportsTableProps {
 export function ReportsTable({
   rows = [],
   rowsPerPage = 5,
-  importFunc = false,
-  handleDelete,
-  handleUpdate,
+  
   onFilterBySearch,
-  onFilterByDate,
   onFilterByFiltering,
+  onFilterByDate,
   pages,
   handleChangePage,
 }: ReportsTableProps): React.JSX.Element {
@@ -80,20 +78,21 @@ export function ReportsTable({
   ];
 
   const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
+  
   const updateChangePage = (event: any, newPage: any) => {
-    console.log('update change data', newPage);
+    console.log("update change data",newPage)
     setPage(newPage);
     handleChangePage(newPage);
   };
-
+ 
   const updateSearch = (search: string) => {
     console.log('updateSearch====>', search);
     onFilterBySearch(search);
   };
-  const updateFiltering = (selectedValue: string, operator: string, value: string) => {
-    console.log('update filtering from data table', selectedValue, operator, value);
-    onFilterByFiltering(selectedValue, operator, value);
-  };
+  const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
+    console.log("update filtering from task table",selectedValue,operator,value);
+    onFilterByFiltering(selectedValue,operator,value);
+  }
   return (
     <Card>
       <Divider />
@@ -105,15 +104,14 @@ export function ReportsTable({
                 <Card variant="outlined" sx={{ border: '0' }}>
                   <CardHeader
                     title={
-                      <FilterColumns
-                        columns={columns}
-                        onFilterByFiltering={updateFiltering}
-                        onFilterByDate={onFilterByDate}
-                        onFilterBySearch={updateSearch}
-                        isYear={false}
-                        isDate={false}
-                        isFullDate={true}
-                      />
+                      <FilterColumns columns={columns} 
+                      onFilterByFiltering={updateFiltering} 
+                      onFilterByDate={onFilterByDate} 
+                      onFilterBySearch={updateSearch} 
+                      isYear={false} 
+                      isDate={false} 
+                      isFullDate={true}/>
+   
                     }
                   />
                 </Card>
@@ -130,8 +128,9 @@ export function ReportsTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows &&
-              paginatedRows.map((row) => {
+            {rows &&
+              rows.map((row) => {
+                let image=api+'/'+row?.createdBy.profileImage
               return (
                 <TableRow hover key={row.id}>
                   <TableCell padding="checkbox"></TableCell>
@@ -140,12 +139,23 @@ export function ReportsTable({
                   </TableCell>
                   <TableCell>
                     <Typography variant="bodyP3">
-                      {row.startDate}
-                      {row.endDate}
+                  {dayjs(row.startDate).format('MMM.DD, YYYY')}__{dayjs(row.endDate).format('MMM.DD, YYYY')} 
+
                     </Typography>
                   </TableCell>
 
-                  <TableCell>{row.createdBy}</TableCell>
+                  <TableCell> 
+                 
+                  <Avatar alt="Remy Sharp" src={image} />
+                  </TableCell>
+
+                  {/*    <AvatarGroup max={4} sx={{ justifyContent: 'start' }}>
+                      <Avatar alt="Remy Sharp" src="/assets/avatar-1.png" />
+                      <Avatar alt="Travis Howard" src="/assets/avatar-2.png" />
+                      <Avatar alt="Cindy Baker" src="/assets/avatar-3.png" />
+                      <Avatar alt="Agnes Walker" src="/assets/avatar-4.png" />
+                      <Avatar alt="Trevor Henderson" src="/assets/avatar-5.png" />
+                    </AvatarGroup> */}
 
                   <TableCell>{dayjs(row.createdAt).format('MMM D, YYYY')}</TableCell>
                   <TableCell>{row.status}</TableCell>
@@ -164,8 +174,8 @@ export function ReportsTable({
                 </TableRow>
               );
             })}
-               {!paginatedRows ||
-              (paginatedRows.length == 0 && (
+               {!rows ||
+              (rows.length == 0 && (
                 <TableRow>
                   <TableCell colSpan={10} padding="checkbox">
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: '2rem' }}>
@@ -183,7 +193,7 @@ export function ReportsTable({
           paginatioType="gray"
           // color='gray'
           //count={pages} // Total number of pages
-          count={Math.ceil(rows.length / rowsPerPage)}
+          count={pages}
           page={page}
           onChange={updateChangePage}
           size="small"
