@@ -77,7 +77,7 @@ const [searchDate,setSearchDate]=useState('')
 const [modify,setModify]=useState(false);
 const [isAssign,setIsAssign]=useState(false);
 const [isDeleteOpen,setIsDeleteOpen]=useState(false);
-const { tasks } = useSelector((state: any) => state.task);
+const { tasks,myTasks } = useSelector((state: any) => state.task);
 const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   console.log("ppppppppppp",rows)
 
@@ -214,18 +214,16 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
     }
   
     handleClose();
-  }, [dispatch, tasks, selectedRow]);
+  }, [dispatch, tasks, myTasks,selectedRow]);
 
 
 
 
   return (
-    <Card>
-     {/*  <FilterColumns onFilterByDate={onFilterByDate}/> */}
+   <>
+    <FilterColumns columns={columns} onFilterByFiltering={updateFiltering} onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={true} isFullDate={false}/>
     
-     <FilterColumns columns={columns} onFilterByFiltering={updateFiltering} onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={true} isFullDate={false}/>
-      
-
+    <Card>
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
@@ -303,7 +301,7 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
                   <TableCell>
                   <Box display="flex" justifyContent="center" alignItems="center">
                     <IconButton onClick={(event) => handleMenuOpen(event, row.id)}>
-                    <DropdownTableCell  task={row} />
+                    <DropdownTableCell  task={row} isMyTasks={true} tasks={myTasks}/>
                     </IconButton>
                     
                   </Box>
@@ -311,10 +309,20 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
                 </TableRow>
               );
             })}
+              {!rows ||
+              (rows.length == 0 && (
+                <TableRow>
+                  <TableCell colSpan={10} padding="checkbox">
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: '2rem' }}>
+                      <img src={'/assets/empty.png'} width={200} height={200} alt="My Image" />
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Box>
-      {modify && selectedRow && (
+   {/*    {modify && selectedRow && (
        <UpdateBottomDrawerTask 
        open={modify} 
        handleCancelTask={ handleClose } 
@@ -329,8 +337,8 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
        subtitleName="Edit a task to further streamline your carbon emission management process."
        
        />)
-      }
-{isAssign && selectedRow && (
+      } */}
+{/* {isAssign && selectedRow && (
        <UpdateBottomDrawerTask 
        open={isAssign} 
        handleCancelTask={ handleClose } 
@@ -345,7 +353,7 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
        subtitleName="Assign a task to further streamline your carbon emission management process."
        
        />)
-      }
+      } */}
       <Divider />
       <Box display="flex" justifyContent="center">
       <Pagination
@@ -361,5 +369,6 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
         />
       </Box>
     </Card>
+    </>
   );
 }

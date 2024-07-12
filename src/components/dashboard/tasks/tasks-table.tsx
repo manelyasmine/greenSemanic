@@ -19,7 +19,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-
+import api from '@/lib/api';
 import { Task } from '@/types/task'; 
 import { setTasks } from '@/lib/store/reducer/useTask';
 import { taskApis } from '@/lib/task/taskApis';
@@ -172,8 +172,7 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
     setSearchInput(search);
   }; */
 
-  const handleUpdateTask = useCallback(
-    async (data: any): Promise<void> => {
+/*   const handleUpdateTask = React.useCallback(async (data: any): Promise<void> => {
       console.log('update=>>>>>', { data });
       console.log('update=>>>>>tasks ', { tasks });
       const { error, res } = await taskApis.updateTask(data);
@@ -181,15 +180,15 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
         return;
       } else {
         const targetUpdated = targets.find((target) => target._id === data.targetName);
-        const newTasks = tasks.map((tar: Task) => {
-          if (tar.id === data.id) {
+        const newTasks = tasks.map((task: Task) => {
+          if (task.id === data.id) {
             return {
               ...data,
-              targetName: targetUpdated.name,
-              usersIds :[ data.users]
+              targetName: targetUpdated ? targetUpdated.name : task.targetName, // Update targetName with the name if found
+              usersIds: data.usersIds // Assuming data.usersIds is correct
             };
           }
-          return tar;
+          return task;
         }); 
         console.log('update=>>>>>tasks ', { newTasks });
         dispatch(setTasks(newTasks));
@@ -197,8 +196,8 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
       handleClose();
     },
     [tasks]
-  );
-  const handleAssignTask = React.useCallback(async (data: any): Promise<void> => {
+  ); */
+ /*  const handleAssignTask = React.useCallback(async (data: any): Promise<void> => {
     const { error, res } = await taskApis.assignTask(data);
     if (error) {
       dispatch(setOpenToast({ message: error, type: 'error' }));
@@ -235,11 +234,13 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
       handleClose();
     },
     [dispatch, tasks, selectedRow]
-  );
+  ); */
 
   return (
+    <>
+      <FilterColumns columns={columns} onFilterByFiltering={updateFiltering} onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={true} isFullDate={false}/>
+     
     <Card>
-       <FilterColumns columns={columns} onFilterByFiltering={updateFiltering} onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} isDate={true} isFullDate={false}/>
      
  
       <Divider />
@@ -258,18 +259,28 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows && paginatedRows.map((row) => (
+          {rows &&
+              rows.map((row) => {
+                
+              return (
               <TableRow hover key={row.id}>
                 <TableCell padding="checkbox"></TableCell>
                 <TableCell>
                   <Typography variant="bodyB3">{row.taskName}</Typography>
                 </TableCell>
                 <TableCell>{dayjs(row.dueDate).format('MMM D, YYYY')}</TableCell>
-                <TableCell>
-                  {Array.isArray(row.usersIds) ? (
-                    row.usersIds?.map((user, index) => <span key={index}>{user.username}</span>)
-                  ) : (
-                    <span></span>
+                <TableCell sx={{justifyContent:"center",
+                  height:"100%",display:"flex",flexDirection:"row",
+                 alignSelf:"center",marginTop:"12px"
+                 }}>
+                  {Array.isArray(row.usersIds) && (
+                   
+                   row.usersIds?.map((user, index) => 
+                    
+                    <Avatar alt="Remy Sharp" src={api+"/"+user.profileImage} />
+                   
+                    
+                  )
                   )}  
                 </TableCell>
                 <TableCell>
@@ -300,15 +311,16 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
                 <TableCell>
                   <Box display="flex" justifyContent="center" alignItems="center">
                     <IconButton onClick={(event) => handleMenuOpen(event, row.id)}>
-                    <DropdownTableCell  task={row} />
+                    <DropdownTableCell  task={row} isMyTasks={false} tasks={tasks}/>
                     </IconButton>
                     
                   </Box>
                 </TableCell>
               </TableRow>
-            ))}
-             {!paginatedRows ||
-              (paginatedRows.length == 0 && (
+          );
+            })}
+             {!rows ||
+              (rows.length == 0 && (
                 <TableRow>
                   <TableCell colSpan={10} padding="checkbox">
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginY: '2rem' }}>
@@ -321,7 +333,7 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
         </Table>
       </Box>
       <Divider />
-      {modify && selectedRow && (
+    {/*   {modify && selectedRow && (
         <UpdateBottomDrawerTask
           open={modify}
           handleCancelTask={handleClose}
@@ -350,7 +362,7 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
           titleName="Assign a Task"
           subtitleName="Assign a task to further streamline your carbon emission management process."
         />
-      )}
+      )} */}
 
       <Box display="flex" justifyContent="center">
       <Pagination
@@ -366,5 +378,6 @@ const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
         />
       </Box>
     </Card>
+    </>
   );
 }

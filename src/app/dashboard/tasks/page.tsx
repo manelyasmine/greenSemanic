@@ -10,6 +10,7 @@ import { Task } from '@/types/task';
 import { User } from '@/types/user';
 import { setTargets } from '@/lib/store/reducer/useTarget';
 import { setTasks } from '@/lib/store/reducer/useTask';
+import { setMyTasks } from '@/lib/store/reducer/useTask';
 import { targetApis } from '@/lib/target/targetApis';
 import { taskApis } from '@/lib/task/taskApis';
 import { userApis } from '@/lib/user/userApis';
@@ -24,7 +25,8 @@ export default function Page(): React.JSX.Element {
   const [selectedTab, setSelectedTab] = React.useState<string>('All Tasks');
   const [users, setUsers] = useState<User>({});
   const [isNewTask, setIsNewTask] = useState(false);
-  const { tasks } = useSelector((state: any) => state.task);
+  const { tasks,myTasks } = useSelector((state: any) => state.task);
+
   const { targets } = useSelector((state: any) => state.target);
   const { user } = useSelector((state: any) => state.user);
   const [search, setSearch] = useState('');
@@ -57,14 +59,17 @@ const [searchDate,setSearchDate]=useState('')
  
 
   const handleCreateTask = React.useCallback(async (): Promise<void> => {
+    console.log("hhhhhhhhhhhhdashbord")
     setNewTask({ ...newTask, ['createdBy']: user.id });
     const { res, error } = await taskApis.createTask(newTask);
     if (error) {
-      // setErrorAlert(error);
+     
       dispatch(setOpenToast({message : error, type:'error'}))
       return;
     }
+    console.log("creation task==>",res)
     dispatch(setTasks([...tasks, res]));
+    console.log("handle create newt task",res)
     dispatch(setOpenToast({message : 'Task Added Successfully', type:'success'}))
     handleClose();
   }, [newTask]);
@@ -92,27 +97,31 @@ const [searchDate,setSearchDate]=useState('')
 
   console.log("filterss===>",filters,selectedTab,res)
   if(selectedTab=="All Tasks"){
-    dispatch(setTasks(res)); 
+  
     setTasks(res);
     setRows(res);  
     setTotalRows(total);
     setPages(Math.ceil(total/rowsPerPage));
-    
-    console.log("task 03",res,total,totalPages,page)
+    setPage(1);
+      dispatch(setTasks(res)); 
+   
   }
-  if(selectedTab=='My Tasks' || selectedTab=="Actions" )
+  else if(selectedTab=='My Tasks' || selectedTab=="Actions" )
   {
     let filteredTasks: Task[];
     filteredTasks=res.filter((task: Task) => 
       task?.usersIds?.some((userObj: any) => userObj._id === user.id)
     );
-    dispatch(setTasks(filteredTasks)); 
-    setTasks(filteredTasks);
+    dispatch(setMyTasks(filteredTasks)); 
+    setMyTasks(filteredTasks);
     setRows(filteredTasks);  
     setTotalRowsMyTask(total);
     setPagesMyTask(Math.ceil(filteredTasks.length/total));
+    setPage(1);
+     
   }
-  setPage(1)
+  dispatch(tasks); 
+  
 } catch (error) {
   console.error('Error fetching tasks:', error);
 }
@@ -242,6 +251,7 @@ const onFilterByFiltering=(selectedValue,operator,value)=>{
         onFilterByFiltering={onFilterByFiltering}
         onFilterByDate={onFilterByDate}
         handleChangePage={handleChangePage}
+        
         pages={pages} 
           page={page}
           rows={tasks}  
@@ -257,7 +267,7 @@ const onFilterByFiltering=(selectedValue,operator,value)=>{
         handleChangePage={handleChangePage}
         pages={pagesMyTask} 
           page={page}
-          rows={rows}  
+          rows={myTasks}  
           rowsPerPage={rowsPerPage}  
           selectedTab={'My Tasks'}
         />

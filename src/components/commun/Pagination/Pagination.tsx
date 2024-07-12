@@ -6,7 +6,7 @@ import { palette } from '@/styles/theme/colors';
 
 export type PaginationProps = MuiPaginationProps & {
   children?: React.ReactNode;
-  paginatioType?:
+  paginationType?:
     | 'primary'
     | 'secondary'
     | 'tertiary'
@@ -20,55 +20,55 @@ export type PaginationProps = MuiPaginationProps & {
 };
 
 const StyledPagination = styled(MuiPagination, {
-  shouldForwardProp: (prop) => prop !== 'paginatioType',
-})<PaginationProps>(({ paginatioType }) => {
+  shouldForwardProp: (prop) => prop !== 'paginationType',
+})<PaginationProps>(({ paginationType }) => {
   let backgroundColor, color, borderColor, border, boxShadow;
   let borderRadius = '6px';
   let padding = '6px 12px';
   let justifyContent = 'center';
   let alignItems = 'center';
 
-  switch (paginatioType) {
+  switch (paginationType) {
     case 'gray':
-      //backgroundColor = palette.primary[500];
-      //color = palette.common.white;
+      backgroundColor = palette.primary[500];
+      color = palette.common.white;
       boxShadow = 'none';
       border = '2px';
       break;
-    // case 'secondary':
-    //   backgroundColor = palette.common.white;
-    //   //color = palette.primary[500];
-    //   border = `1px solid ${palette.primary[400]}`;
+     case 'secondary':
+       backgroundColor = palette.common.white;
+       color = palette.primary[500];
+       border = `1px solid ${palette.primary[400]}`;
 
-    //   break;
-    // case 'tertiary':
-    //   backgroundColor = palette.common.white;
-    //   //color = palette.gray[600];
-    //   break;
-    // case 'primaryLight':
-    //   backgroundColor = palette.primary[50];
-    //   //color = palette.primary[500];
-    //   break;
-    // case 'secondaryGray':
-    //   backgroundColor = palette.common.white;
-    //   //color = palette.gray[600];
-    //   borderRadius = '8px';
-    //   boxShadow = '0px 1px 2px 0px rgba(16, 24, 40, 0.05)';
-    //   border= '1px solid var(--Grey-grey-200, #B3B8C2)';
-
-    //   break;
-    // case 'dashBorder':
-    //   backgroundColor = 'transparent';
-    //   //color = palette.gray[600];
-    //   borderColor = palette.gray[300];
-    //   break;
-    // case 'link':
-    //   backgroundColor = 'transparent';
-    //   //color = palette.gray[600];
-    //   break;
-    // default:
-    //   backgroundColor = 'inherit';
-    //   //color = 'inherit';
+       break;
+     case 'tertiary':
+       backgroundColor = palette.common.white;
+       color = palette.gray[600];
+       break;
+     case 'primaryLight':
+       backgroundColor = palette.primary[50];
+       color = palette.primary[500];
+       break;
+     case 'secondaryGray':
+       backgroundColor =palette.common.white; //palette.gray[600]
+       color = palette.gray[600];
+       borderRadius = '8px';
+      boxShadow = '0px 1px 2px 0px rgba(16, 24, 40, 0.05)';
+       border= '1px solid var(--Grey-grey-200, #B3B8C2)';  
+    
+      break;
+     case 'dashBorder':
+       backgroundColor = 'transparent';
+      //color = palette.gray[600];
+       borderColor = palette.gray[300];
+       break;
+     case 'link':
+       backgroundColor = 'transparent';
+       //color = palette.gray[600];
+       break;
+     default:
+       backgroundColor = 'inherit';
+       //color = 'inherit';
   }
 
   return {
@@ -83,20 +83,20 @@ const StyledPagination = styled(MuiPagination, {
     boxShadow,
     '& .MuiPaginationItem-root': {
       '&.Mui-selected': {
-        backgroundColor: paginatioType == 'gray' ? palette.gray[800] : palette.common.white,
-        color: paginatioType == 'gray' ? palette.common.white : palette.gray[500],
+        backgroundColor: paginationType == 'secondaryGray' ? palette.gray[800] : palette.common.white,
+        color: paginationType == 'secondaryGray' ? palette.common.white : palette.gray[500],
         '&:hover': {
-          backgroundColor: paginatioType === 'gray' ? `${palette.gray[500]}cc` : `${palette.common.white}cc`,
+          backgroundColor: paginationType === 'secondaryGray' ? `${palette.gray[500]}cc` : `${palette.common.white}cc`,
         },
       },
     },
   };
 });
 
-export const Pagination: React.FC<PaginationProps> = ({ children, paginatioType = 'primary', ...props }) => {
+export const Pagination: React.FC<PaginationProps> = ({ children, paginationType = 'primary', ...props }) => {
   return (
     <Stack  sx={{ border: '1px solid #ddd', borderRadius:1 }} m={1}>
-      <StyledPagination paginatioType={paginatioType} {...props} />
+      <StyledPagination paginationType={paginationType} {...props} />
     </Stack>
   );
 };

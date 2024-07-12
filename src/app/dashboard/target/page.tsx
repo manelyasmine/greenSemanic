@@ -97,6 +97,7 @@ const [value,setValue]=useState('');
     setTarget(res);
     setRowsTask(res);  
     setTotalRows(total);
+    
     setPages(totalPages);
   }else{
     try {
@@ -201,7 +202,8 @@ const [value,setValue]=useState('');
         <TargetsTable   page={page} rows={targets} rowsPerPage={rowsPerPage} 
         
       onFilterBySearch={onFilterBySearch}  onFilterByFiltering={onFilterByFiltering} onFilterByDate={onFilterByDate} pages={pages} handleChangePage={handleChangePage}
-        />
+      total={totalRows}
+      />
 
  
 

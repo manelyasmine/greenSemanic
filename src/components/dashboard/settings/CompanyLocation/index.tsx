@@ -61,21 +61,33 @@ const CompanyLocation: React.FC = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isOpenDelete, setIsOpenDelete] = React.useState(false);
   const [isOpenUpdate, setIsOpenUpdate] = React.useState(false);
+ 
 
   const { company, locations } = useSelector((state: any) => state.company);
 
   const dispatch = useDispatch();
 
   const getLocations = React.useCallback(async (): Promise<void> => {
+    
     const { error, res } = await companyApis.getLocations(company?._id);
     if (error) {
       return;
     }
-    dispatch(setLocations(res));
-  }, []);
-
-  // const filteredLocations = locations.filter((location) => location.toLowerCase().includes(search.toLowerCase()));
-  useEffect(() => {
+    if(search!=''){
+      const filteredLocations = locations.filter((location) => (
+        location.address.toLowerCase().includes(search.toLowerCase()) ||
+      location.city.toLowerCase().includes(search.toLowerCase()) ||
+      location.state.toLowerCase().includes(search.toLowerCase()) ||
+      location.country.toLowerCase().includes(search.toLowerCase())
+      ))
+      dispatch(setLocations(filteredLocations));
+     }else{
+      dispatch(setLocations(res));
+     }
+    
+  }, [search]);
+ 
+   useEffect(() => {
     getLocations();
   }, [getLocations]);
 
@@ -196,7 +208,7 @@ const CompanyLocation: React.FC = () => {
                 primary={'Locations ' + (index + 1)}
                 primaryTypographyProps={{ variant: 'bodyB2', color: 'var(--Green-green-700, #087443)' }}
               />
-              {location.head == 1 ? (
+              {location.primaryLocation == "true" ? (
                 <ListItemIcon>
                   <LocalizationHeadIcon />
                   <ListItemText

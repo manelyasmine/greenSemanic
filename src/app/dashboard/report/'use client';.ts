@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card'; 
-import Divider from '@mui/material/Divider'; 
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import Checkbox from '@mui/material/Checkbox';
+import Divider from '@mui/material/Divider';
+import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,21 +16,31 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@mui/styles';
 import dayjs from 'dayjs';
-import {  Select, MenuItem } from '@mui/material';  
+import {  Select, MenuItem } from '@mui/material'; // Import necessary components from Material-UI
+
+import usePagination from '@/hooks/use-pagination';
+import { useSelection } from '@/hooks/use-selection';
 import { Pagination } from '@/components/commun/Pagination/Pagination';
 import { palette } from '@/styles/theme/colors';
+
 import FilterColumns from '../../commun/Filters/FilterColumns';
 import Others from './Others';
 import api from '@/lib/api';
 import { Grid } from '@mui/material';
-
 const useStyles = makeStyles((theme) => ({
   cardHeader: {
     backgroundColor: palette.common.white,
   },
 }));
 
- 
+export interface Reports {
+  id: string;
+  name: string;
+  period: string;
+  status: string;
+  createdBy: string;
+  createdAt: Date;
+}
 
 interface ReportsTableProps {
   page?: number;
@@ -46,7 +59,7 @@ interface ReportsTableProps {
 
 export function ReportsTable({
   rows = [],
-  rowsPerPage,
+  rowsPerPage = 5,
   total,
   onFilterBySearch,
   onFilterByFiltering,
@@ -60,24 +73,25 @@ export function ReportsTable({
   const [page, setPage] = useState(1); // Start on page 1
   const [totalPages, setTotalPages] = useState(10); // Replace with actual total pages
   const columns: Column[] = [
-    { field: 'name', headerName: 'name', width: 150, filterable: true, type: 'string' },
-    { field: 'status', headerName: 'status', width: 110, filterable: true, type: 'string' },
-    { field: 'createdBy', headerName: 'created by', width: 160, filterable: true, type: 'string' },
-   
+    { field: 'location', headerName: 'location', width: 150, filterable: true, type: 'string' },
+    { field: 'category', headerName: 'category', width: 110, filterable: true, type: 'string' },
+    { field: 'quantity', headerName: 'quantity', width: 160, filterable: true, type: 'number' },
+    { field: 'emission_tracker', headerName: 'Emission Factor', width: 160, filterable: true, type: 'number' },
+    { field: 'source', headerName: 'source', width: 160, filterable: true, type: 'string' },
   ];
 
-  //const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
+  const paginatedRows = usePagination({ rows, page, pageSize: rowsPerPage });
   
   const updateChangePage = (event: any, newPage: any) => {
-    
+    console.log("update change data",newPage)
     setPage(newPage);
     handleChangePage(newPage);
   };
  
-  const updateSearch = (search: string) => { 
+  const updateSearch = (search: string) => {
+    console.log('updateSearch====>', search);
     onFilterBySearch(search);
   };
-
   const updateFiltering=(selectedValue:string,operator:string,value:string)=>{
     console.log("update filtering from task table",selectedValue,operator,value);
     onFilterByFiltering(selectedValue,operator,value);
@@ -85,17 +99,16 @@ export function ReportsTable({
   return (
     <Grid sx={{borderRaduis:10,borderColor:"red"}}>
       
-    <FilterColumns   
-        columns={columns} 
-        onFilterByFiltering={updateFiltering} 
-        onFilterByDate={onFilterByDate} 
-        onFilterBySearch={updateSearch} 
-        isYear={false} 
-        isDate={false} 
-        isFullDate={true}
-        /> 
-    <Card>
-    <Box sx={{ overflowX: 'auto' }}>
+    <FilterColumns   columns={columns} onFilterByFiltering={updateFiltering} 
+    onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={false} 
+    isDate={false} isFullDate={true}/>
+      {/*  <Divider /> */}
+    <Card  >
+      
+    
+         
+     
+      <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px',position:'relative' }}>
           <TableHead>
              
@@ -170,12 +183,12 @@ export function ReportsTable({
         </Table>
       </Box>
       <Divider />
-      <Box style={{ display: 'flex' ,justifyContent: 'space-between', alignItems: 'center' }}>
-      <Typography variant="bodyB3" sx={{padding:3}}>Total : {total}</Typography>
+      <Box style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography>Total Reports: {total}</Typography>
 
       <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Pagination
-          paginationType="secondaryGray"
+          paginationType="gray"
           count={pages} // Total number of pages
           page={page}
           onChange={updateChangePage}
@@ -186,10 +199,12 @@ export function ReportsTable({
         />
       </Box>
 
-      <Box sx={{padding:3}}> 
+      <Box>
+        <Typography variant="body2">Select Page Size:</Typography>
         <Select
-          value={totalPages} 
-          onChange={(e) => { setTotalPages(e.target.value)
+          value={10} // Example initial value, replace with actual state/value
+          onChange={(e) => {
+            // Handle change logic
           }}
           size="small"
         >

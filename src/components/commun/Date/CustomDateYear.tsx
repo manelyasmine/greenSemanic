@@ -41,13 +41,13 @@ const FilterDateComponent = ({
     }
 
  const onEndDate=(date)=>{
-  console.log("handleEndDate",date)
-  setSelectedEnd(dayjs(date).format('YYYY-MM-DD'))
+  console.log("handleEndDate",date.year())
+  setSelectedEnd(date.year())
 
  }
  const onStartDate=(date)=>{
-  console.log("handle start date",date)
-  setSelectedStart(dayjs(date).format('YYYY-MM-DD'))
+  console.log("handle start date",date.year())
+  setSelectedStart(date.year())
  }
   
   return (
@@ -71,7 +71,7 @@ const FilterDateComponent = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ display: 'flex', flexDirection: 'column', margin: 4 }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
-          <DateCalendar views={['year', 'month', 'day']} onChange={onStartDate} 
+          <DateCalendar  views={['year']} onChange={onStartDate} 
            
            dayCellProps={(day) => ({
              style: {
@@ -80,7 +80,7 @@ const FilterDateComponent = ({
            })}
           
           />
-          <DateCalendar views={['year', 'month', 'day']} onChange={onEndDate}
+          <DateCalendar  views={['year']} onChange={onEndDate}
           
           dayCellProps={(day) => ({
             style: {

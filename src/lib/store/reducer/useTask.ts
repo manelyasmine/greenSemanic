@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   task: null,
-  tasks : []
+  tasks : [],
+  myTasks:[],
 };
 
 const taskSlice = createSlice({
@@ -17,11 +18,14 @@ const taskSlice = createSlice({
     },
     setTasks(state, action) { 
       state.tasks = action.payload;
+    },
+    setMyTasks(state, action) { 
+      state.myTasks = action.payload;
     }
   },
 });
 
 
-export const { setTask, clearTask , setTasks} = taskSlice.actions;
+export const { setTask, clearTask , setTasks,setMyTasks} = taskSlice.actions;
 
 export default taskSlice.reducer;

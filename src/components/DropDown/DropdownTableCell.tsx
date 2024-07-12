@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Task } from '@/types/task';
 import { setTasks } from '@/lib/store/reducer/useTask';
 
+import { setMyTasks } from '@/lib/store/reducer/useTask';
+
 import { setUsers } from '@/lib/store/reducer/useUser';
 
 import { taskApis } from '@/lib/task/taskApis';
@@ -28,14 +30,17 @@ import { setOpenToast } from '@/lib/store/reducer/useGlobalActions';
 
 interface DropdownTaskProps { 
   task: Task;
+  isMyTasks:boolean;
+  
+  tasks:Task[];
 }
  
-
-const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
+/* isMyTasks={true} */
+const DropdownTask: React.FC<DropdownTaskProps> = ({ task,isMyTasks ,tasks }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isUpdate , setIsUpdate] = useState(false)
-  const { tasks } = useSelector((state: any) => state.task); 
+  //const { tasks,myTasks } = useSelector((state: any) => state.task); 
 
   const { targets } = useSelector((state: any) => state.target);
   const { users } = useSelector((state: any) => state.users); 
@@ -61,80 +66,65 @@ const DropdownTask: React.FC<DropdownTaskProps> = ({ task }) => {
     if (error) {
       dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
-    } else { 
-
-      const newTasks =  targets.map((tar : Task) => {
+    } else {  
+      const newTasks =  tasks.map((tar : Task) => {
         if (tar.id === data.id) {
-          return data;
+          return res;
         }
         return tar;
       });
-      dispatch(setOpenToast({ message: 'Task Updated Successfully', type: 'success' }));
-      //setIsDeleteOpen(false);
+      console.log("new tasksss=>",newTasks)
+      dispatch(setOpenToast({ message: 'Tasksss Updated Successfully', type: 'success' }));
+       
       dispatch(setTasks(newTasks));
       setIsUpdate(false)
 
     }
     handleClose();
-  }, []);
+  }, [tasks]);
 
 
   const handleAssign = React.useCallback(async (data:  Task): Promise<void> => {
-    console.log("handle assign data===>",data)
+    
     const { error, res } = await taskApis.assignTask(data);
     if (error) {
       dispatch(setOpenToast({ message: error, type: 'error' }));
       return;
     } else { 
-
-      const newTasks =  targets.map((tar : Task) => {
+      console.log("handle assign data===>",res)
+      const newTasks =  tasks.map((tar : Task) => {
         if (tar.id === data.id) {
-          return data;
+          return res;
         }
         return tar;
       });
+      dispatch(setTasks(newTasks)); 
+      dispatch(setMyTasks(newTasks)); 
+      setIsAssign(false);
       dispatch(setOpenToast({ message: 'Task Assigned Successfully', type: 'success' }));
-      dispatch(setTasks(newTasks));
-      setIsAssign(false)
+     
 
     }
     handleClose();
-  }, []);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  }, [tasks]);
 
   const handleDelete = React.useCallback(async (): Promise<void> => {
-    console.log("handle deelte task===>",task,Task)
     const { error, res } = await taskApis.deleteTask(task.id);
     if (error) {
       return;
     } else {
+   
       const indexToRemove = tasks.indexOf(task);
       const newTasks = tasks.filter((_: any, i: any) => i !== indexToRemove);
       setIsDeleteOpen(false);
       dispatch(setOpenToast({ message: 'Task Deleted Successfully', type: 'success' }));
+      dispatch(setMyTasks(newTasks));
       dispatch(setTasks(newTasks));
+      
     }
 
     handleClose();
-  }, []);
+  }, [tasks]);
 
   
 

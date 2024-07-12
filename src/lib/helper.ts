@@ -1243,3 +1243,50 @@ export function getCarbonEmissionByCategoryStepFour(data:[]){
   console.log("carbon emission by categorrrrrrrrrrrrrrr",result)
   return result
 }
+
+ 
+
+ 
+ 
+
+export function getEmissionSubCategory(data: []): [] {
+  // Create an object to store emissions totals by subcategory
+  const subCategoryEmissionsMap: { [key: string]: { total_emission: number, quantity: number } } = {};
+
+  // Iterate through the data to calculate emissions
+  data.forEach(item => {
+    const { sub_category, emission_tracker, quantity } = item;
+    const emissionAmount = emission_tracker * quantity;
+
+    if (subCategoryEmissionsMap[sub_category]) {
+      subCategoryEmissionsMap[sub_category].total_emission += emissionAmount;
+      subCategoryEmissionsMap[sub_category].quantity += quantity;
+    } else {
+      subCategoryEmissionsMap[sub_category] = {
+        total_emission: emissionAmount,
+        quantity: quantity
+      };
+    }
+  });
+
+  // Convert the map to an array of objects with subcategory, total emission, and quantity
+  const subCategoryEmissions:  {
+    sub_category: string;
+    total_emission: number;
+    quantity: number;
+  }
+   = [];
+  for (const sub_category in subCategoryEmissionsMap) {
+    subCategoryEmissions.push({
+      sub_category,
+      total_emission: subCategoryEmissionsMap[sub_category].total_emission,
+      quantity: subCategoryEmissionsMap[sub_category].quantity
+    });
+  }
+
+  // Sort the array by sub_category
+  subCategoryEmissions.sort((a, b) => a.sub_category.localeCompare(b.sub_category));
+
+  return subCategoryEmissions;
+}
+

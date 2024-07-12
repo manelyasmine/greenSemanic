@@ -23,6 +23,8 @@ import { outlinedInput, filterCalander } from '@/styles/theme/Filter';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+import FilterDateComponent from '@/components/commun/Date/CustomDate';
 import dayjs from 'dayjs';
 export default function ExportStepFour() {
   const [selectedTab, setSelectedTab] = React.useState<string>('7 Days');
@@ -75,25 +77,56 @@ const [startFullDate, setStartFullDate] = useState<Date | null>(null);
 
   useEffect(() => {
     // Recalculate values based on filtered data
-    /* const { scope1, scope2, scope3, sum } = CalculateScopes(filteredData);
+    const { scope1, scope2, scope3, sum } = CalculateScopes(filteredData);
     const { scope1Arr, scope2Arr, scope3Arr } = extractScops(filteredData);
     const emissionFactor = CalculateEmission(filteredData);
-    const dataEmissionByCat = getCarbonEmissionByCategory(filteredData); */
+    const dataEmissionByCat = getCarbonEmissionByCategory(filteredData);  
 
     // Update state or perform further calculations using recalculated values
     
     setScope01(scope1); 
-  /*   setScope2(scope2);
+    setScope2(scope2);
     setScope3(scope3);
     setSum(sum);
     setScope1Arr(scope1Arr);
     setScope2Arr(scope2Arr);
     setScope3Arr(scope3Arr);
     setDataEmissionByCat(dataEmissionByCat);
-    setEmissionFactor(emissionFactor); */
-  }, [/* filteredData */]);
+    setEmissionFactor(emissionFactor);  
+  }, [  filteredData  ]);
+
+  const handleApply = (firstDate:Date, endDate:Date) => {
+    console.log("handle applu", firstDate, endDate);
+   
+      setStartFullDate(dayjs(firstDate).format('YYYY-MM-DD'));
+      setEndFullDate(dayjs(endDate).format('YYYY-MM-DD'));
+      
+    
+    
+     
+  
+    setIsCalendarOpen(false);
+  };
+  
+  const handleCancel=()=> {
+    setEndFullDate('')
+    setStartFullDate('')
+
+  setFormattedSelectedDate('select Date');
+     
+    setIsCalendarOpen(false)
 
 
+  }
+const handleClear=()=>{
+  setEndFullDate('')
+  setStartFullDate('')
+/*   setEndYear('')
+  setStartYear('') */
+  setFormattedSelectedDate('select Date');
+  
+  setIsCalendarOpen(false)
+}
 
   const handleEndYearChange = (date) => {
       setEndFullDate(dayjs(date).format('YYYY-MM-DD')); 
@@ -161,7 +194,7 @@ const [startFullDate, setStartFullDate] = useState<Date | null>(null);
             {formattedSelectedDate || 'Select Date'}
           </Button>
           {isCalendarOpen && (
-          <Box sx={filterCalander}>
+        /*   <Box sx={filterCalander}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                  
                   <Box sx={{
@@ -209,7 +242,14 @@ const [startFullDate, setStartFullDate] = useState<Date | null>(null);
                   </Box>
                 
               </LocalizationProvider>
-            </Box>
+            </Box> */
+
+            <FilterDateComponent
+       
+                  handleApply={handleApply}
+                  handleCancel={handleCancel}
+                  handleClear={handleClear}
+                />
           )}
         </Grid>
         <Grid container xs={12} spacing={1}>

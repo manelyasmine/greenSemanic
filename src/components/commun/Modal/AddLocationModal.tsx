@@ -65,21 +65,25 @@ const AddLocationModal: React.FC<AddLocationModalProps> = ({ open, onClose, hand
           <Typography variant="bodyP2" sx={{ justifyContent: 'flex-start' }}>
             Are you sure you want to add location to company locations
           </Typography>
-
-          {/* <Typography variant="subtitle2">Category</Typography>
-          <FormControl fullWidth>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={dataToSend?.category}
-              onChange={(e) => handleChange('category', e.target.value)}
-              label="Select"
-            >
-              {category && category.map((cat) => <MenuItem value={cat.value}>{cat.label}</MenuItem>)}
-            </Select>
-          </FormControl> */}
+     
         </Box>
         <Box flexDirection={'row'} sx={{ width: '100%' }}>
+        <Typography variant="subtitle2">Primary Location</Typography>
+           <FormControl fullWidth>
+  <Select
+    labelId="demo-simple-select-label"
+    id="demo-simple-select"
+    onChange={(e) => handleChange('primary', e.target.value)}
+    label="Select"
+  >
+  
+      <MenuItem key="true" value="true"> primary</MenuItem>
+      <MenuItem key="false" value="false"> not primary </MenuItem>
+    
+  </Select>
+</FormControl>
+</Box>
+<Box flexDirection={'row'} sx={{ width: '100%' }}>
           <Typography variant="subtitle2">Address</Typography>
           <FormControl fullWidth>
             <TextField

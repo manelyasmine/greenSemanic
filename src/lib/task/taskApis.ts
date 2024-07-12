@@ -36,7 +36,7 @@ class TaskApis {
     try {
       const res = await this.apiTask.put('/',task,{ withCredentials: true });
 
-      return {  };
+      return {res : {...res.data }}
     } catch (e) {
       return { error: 'backend error' };
     }
@@ -49,7 +49,8 @@ async assignTask(task: NewTaskParams): Promise<{ res?: any; error?: string }> {
   try {
     const res = await this.apiTask.patch('/',task,{ withCredentials: true });
 
-    return {  };
+      console.log("assign task=>",res.data.taskId)
+    return {res : res.data.taskId}
   } catch (e) {
     return { error: 'backend error' };
   }

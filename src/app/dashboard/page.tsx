@@ -28,7 +28,7 @@ import { TotalEmissions } from '@/components/dashboard/overview/TotalEmissions';
 import Scopes from "@/components/dashboard/overview/Scopes"
 // export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 import { dataApis } from '@/lib/data/dataApis';
-import {getEmissionPerFilterCard,calculateReduction,calculateFirstTarget, getCarbonPerFilterCard,getCarbonEmissionScopesChart,CalculateScopes, getCarbonEmission, getCarbonEmissionByCategory,getEmissionsByLocation, getCarbonEmissionFromTarget,getFootPrint } from '@/lib/helper';
+import {getEmissionSubCategory,getEmissionPerFilterCard,calculateReduction,calculateFirstTarget, getCarbonPerFilterCard,getCarbonEmissionScopesChart,CalculateScopes, getCarbonEmission, getCarbonEmissionByCategory,getEmissionsByLocation, getCarbonEmissionFromTarget,getFootPrint } from '@/lib/helper';
 import { setDataDB } from '@/lib/store/reducer/useFile';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
@@ -78,6 +78,7 @@ export default function Page(): React.JSX.Element {
   const [carbonScopesData1,setCarbonScopesData1]= React.useState([]); 
   const [carbonScopesData2,setCarbonScopesData2]= React.useState([]); 
   const [carbonScopesData3,setCarbonScopesData3]= React.useState([]); 
+  const [emissionData,setEmissionData]=React.useState([]); 
  
   const handleApply=(firstDate,endDate)=>{
     console.log("handleApply",firstDate,endDate)
@@ -110,8 +111,9 @@ export default function Page(): React.JSX.Element {
       return;
     }
  
-    dispatch(setDataDB(res));
-    if(startFullDate && endFullDate && selectedTab==''){ 
+     dispatch(setDataDB(res));
+    console.log("getEmissionSubCategory===>",getEmissionSubCategory(res))
+   if(startFullDate && endFullDate && selectedTab==''){ 
       console.log("if")
        setCarbonPerMonthCard(getCarbonPerFilterCard(res,"custom",startFullDate,endFullDate));
       setEmissionPerMonthCard(getEmissionPerFilterCard(res,"custom",startFullDate,endFullDate));
@@ -150,9 +152,10 @@ export default function Page(): React.JSX.Element {
       setReduction(calculateReduction(CarbonPerMonthCard,target));
 
       setFirstTarget(calculateFirstTarget(CarbonPerMonthCard,target[0]))
-    }
+    }  
  
      
+    setEmissionData(getEmissionSubCategory(res));
   }, [selectedTab,startFullDate,endFullDate]);
 
   const getTargets = React.useCallback(async (): Promise<void> => {
@@ -178,153 +181,153 @@ export default function Page(): React.JSX.Element {
   return (
    
     <Box>
-      <Typography
-        sx={{
-          fontSize: '32px',
-          fontStyle: 'normal',
-          fontWeight: 600,
-          lineHeight: '125%',
-        }}
-        gutterBottom
-      >
-        Dashboard
-      </Typography> 
-      <Grid item xs={12} container justifyContent="flex-end">
+    <Typography
+      sx={{
+        fontSize: '32px',
+        fontStyle: 'normal',
+        fontWeight: 600,
+        lineHeight: '125%',
+      }}
+      gutterBottom
+    >
+      Dashboard
+    </Typography> 
+    <Grid item xs={12} container justifyContent="flex-end">
+   
+        <Grid item>
+          <Button
+            btnType="Primary"
+            sx={{
+              ...MuiButton.styleOverrides.sizeSmall,
+              borderRadius: '6px',
+              background: 'var(--Green-green-500, #16B364)',
+            }}
+            startIcon={<ExportIcon fontSize="var(--icon-fontSize-sm)" />}
+            onClick={console.log()}
+          >
+            <Typography variant="h7" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
+              Export
+            </Typography>
+          </Button>
+        </Grid>
+      </Grid>
+    
+    <Grid container justifyContent="space-between" spacing={2} sx={{ paddingTop: '1rem' }}>
+      <Grid item xs={8}>
+        <CustomTabs value={selectedTab} handleChange={handleTabChange} />
+      </Grid>
+
+      <Grid item xs={4} container justifyContent="flex-end">
+        <Grid item>
+          <Button
+            btnType="secondaryGray"
+            sx={{
+              ...MuiButton.styleOverrides.sizeSmall,
+              borderRadius: '6px',
+              border: '1px solid var(--Grey-grey-200, #B3B8C2)',
+              background: 'var(--Colors-Base-00, #FFF)',
+            }}
+            startIcon={<CalanderIcon />}
+            onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+          >
+            <Typography variant="h7" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
+              Select Date
+            </Typography>
+          </Button>
+          {isCalendarOpen &&
+          <FilterDateComponent
      
-          <Grid item>
-            <Button
-              btnType="Primary"
-              sx={{
-                ...MuiButton.styleOverrides.sizeSmall,
-                borderRadius: '6px',
-                background: 'var(--Green-green-500, #16B364)',
-              }}
-              startIcon={<ExportIcon fontSize="var(--icon-fontSize-sm)" />}
-              onClick={console.log()}
-            >
-              <Typography variant="h7" sx={{ color: 'var(--Colors-Base-00, #FFF)' }}>
-                Export
-              </Typography>
-            </Button>
-          </Grid>
+     handleApply={handleApply}
+     handleCancel={handleCancel}
+     handleClear={handleClear}
+   />}
         </Grid>
-      
-      <Grid container justifyContent="space-between" spacing={2} sx={{ paddingTop: '1rem' }}>
-        <Grid item xs={8}>
-          <CustomTabs value={selectedTab} handleChange={handleTabChange} />
-        </Grid>
-
-        <Grid item xs={4} container justifyContent="flex-end">
-          <Grid item>
-            <Button
-              btnType="secondaryGray"
-              sx={{
-                ...MuiButton.styleOverrides.sizeSmall,
-                borderRadius: '6px',
-                border: '1px solid var(--Grey-grey-200, #B3B8C2)',
-                background: 'var(--Colors-Base-00, #FFF)',
-              }}
-              startIcon={<CalanderIcon />}
-              onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-            >
-              <Typography variant="h7" sx={{ color: 'var(--Grey-grey-600, #606977)' }}>
-                Select Date
-              </Typography>
-            </Button>
-            {isCalendarOpen &&
-            <FilterDateComponent
-       
-       handleApply={handleApply}
-       handleCancel={handleCancel}
-       handleClear={handleClear}
-     />}
-          </Grid>
-          
-        </Grid>
+        
       </Grid>
-      <div>
-        {/* Content for each tab based on the selectedTab value */}
-        {/* {selectedTab === '7 Days' && <div>Content for 7 Days</div>}
-        {selectedTab === '30 Days' && <div>Content for 30 Days</div>}
-        {selectedTab === 'Quarter' && <div>Content for Quarter</div>}
-        {selectedTab === '12 Months' && <div>Content for 12 Months</div>} */}
-      </div>
-      <Grid container spacing={3} mt={3}>
-       {/*  <CardCarousel CarbonPerMonthCard={CarbonPerMonthCard} emissionPerMonthCard={emissionPerMonthCard}
-        firstTarget={firstTarget} reduction={reduction}
+    </Grid>
+    <div>
+      {/* Content for each tab based on the selectedTab value */}
+      {/* {selectedTab === '7 Days' && <div>Content for 7 Days</div>}
+      {selectedTab === '30 Days' && <div>Content for 30 Days</div>}
+      {selectedTab === 'Quarter' && <div>Content for Quarter</div>}
+      {selectedTab === '12 Months' && <div>Content for 12 Months</div>} */}
+    </div>
+    <Grid container spacing={3} mt={3}>
+     {/*  <CardCarousel CarbonPerMonthCard={CarbonPerMonthCard} emissionPerMonthCard={emissionPerMonthCard}
+      firstTarget={firstTarget} reduction={reduction}
+      /> */}
+      <Grid lg={3} sm={6} xs={12}>
+        <CarbonPerMonth diff={12} trend="up" sx={{ height: '100%' }} value={CarbonPerMonthCard} />
+      </Grid>
+      <Grid lg={3} sm={6} xs={12}>
+        <TotalEmissions diff={0.9} trend="down" sx={{ height: '100%' }} value={emissionPerMonthCard} />
+      </Grid>
+      <Grid lg={3} sm={6} xs={12}>
+        <Reduction diff={1.4} trend="up" sx={{ height: '100%' }} value={reduction} />
+      </Grid>
+      <Grid lg={3} sm={6} xs={12}>
+        <Reduction diff={1.4} trend="up" sx={{ height: '100%' }} value={firstTarget} />
+      </Grid>  
+     
+      <Grid lg={8} xs={12}>
+       {/*  <CarbonEmissionsScope
+             chartSeries={[
+            { name: 'Scope 1', data:carbonEmissionsScopesChart['scope1Arr'] },
+            { name: 'Scope 2', data:  carbonEmissionsScopesChart['scope2Arr'] },
+            { name: 'Scope 3', data:  carbonEmissionsScopesChart['scope3Arr'] },
+          ]}   
+          sx={{ height: '100%' }} 
+          taille={carbonEmissionsScopesChart['scope1Length']}
         /> */}
-        <Grid lg={3} sm={6} xs={12}>
-          <CarbonPerMonth diff={12} trend="up" sx={{ height: '100%' }} value={CarbonPerMonthCard} />
-        </Grid>
-        <Grid lg={3} sm={6} xs={12}>
-          <TotalEmissions diff={0.9} trend="down" sx={{ height: '100%' }} value={emissionPerMonthCard} />
-        </Grid>
-        <Grid lg={3} sm={6} xs={12}>
-          <Reduction diff={1.4} trend="up" sx={{ height: '100%' }} value={reduction} />
-        </Grid>
-        <Grid lg={3} sm={6} xs={12}>
-          <Reduction diff={1.4} trend="up" sx={{ height: '100%' }} value={firstTarget} />
-        </Grid>  
-       
-        <Grid lg={8} xs={12}>
-         {/*  <CarbonEmissionsScope
-               chartSeries={[
-              { name: 'Scope 1', data:carbonEmissionsScopesChart['scope1Arr'] },
-              { name: 'Scope 2', data:  carbonEmissionsScopesChart['scope2Arr'] },
-              { name: 'Scope 3', data:  carbonEmissionsScopesChart['scope3Arr'] },
-            ]}   
-            sx={{ height: '100%' }} 
-            taille={carbonEmissionsScopesChart['scope1Length']}
-          /> */}
 
-          <CarbonEmissionsScope
-          sx={{ height: '100%' }} 
-          displayPer={selectedTab}
-          /* typeReporting="custom" */
-          startDate={startFullDate}
-          endDate={endFullDate}
-          data={dataDB}
-        />
-        </Grid>
-        <Grid lg={4} md={6} xs={12}>
-          <Tasks sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={8} md={6} xs={12}>
-       <MonthlyCarbonEmissions 
-          dataEmission={dataEmission} 
-          dataEmissionTarget={dataEmissionTarget}
-          sx={{ height: '100%' }} 
-          /> 
-        </Grid>
-        <Grid lg={4} md={12} xs={12}>
-         
-<Scopes   scope1={myScope.scope1} scope2={myScope.scope2} scope3={myScope.scope3} />
-        </Grid>
-        <Grid lg={8} md={12} xs={12}>
-          <EmissionLocation data={locationsData} sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={4} md={12} xs={12}>
-          <EmissionByType sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={7.5} md={6} xs={12}>
-          <Footprints 
-          data={footPrint}
-          sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={4.5} md={6} xs={12}>
-          <TotalCO2 sx={{ height: '100%' }} />
-        </Grid>
-        <Grid lg={12} md={12} xs={12}> 
-          <CarbonEmissionsCategory
-            data={dataEmissionByCat}
-            sx={{ height: '100%' }}
-            showScopesTabs={false}
-             
-          />
-  
-
-        </Grid>
+        <CarbonEmissionsScope
+        sx={{ height: '100%' }} 
+        displayPer={selectedTab}
+        /* typeReporting="custom" */
+        startDate={startFullDate}
+        endDate={endFullDate}
+        data={dataDB}
+      />
       </Grid>
-    </Box>
+      <Grid lg={4} md={6} xs={12}>
+        <Tasks sx={{ height: '100%' }} />
+      </Grid>
+      <Grid lg={8} md={6} xs={12}>
+     <MonthlyCarbonEmissions 
+        dataEmission={dataEmission} 
+        dataEmissionTarget={dataEmissionTarget}
+        sx={{ height: '100%' }} 
+        /> 
+      </Grid>
+      <Grid lg={4} md={12} xs={12}>
+       
+<Scopes   scope1={myScope.scope1} scope2={myScope.scope2} scope3={myScope.scope3} />
+      </Grid>
+      <Grid lg={8} md={12} xs={12}>
+        <EmissionLocation data={locationsData} sx={{ height: '100%' }} />
+      </Grid>
+      <Grid lg={4} md={12} xs={12}>
+        <EmissionByType sx={{ height: '100%' }} data={emissionData} />
+      </Grid>
+      <Grid lg={7.5} md={6} xs={12}>
+        <Footprints 
+        data={footPrint}
+        sx={{ height: '100%' }} />
+      </Grid>
+      <Grid lg={4.5} md={6} xs={12}>
+        <TotalCO2 sx={{ height: '100%' }} />
+      </Grid>
+      <Grid lg={12} md={12} xs={12}> 
+        <CarbonEmissionsCategory
+          data={dataEmissionByCat}
+          sx={{ height: '100%' }}
+          showScopesTabs={false}
+           
+        />
+
+
+      </Grid>
+    </Grid>
+  </Box>
   );
 }

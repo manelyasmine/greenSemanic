@@ -15,6 +15,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
+import { Select,MenuItem } from '@mui/material';
 import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
 import { Pagination } from '@/components/commun/Pagination/Pagination';
@@ -51,13 +52,13 @@ interface TargetsTableProps {
   onFilterByDate:any;
   onFilterByFiltering:any;
   handleChangePage:any;
-  
+  total:number;
 }
 
 export function TargetsTable({  
   rows = [],
   rowsPerPage = 5,
-  
+  total,
   onFilterBySearch,
   onFilterByFiltering,
   onFilterByDate,
@@ -74,7 +75,7 @@ export function TargetsTable({
   }, [rows]);
   const [page, setPage] = useState(1); 
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
-
+const [totalPages,setTotalPages]=useState('5');
   const selectedSome = (selected?.size ?? 0) > 0 && (selected?.size ?? 0) < rows.length;
   const selectedAll = rows.length > 0 && selected?.size === rows.length;
 
@@ -115,8 +116,13 @@ console.log("pagineted and rows target",rows,paginatedRows,pages)
   
 
   return (
+    <>
+     <FilterColumns columns={columns} onFilterByFiltering={updateFiltering} 
+      onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} 
+      isYear={true} isDate={false} isFullDate={false}/>
+      
     <Card>
-      <FilterColumns columns={columns} onFilterByFiltering={updateFiltering} onFilterByDate={onFilterByDate} onFilterBySearch={updateSearch} isYear={true} isDate={false} isFullDate={false}/>
+     
       <Divider />
       <Box sx={{ overflowX: 'auto' }}>
         <Table sx={{ minWidth: '800px' }}>
@@ -170,10 +176,8 @@ console.log("pagineted and rows target",rows,paginatedRows,pages)
                       />
                     </TableCell>
                     <TableCell>
-                      <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                        {/* <Avatar src={row.avatar} /> */}
-                        <Typography variant="subtitle2">{row.name}</Typography>
-                      </Stack>
+                      <Typography variant="bodyB3">{row.name}</Typography>
+                      
                     </TableCell>
                     <TableCell>
                       <Chip chipType="primaryLight">{row.type}</Chip>
@@ -203,12 +207,13 @@ console.log("pagineted and rows target",rows,paginatedRows,pages)
         </Table>
       </Box>
       <Divider />
-      <Box style={{ display: 'flex', justifyContent: 'center' }}>
-      <Pagination
-          paginatioType="gray"
-          // color='gray'
-          //count={pages} // Total number of pages
-          count={pages}
+      <Box style={{ display: 'flex' ,justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography variant="bodyB3" sx={{padding:3}}>Total : {total}</Typography>
+
+      <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Pagination
+          paginationType="secondaryGray"
+          count={pages} // Total number of pages
           page={page}
           onChange={updateChangePage}
           size="small"
@@ -217,6 +222,21 @@ console.log("pagineted and rows target",rows,paginatedRows,pages)
           shape="rounded"
         />
       </Box>
+
+      <Box sx={{padding:3}}> 
+        <Select
+          value={totalPages} 
+          onChange={(e) => { setTotalPages(e.target.value)
+          }}
+          size="small"
+        >
+          <MenuItem value={5}>5</MenuItem>
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={20}>20</MenuItem>
+        </Select>
+      </Box>
+    </Box>
     </Card>
+    </>
   );
 }

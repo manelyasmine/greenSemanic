@@ -16,44 +16,35 @@ import { ReportsTable } from '@/components/dashboard/reports/reports-table';
 import { MuiButton } from '@/styles/theme/components/button';
 
  
-export default function Page(): React.JSX.Element {
-  const [selectedTab, setSelectedTab] = useState<string>('7 Days');
+export default function Page(): React.JSX.Element { 
   
   const rowsPerPage = 3;
   const [isOpen, setIsOpen] = useState(false);
-
   const { report } = useSelector((state: any) => state.report);
-  const [reports, setReports] = React.useState<Report>({});
-  const [paginatedTarget, setPaginatedTarget] = useState<Report[]>([]);
-
+  const [reports, setReports] = React.useState<Report>({}); 
+  const [totalItems,setTotalItems]=useState(0);
   const [searchBaseYear,setSearchBaseYear]=useState('');
   const [searchInput,setSearchInput]=useState('')
-  const [searchDate,setSearchDate]=useState('')
   const [column,setColumn]=useState('');
-const [operator,setOperator]=useState('');
-const [value,setValue]=useState('');
-const [searchTargetYear,setSearchTargetYear]=useState('');
-const [page, setPage] = useState(1); // Start on page 1
-
+  const [operator,setOperator]=useState('');
+  const [value,setValue]=useState('');
+  const [searchTargetYear,setSearchTargetYear]=useState('');
+  const [page, setPage] = useState(1);  
   const [pages,setPages]=useState(1);
-  const dispatch = useDispatch();
-  // Function to handle tab changes
-  const handleTabChange = (event: React.ChangeEvent<any>, newValue: string) => {
-    setSelectedTab(newValue);
-  };
-  const onFilterByDate = (selectedDate) => {
-    console.log("target table on filter date ==>",selectedDate[0],selectedDate[1])
-    setSearchBaseYear(selectedDate[0])
+  const dispatch = useDispatch(); 
+ 
+  const onFilterByDate = (selectedDate:Date) => { 
+    setSearchBaseYear(selectedDate[0]);
     setSearchTargetYear(selectedDate[1]);
   
         
       
     };
-    const onFilterBySearch=(search)=>{ 
+    const onFilterBySearch=(search:String)=>{ 
       console.log("onFilterBySearch=>",search)
       setSearchInput(search)
     }
-    const onFilterByFiltering=(selectedValue,operator,value)=>{
+    const onFilterByFiltering=(selectedValue:String,operator:String,value)=>{
       console.log("searching equal page task==>",selectedValue,operator,value)
       setColumn(selectedValue);
         setOperator(operator);
@@ -74,7 +65,7 @@ const [page, setPage] = useState(1); // Start on page 1
     document.body.removeChild(a);
   }
 
-  const handleChangePage = ( newPage ) => {
+  const handleChangePage = ( newPage :Number) => {
     console.log("handle change page",page)
     setPage(newPage); 
   };
@@ -109,9 +100,9 @@ const [page, setPage] = useState(1); // Start on page 1
        page,  
        limit: rowsPerPage,  
         search:searchInput,
-       column:'',
-        operator:'',
-        value:'', 
+       column:column,
+        operator:operator,
+        value:value, 
      }; 
    
 
@@ -123,6 +114,7 @@ const [page, setPage] = useState(1); // Start on page 1
     dispatch(setReport(res));
     setReports(res);
     setPages(totalPages);
+    setTotalItems(total);
     console.log("total pages",totalPages)
    
   }, [dispatch, page, rowsPerPage,pages, searchInput,searchBaseYear,searchTargetYear,column,operator,value]);
@@ -173,7 +165,7 @@ const [page, setPage] = useState(1); // Start on page 1
       </Grid>
       <ReportsTable   page={page} rows={report} rowsPerPage={rowsPerPage}
             onFilterBySearch={onFilterBySearch}  onFilterByFiltering={onFilterByFiltering} onFilterByDate={onFilterByDate} 
-            pages={pages} handleChangePage={handleChangePage}
+            pages={pages} handleChangePage={handleChangePage} total={totalItems}
      />
 
       {isOpen && (

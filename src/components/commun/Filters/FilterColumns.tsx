@@ -17,6 +17,7 @@ import { start } from 'repl';
 import Filters from './Filters'; 
 
 import FilterDateComponent from '@/components/commun/Date/CustomDate';
+import FilterDateComponentYear from '@/components/commun/Date/CustomDateYear';
 interface FilterColumnsProps {
   onFilterByDate: (date: any) => void;
   onFilterBySearch: (search: any) => void;
@@ -54,14 +55,27 @@ const FilterColumns = ({ columns,onFilterByFiltering,onFilterByDate, onFilterByS
   //const [filteredData, setFilteredData] = useState(data);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   
-  const handleApply = (firstDate, endDate) => {
+  const handleApply = (firstDate:Date, endDate:Date) => {
     console.log("handle applu", firstDate, endDate);
     if (isFullDate) {
       setStartFullDate(dayjs(firstDate).format('YYYY-MM-DD'));
       setEndFullDate(dayjs(endDate).format('YYYY-MM-DD'));
-  
-      // Call onFilterByDate after state updates (optional)
+   
       onFilterByDate([startFullDate, endFullDate]);
+    }
+    if(isYear){
+      console.log("first Date",firstDate,endDate)
+      
+      setStartYear(firstDate);
+      setEndYear(endDate);
+      setIsSelectingStartYear(false);
+      setIsSelectingEndYear(false);
+      const dateRange = [firstDate, endDate];
+      const formattedDate = `${(firstDate)} - ${(endDate)}`;
+      console.log("use effect date r ange",firstDate,endDate)
+      setFormattedSelectedDate(formattedDate);
+      onFilterByDate(dateRange);
+
     }
   
     setIsCalendarOpen(false);
@@ -70,6 +84,9 @@ const FilterColumns = ({ columns,onFilterByFiltering,onFilterByDate, onFilterByS
   const handleCancel=()=> {
     setEndFullDate('')
     setStartFullDate('')
+
+  setFormattedSelectedDate('select Date');
+    onFilterByDate(['', '']);
     setIsCalendarOpen(false)
 
 
@@ -77,6 +94,10 @@ const FilterColumns = ({ columns,onFilterByFiltering,onFilterByDate, onFilterByS
 const handleClear=()=>{
   setEndFullDate('')
   setStartFullDate('')
+/*   setEndYear('')
+  setStartYear('') */
+  setFormattedSelectedDate('select Date');
+  onFilterByDate(['', '']);
   setIsCalendarOpen(false)
 }
 
@@ -137,19 +158,7 @@ if(isDate){
      
   }
 
-  const closeFilterDropdown = () => {
-    setIsFilterDropdownOpen(!isFilterDropdownOpen);
-  };
-
-  
-  
-  
-
-
-
-
-
-
+   
   useEffect(() => {
     // ... (existing useEffect logic)
   
@@ -159,7 +168,7 @@ if(isDate){
           const formattedDate = `${(startFullDate)} - ${(endFullDate)}`;
           setFormattedSelectedDate(formattedDate);
       
-    }
+    } 
   }, [startFullDate, endFullDate]);
   
   useEffect(() => {
@@ -185,6 +194,7 @@ if(isDate){
           onFilterByDate(startDate);
           
         }
+       
 
 
       }
@@ -194,7 +204,7 @@ if(isDate){
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [startYear, endYear, onFilterByDate,startDate]);
+  }, [startYear, endYear, onFilterByDate,startDate,endFullDate,startFullDate]);
 
   const handleColumnChange = (event: React.ChangeEvent<HTMLSelectElement>) => setSelectedColumn(event.target.value);
   const handleOperatorChange = (event: React.ChangeEvent<HTMLSelectElement>) =>{
@@ -202,15 +212,12 @@ if(isDate){
     setOperator(event.target.value);
   }
   const handleFilterValueChange = (event: React.ChangeEvent<HTMLInputElement>) => setFilterValue(event.target.value);
-
- /*  const applyFilter = () => {
-    setFilteredData(filterData(data.slice(), selectedColumn, operator, filterValue));
-    setIsFilterDropdownOpen(false); // Close dropdown after applying filter
-  }; */
-  
   return (
    
-    <Box sx={{ backgroundColor: palette.common.white, position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px', borderRadius: '12px' }}>
+    <Box sx={{ backgroundColor: palette.common.white, 
+    position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px',
+    
+    borderRadius: '12px' }}>
       <Box sx={{ display: "flex", alignItems: 'flex-start', justifyContent: 'space-between', flexDirection: "row" }}>
         <OutlinedInput
           defaultValue=""
@@ -258,98 +265,16 @@ if(isDate){
                 )}
                 
                 {isYear && (
-                  <Box sx={{
-                    display: 'flex',
-                    flexDirection: "column",
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    <Button
-                      btnType="secondaryGray"
-                      sx={{ ...MuiButton.styleOverrides.sizeSmall }}
-                      startIcon={<CalanderIcon />}
-                      id="filter-date-start"
-                      onClick={() => {
-                        setIsSelectingStartYear(true);
-                        setIsSelectingEndYear(false);
-                      }}
-                    >
-                     {startYear ? startYear : 'Start Year'}
-                    </Button>
-                    <Button
-                      btnType="secondaryGray"
-                      sx={{ ...MuiButton.styleOverrides.sizeSmall }}
-                      startIcon={<CalanderIcon />}
-                      id="filter-date-end"
-                      onClick={() => {
-                        setIsSelectingStartYear(false);
-                        setIsSelectingEndYear(true);
-                      }}
-                    >
-                       {endYear ? endYear : 'End Year'}
-                    </Button>
-                    {isSelectingStartYear && (
-                      <DateCalendar
-                        views={['year']}
-                        onChange={handleStartYearChange}
-                      />
-                    )}
-                    {isSelectingEndYear && (
-                      <DateCalendar
-                        views={['year']}
-                        onChange={handleEndYearChange}
-                      />
-                    )}
-                  </Box>
+                  <FilterDateComponentYear
+                  handleApply={handleApply}
+                  handleCancel={handleCancel}
+                  handleClear={handleClear}
+                  />
                 )}
 
 
 
             {isFullDate && (
-     /*              <Box sx={{
-                    display: 'flex',
-                    flexDirection: "column",
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    <Button
-                      btnType="secondaryGray"
-                      sx={{ ...MuiButton.styleOverrides.sizeSmall }}
-                      startIcon={<CalanderIcon />}
-                      id="filter-date-start"
-                      onClick={() => {
-                        setIsSelectingStartYear(true);
-                        setIsSelectingEndYear(false);
-                      }}
-                    >
-                     {startFullDate ? dayjs(startFullDate).format('YYYY-MM-DD') : 'Start Date' }
-                    </Button>
-                    <Button
-                      btnType="secondaryGray"
-                      sx={{ ...MuiButton.styleOverrides.sizeSmall }}
-                      startIcon={<CalanderIcon />}
-                      id="filter-date-end"
-                      onClick={() => {
-                        setIsSelectingStartYear(false);
-                        setIsSelectingEndYear(true);
-                      }}
-                    >
-                       {endFullDate ? dayjs(endFullDate).format('YYYY-MM-DD') : 'End Date'}
-                    </Button>
-                    {isSelectingStartYear && (
-                      <DateCalendar
-                        views={['year', 'month', 'day']}
-                        onChange={handleStartYearChange}
-                      />
-                    )}
-                    {isSelectingEndYear && (
-                      <DateCalendar
-                        views={['year', 'month', 'day']}
-                        onChange={handleEndYearChange}
-                      />
-                    )}
-                  </Box> */
-
                   <FilterDateComponent
        
                   handleApply={handleApply}
@@ -369,9 +294,7 @@ if(isDate){
           >
             Filters
           </Button>
-{/*  <Box sx={{ backgroundColor: palette.common.white, position: 'relative', p: 2, padding: 'var(--12, 12px) 16px', gap: '12px 12px', borderRadius: '12px' }}>
-      <Box sx={{ display: "flex", alignItems: 'flex-start', justifyContent: 'space-between', flexDirection: "row" }}>
-    */}
+ 
            {isFilterDropdownOpen && (
       <Box   sx={{ position: 'absolute', top: '80px', right: '16px', zIndex: 10,
 border: '0.1px solid gray', borderRadius: '8px', backgroundColor: 'white',  
